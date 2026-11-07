@@ -365,6 +365,12 @@ function App() {
     const status = !m.statsWeek ? 'Stats week not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : !final ? 'Partial series data' : 'Final';
     return {...m, scoreText:exact?team1Stats.wins+' - '+team2Stats.wins:'TBD', resultStatus:status, resultFinal:final};
   });
+  const upcomingMatchdayNumbers = scheduleMatchdays.filter(day=>day>defaultMatchday).slice(0,2);
+  const upcomingMatchdayGroups = upcomingMatchdayNumbers.map(matchday=>({
+    matchday,
+    deadline:scheduleRows.find(m=>m.matchday===matchday)?.deadline||'',
+    matchups:scheduleRows.filter(m=>m.matchday===matchday)
+  }));
   const comparisonTeams = compareTeams.map(name=>{ const rows=compareRows.filter(r=>r.teamName===name); const games=rows.reduce((s,r)=>s+n(r.stats.games),0); const wins=rows.reduce((s,r)=>s+n(r.stats.wins),0); const rating=games?matchRatingForRecords(rows).rating:null; return {name,rows,rating,games,wins,players:[...new Set(rows.map(r=>r.playerName))],winPct:games?wins/games*100:0}; }).filter(t=>t.rows.length);
   const comparisonPlayers = compareRows.filter(r=>compareTeams.includes(r.teamName)).reduce((groups,r)=>{ const key=r.teamName+'::'+r.playerName; if(!groups.has(key)) groups.set(key,{key,playerName:r.playerName,teamName:r.teamName,rows:[]}); groups.get(key).rows.push(r); return groups; },new Map());
   const playerComparisonRows = [...comparisonPlayers.values()].map(p=>{ const rating=matchRatingForRecords(p.rows); const games=p.rows.reduce((sum,r)=>sum+n(r.stats.games),0); const wins=p.rows.reduce((sum,r)=>sum+n(r.stats.wins),0); return {...p,rank:dataset?.playerRanks?.[p.playerName]||'',rating:rating.rating,categories:rating.categories,values:rating.values,games,winPct:games?wins/games*100:0}; }).sort((a,b)=>a.teamName.localeCompare(b.teamName)||b.rating-a.rating);
@@ -398,6 +404,15 @@ function App() {
       </section><section className="bottom-grid">
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">IMPORT HISTORY</span><h2>Weekly files</h2></div><Activity size={18} className="muted-icon"/></div><div className="import-list">{(dataset?.imports||[]).map(x=><div className="import-row" key={x.file}><span>{x.file}</span><b>{x.rows} players</b></div>)}</div></article>
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">DEEP DIVE</span><h2>Stat explorer</h2></div><BarChart3 size={18} className="muted-icon"/></div><div className="compact-empty">Explore all {stats.length} exported stat fields, including scoring, defense, boost, movement, and advanced stats.</div><button className="text-button" onClick={()=>goToSection('Stat Explorer')}>Explore stats <ArrowUpRight size={15}/></button></article>
+      </section><section className="panel upcoming-panel">
+        <div className="panel-heading"><div><span className="panel-kicker">COMING UP</span><h2>Upcoming matchups</h2></div><span className="panel-tag">NEXT TWO MATCHDAYS</span></div>
+        {upcomingMatchdayGroups.length ? <div className="upcoming-matchday-list">{upcomingMatchdayGroups.map(group=><div className="upcoming-matchday" key={group.matchday}>
+          <div className="upcoming-matchday-heading"><strong>Matchday {group.matchday}</strong>{group.deadline&&<span>DEADLINE <b>{group.deadline}</b></span>}</div>
+          <div className="upcoming-matchup-grid">{group.matchups.map(match=><div className="upcoming-matchup" key={match.id}>
+            <div className="upcoming-matchup-meta"><DivisionBadge division={match.division}/></div>
+            <div className="upcoming-team"><TeamName name={match.team1}/></div><span className="upcoming-vs">VS</span><div className="upcoming-team"><TeamName name={match.team2}/></div>
+          </div>)}</div>
+        </div>)}</div> : <div className="upcoming-empty">No future matchdays are listed in the schedule.</div>}
       </section></>}
       {activePage==='Players'&&<section className="panel full-panel">
         {activePlayer ? <>
