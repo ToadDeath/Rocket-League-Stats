@@ -231,3 +231,12 @@ footer b,.footer-flame{color:#f02f38}
 .comparison-card .team-name>img{width:46px;height:46px}
 .comparison-card .division-badge img{width:30px;height:30px}
 .profile-heading .division-badge img{width:30px;height:30px}
+
+
+/* Restore consistent custom styling for native dropdown controls */
+.select-wrap{position:relative;display:block;width:100%}
+.select-wrap select{appearance:none;-webkit-appearance:none;display:block;width:100%;min-height:42px;padding:10px 38px 10px 12px;border:1px solid #303b49;border-radius:6px;background:#111820;color:#e4ebf4;font-size:11px;font-weight:600;line-height:1.3;cursor:pointer;outline:none;transition:border-color .15s ease,background .15s ease,box-shadow .15s ease}
+.select-wrap select:hover{border-color:#52677b;background:#151e29}
+.select-wrap select:focus{border-color:#00aeef;box-shadow:0 0 0 2px rgba(0,174,239,.16)}
+.select-wrap select option{background:#111820;color:#e4ebf4}
+.select-wrap>svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:#8b9bad;pointer-events:none}
