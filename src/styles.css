@@ -210,3 +210,16 @@ footer b,.footer-flame{color:#f02f38}
 .stat-rating-method>p{font-size:10px;line-height:1.65;color:#9eacbf;margin:12px 0}
 .stat-rating-audit .formula-line{margin-top:14px}
 .stat-rating-audit .stat-select{margin-top:14px}
+
+
+/* Division identity badges */
+.division-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border:1px solid #34404d;border-radius:5px;background:rgba(17,25,35,.72);color:#b9c8d8;font-size:8px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;white-space:nowrap;vertical-align:middle}
+.division-badge img{width:24px;height:24px;object-fit:contain;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
+.division-badge-premier{border-color:rgba(240,47,56,.35);color:#f0a4a8}
+.division-badge-championship{border-color:rgba(0,174,239,.35);color:#83d7f2}
+.profile-team-entry{display:inline-flex;align-items:center;gap:7px;margin-right:12px}
+.profile-team-links{gap:9px}
+.comparison-team-identity{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.comparison-card .team-name>img{width:46px;height:46px}
+.comparison-card .division-badge img{width:30px;height:30px}
+.profile-heading .division-badge img{width:30px;height:30px}
