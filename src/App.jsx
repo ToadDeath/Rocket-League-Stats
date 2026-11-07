@@ -410,7 +410,7 @@ function App() {
           {['Premier','Championship'].filter(name=>group.matchups.some(match=>match.division===name)).map(name=><div className="upcoming-division-section" key={name}>
             <div className="upcoming-division-heading"><DivisionBadge division={name}/></div>
             <div className="upcoming-matchup-grid">{group.matchups.filter(match=>match.division===name).map(match=><div className="upcoming-matchup" key={match.id}>
-              <div className="upcoming-team"><TeamName name={match.team1}/></div><span className="upcoming-vs">VS</span><div className="upcoming-team"><TeamName name={match.team2}/></div>
+              <div className="upcoming-team"><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',match.team1)}><TeamName name={match.team1}/></button></div><span className="upcoming-vs">VS</span><div className="upcoming-team"><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',match.team2)}><TeamName name={match.team2}/></button></div>
             </div>)}</div>
           </div>)}
         </div>)}</div> : <div className="upcoming-empty">No future matchdays are listed in the schedule.</div>}
