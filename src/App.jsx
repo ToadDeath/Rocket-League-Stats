@@ -85,15 +85,20 @@ function matchRatingForRecords(rows) {
 
 const sglLogo = `${import.meta.env.BASE_URL}assets/league/sgl-logo.png`;
 const teamLogoFiles = {
-  'AXE & ARMY': 'axe-and-army.png',
-  'EL MATADOR': 'el-matador.png',
-  'EMERALD CITY RC': 'emerald-city-rc.png',
-  'EC DEFIANCE': 'ec-defiance.png',
-  'EC ETERNAL': 'ec-eternal.png',
-  'KC CAULDRON': 'kc-cauldron.png',
-  'LOS VERDES': 'los-verdes.png',
-  'STEEL ARMY': 'steel-army.png',
-  'THE REBELLION': 'the-rebellion.png'
+  'AXE & ARMY': 'AXE & ARMY.png',
+  'EL MATADOR': 'EL MATADOR.png',
+  'EMERALD CITY RC': 'EMERALD CITY RC.png',
+  'FRONTERA SD CHROME': 'FRONTERA SD CHROME.png',
+  'KC CAULDRON': 'KC CAULDRON.png',
+  'LACINCO12': 'LACINCO12.png',
+  'SOUNDERS ROCKET CLUB': 'SOUNDERS ROCKET CLUB.png',
+  'THE REBELLION': 'THE REBELLION.png',
+  'EC DEFIANCE': 'EMERALD CITY DEFIANCE.png',
+  'EC ETERNAL': 'EMERALD CITY ETERNAL.png',
+  'EM DALLAS BURN': 'EM DALLAS BURN.png',
+  'LOS VERDES': 'LOS VERDES.png',
+  'STEEL ARMY': 'STEEL ARMY.png',
+  'WONDERWALL': 'WONDERWALL.png'
 };
 const rankLogoFiles = {
   B1:'Bronze I.png', B2:'Bronze II.png', B3:'Bronze III.png',
