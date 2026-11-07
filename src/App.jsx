@@ -136,7 +136,7 @@ function App() {
     return [...map.values()].map(p=>{
       const current=matchRatingForRecords(p.rows.filter(r=>latestWeek==null||r.week==null||r.week<=latestWeek));
       const previous=previousWeek==null?null:matchRatingForRecords(p.rows.filter(r=>r.week==null||r.week<=previousWeek));
-      return {...p,rank:dataset?.playerRanks?.[p.name]||'',teamList:[...p.teams].join(', '),
+      return {...p,rank:dataset?.playerRanks?.[p.name]||'',trackerUrl:dataset?.playerTrackerUrls?.[p.name]||'',teamList:[...p.teams].join(', '),
         winPct:p.games?p.wins/p.games*100:0,scorePerGame:avg(p.score,p.games),goalsPerGame:avg(p.goals,p.games),
         rating:current.rating,ratingCategories:current.categories,ratingValues:current.values,
         ratingChange:previous?current.rating-previous.rating:null};
@@ -198,7 +198,7 @@ function App() {
       {activePage==='Players'&&<section className="panel full-panel">
         {activePlayer ? <>
           <button className="text-button back-button" onClick={()=>setSelectedPlayer('')}><ArrowLeft size={15}/> All players</button>
-          <div className="profile-heading"><div><span className="panel-kicker">PLAYER PROFILE</span><h2>{activePlayer.name}</h2><div className="profile-team">{activePlayer.teamList} <RankBadge rank={activePlayer.rank}/></div></div><div className="profile-rating"><span>MATCH RATING</span><strong>{fmt(activePlayer.rating)}</strong>{activePlayer.ratingChange!=null&&<small>{activePlayer.ratingChange>0?'+':''}{fmt(activePlayer.ratingChange)} this week</small>}</div></div>
+          <div className="profile-heading"><div><span className="panel-kicker">PLAYER PROFILE</span><h2>{activePlayer.name}</h2><div className="profile-team">{activePlayer.teamList} <RankBadge rank={activePlayer.rank}/>{activePlayer.trackerUrl&&<a className="tracker-profile-link" href={activePlayer.trackerUrl} target="_blank" rel="noreferrer">View Tracker Network profile <ArrowUpRight size={14}/></a>}</div></div><div className="profile-rating"><span>MATCH RATING</span><strong>{fmt(activePlayer.rating)}</strong>{activePlayer.ratingChange!=null&&<small>{activePlayer.ratingChange>0?'+':''}{fmt(activePlayer.ratingChange)} this week</small>}</div></div>
           <div className="profile-stats"><div><span>GAMES</span><strong>{fmt(activePlayer.games)}</strong></div><div><span>WIN RATE</span><strong>{fmt(activePlayer.winPct)}%</strong></div><div><span>SCORE / GAME</span><strong>{fmt(activePlayer.scorePerGame)}</strong></div><div><span>GOALS</span><strong>{fmt(activePlayer.goals)}</strong></div><div><span>ASSISTS</span><strong>{fmt(activePlayer.assists)}</strong></div><div><span>SAVES</span><strong>{fmt(activePlayer.saves)}</strong></div></div>
           <div className="profile-grid">
             <article className="profile-section"><div className="panel-heading"><h3>Match Rating history</h3><span className="panel-tag">0-10</span></div>
