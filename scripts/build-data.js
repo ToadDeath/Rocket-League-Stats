@@ -99,7 +99,7 @@ const playerTrackerUrls = playerRoster.trackerUrls;
 const teamRoster = readTeamRoster(path.join(root, 'data', 'team-aliases.csv'));
 function readSchedule(file, teamRoster) {
   if (!fs.existsSync(file)) return [];
-  return readCsv(file).map((row, index) => {
+  const entries = readCsv(file).map((row, index) => {
     const division = (row.division || '').trim();
     const matchday = Number(row.matchday);
     const team1Info = teamRoster.get((row['team 1'] || '').trim());
@@ -122,6 +122,20 @@ function readSchedule(file, teamRoster) {
       deadline: (row.deadline || '').trim(), team1: team1Info.team, score1, score2,
       team2: team2Info.team, statsWeek };
   });
+  // A stats-week value entered on any fixture maps the entire matchday.
+  const matchdayWeeks = new Map();
+  for (const entry of entries) {
+    if (entry.statsWeek === null) continue;
+    const key = entry.division + ':' + entry.matchday;
+    if (matchdayWeeks.has(key) && matchdayWeeks.get(key) !== entry.statsWeek) {
+      throw new Error('Conflicting stats-week mappings for ' + entry.division + ' Matchday ' + entry.matchday + ' in data/schedule.csv.');
+    }
+    matchdayWeeks.set(key, entry.statsWeek);
+  }
+  return entries.map(entry => ({
+    ...entry,
+    statsWeek: entry.statsWeek ?? matchdayWeeks.get(entry.division + ':' + entry.matchday) ?? null
+  }));
 }
 
 const records = [], imports = [], duplicates = [], importWarnings = [], seenHashes = new Map();
