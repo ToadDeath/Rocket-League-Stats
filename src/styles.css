@@ -556,10 +556,10 @@ body{font-size:15px}
 .upcoming-division-heading .division-badge{padding:2px 6px}
 .upcoming-matchup-meta{display:none}
 
-/* Give the away column a little more breathing room from the centered score */
-.matchup-panel .stats-table th:nth-child(3),.matchup-panel .stats-table td:nth-child(3){padding-left:34px}
+/* Give the away team more separation from the centered series score */
+.matchup-panel .stats-table th:nth-child(3),.matchup-panel .stats-table td:nth-child(3){padding-left:48px}
 @media(max-width:560px){
- .matchup-panel .stats-table th:nth-child(3),.matchup-panel .stats-table td:nth-child(3){padding-left:18px}
+ .matchup-panel .stats-table th:nth-child(3),.matchup-panel .stats-table td:nth-child(3){padding-left:24px}
 }
 
 
