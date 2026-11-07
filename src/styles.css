@@ -508,3 +508,8 @@ body{font-size:15px}
 .upcoming-vs{text-align:center;color:#6d7c92;font-size:8px;font-weight:800;letter-spacing:.8px}
 .upcoming-empty{padding:24px 0;color:#748198;font-size:10px;text-align:center}
 @media(max-width:560px){.upcoming-matchup-grid{grid-template-columns:1fr}.upcoming-matchup{padding:10px}.upcoming-team .team-name{font-size:10px}}
+
+/* Keep the away team aligned exactly like the home team in matchup review */
+.matchup-panel .stats-table th:nth-child(3),
+.matchup-panel .stats-table td:nth-child(3){text-align:left}
+.matchup-panel .stats-table td:nth-child(3) .team-name{justify-content:flex-start;margin-left:0;margin-right:0}
