@@ -193,3 +193,10 @@ footer b,.footer-flame{color:#f02f38}
 .tracker-profile-link{display:inline-flex;align-items:center;gap:4px;margin-left:10px;color:#70c9eb;font-size:11px;font-weight:700;text-decoration:none}
 .tracker-profile-link:hover{text-decoration:underline}
 @media(max-width:600px){.notification-button span{display:none}.notification-panel{right:-48px}}
+
+.notification-button.clear{color:#8995a5;border-color:#303844;background:#11161d}
+.notification-button.clear svg{color:#788493}
+.notification-button.clear:hover,.notification-button.clear.active{color:#c6d0dc;border-color:#4a5664}
+.notification-button.has-issues{color:#f0b16b;border-color:rgba(240,177,107,.45)}
+.notification-button.has-issues svg{color:#f0b16b}
+.team-roster-heading{margin-top:26px}
