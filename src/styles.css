@@ -549,6 +549,7 @@ body{font-size:15px}
 /* Division headers appear once per section, not on every matchup */
 .matchup-division-section+.matchup-division-section{margin-top:18px;padding-top:15px;border-top:1px solid #263449}
 .matchup-division-heading,.upcoming-division-heading{display:flex;align-items:center;margin-bottom:10px}
+.matchup-panel .panel-heading+.matchup-division-section{margin-top:20px}
 .matchup-division-heading .division-badge img{transform:translateY(2px)}
 .upcoming-division-section+.upcoming-division-section{margin-top:15px;padding-top:13px;border-top:1px solid #263449}
 .upcoming-division-heading{margin-bottom:8px}
