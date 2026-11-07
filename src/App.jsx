@@ -8,7 +8,8 @@ const navItems = [
   { label: 'Teams', icon: Shield }, { label: 'Compare', icon: Swords }, { label: 'Stat Explorer', icon: BarChart3 }
 ];
 const n = value => Number.isFinite(Number(value)) ? Number(value) : 0;
-const fmt = value => Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
+const fmt = value => Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const fmtDetailed = value => Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const avg = (total, games) => games ? total / games : 0;
 
 // SGL Match Rating: category ratings are centered on 6, then weighted.
@@ -44,7 +45,7 @@ function matchRatingForRecords(rows) {
   };
   const categories=Object.fromEntries(matchRatingCategories.map(c => {
     const difference=c.inverse ? c.average-values[c.key] : values[c.key]-c.average;
-    return [c.key,Math.max(1,6+difference*c.multiplier)];
+    return [c.key,Math.min(10,Math.max(1,6+difference*c.multiplier))];
   }));
   const rating = !g || values.scorePerGame===0 ? 0 : Math.min(10,Math.max(0,
     matchRatingCategories.reduce((sum,c)=>sum+categories[c.key]*c.weight,0)/7
@@ -219,7 +220,7 @@ function App() {
               {playerHistory.length>0?<div className="profile-chart"><ResponsiveContainer width="100%" height="100%"><LineChart data={playerHistory} margin={{top:12,right:14,left:-18,bottom:2}}><CartesianGrid stroke="#29313c" strokeDasharray="3 3"/><XAxis dataKey="week" tick={{fill:'#8d99aa',fontSize:10}} axisLine={{stroke:'#38404c'}} tickLine={false}/><YAxis domain={[0,10]} tick={{fill:'#8d99aa',fontSize:10}} axisLine={false} tickLine={false}/><Tooltip contentStyle={{background:'#111820',border:'1px solid #343d49',borderRadius:6,color:'#edf2f9'}}/><Line type="monotone" dataKey="cumulative" name="Season rating" stroke="#00aeef" strokeWidth={2.5} dot={{r:3}}/><Line type="monotone" dataKey="weekly" name="Weekly rating" stroke="#f02f38" strokeWidth={2} dot={{r:3}}/></LineChart></ResponsiveContainer></div>:<div className="table-empty">No weekly history available.</div>}
               <div className="chart-legend"><span><i className="legend-blue"/>Season rating</span><span><i className="legend-lime"/>Weekly rating</span></div>
             </article>
-            <article className="profile-section"><div className="panel-heading"><h3>Rating breakdown</h3></div><div className="rating-breakdown">{matchRatingCategories.map(c=><div className="rating-row" key={c.key}><div><span>{c.label}</span><b>{fmt(activePlayer.ratingCategories[c.key])}</b></div><div className="rating-track" style={{'--rating-fill':(Math.min(100,Math.max(0,activePlayer.ratingCategories[c.key]*10)))+'%'}}/></div>)}</div><p className="table-note">Category ratings are provisional until checked against the original workbook.</p></article>
+            <article className="profile-section"><div className="panel-heading"><h3>Rating breakdown</h3></div><div className="rating-breakdown">{matchRatingCategories.map(c=><div className="rating-row" key={c.key}><div><span>{c.label}</span><b>{fmtDetailed(activePlayer.ratingCategories[c.key])}</b></div><div className="rating-track" style={{'--rating-fill':(Math.min(100,Math.max(0,activePlayer.ratingCategories[c.key]*10)))+'%'}}/></div>)}</div><p className="table-note">Category ratings are provisional until checked against the original workbook.</p></article>
           </div>
           <article className="profile-section profile-week-table"><div className="panel-heading"><h3>Weekly results</h3></div><DataTable columns={[{key:'week',label:'WEEK'},{key:'games',label:'GAMES'},{key:'weekly',label:'WEEKLY RATING',render:r=>fmt(r.weekly)},{key:'cumulative',label:'SEASON RATING',render:r=>fmt(r.cumulative)}]} rows={playerHistory.slice().reverse()} empty="No weekly results yet."/></article>
         </> : <>
@@ -238,7 +239,7 @@ function App() {
         </div>
         {comparisonTeams.length===2?<><div className="comparison-scorecards">{comparisonTeams.map(t=><article className="comparison-card" key={t.name}><div className="comparison-team-identity"><button className="entity-link team-entity-link" onClick={()=>{setSelectedTeam(t.name);setActivePage('Teams')}}><TeamName name={t.name}/></button><DivisionBadge division={t.rows[0]?.division}/></div><span>{t.players.length} players · {fmt(t.games)} player-games · {fmt(t.winPct)}% player-game wins</span></article>)}</div>
           <div className="panel-heading compare-subheading"><div><h3>Individual player rating breakdowns</h3><p className="table-note">Every category below is calculated from that player's own stats, using the league's custom formulas. Team totals are not blended into these ratings.</p></div><span className="panel-tag">PLAYER RATING · 0-10</span></div>
-          <DataTable columns={[{key:'playerName',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>{setSelectedPlayer(r.playerName);setActivePage('Players')}}>{r.playerName}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamName',label:'TEAM',render:r=><button className="entity-link" onClick={()=>{setSelectedTeam(r.teamName);setActivePage('Teams')}}>{r.teamName}</button>},{key:'games',label:'GAMES',render:r=>fmt(r.games)},{key:'rating',label:'MATCH RATING',render:r=>fmt(r.rating)},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=>fmt(r.categories[c.key])}))]} rows={playerComparisonRows} empty="No player statistics found for these teams in this period."/>
+          <DataTable columns={[{key:'playerName',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>{setSelectedPlayer(r.playerName);setActivePage('Players')}}>{r.playerName}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamName',label:'TEAM',render:r=><button className="entity-link" onClick={()=>{setSelectedTeam(r.teamName);setActivePage('Teams')}}>{r.teamName}</button>},{key:'games',label:'GAMES',render:r=>fmt(r.games)},{key:'rating',label:'MATCH RATING',render:r=>fmt(r.rating)},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=>fmtDetailed(r.categories[c.key])}))]} rows={playerComparisonRows} empty="No player statistics found for these teams in this period."/>
         </>:<div className="table-empty">Choose two teams to compare their players' custom rating breakdowns.</div>}
       </section>}
       {activePage==='Stat Explorer'&&<section className="panel full-panel">
@@ -257,10 +258,10 @@ function App() {
           <div className="panel-heading"><div><span className="panel-kicker">PLAYER-LEVEL BREAKDOWN</span><h2>Match Rating calculation audit</h2></div><span className="panel-tag">CURRENT WEBSITE FORMULA</span></div>
           <label className="stat-select"><span>PLAYER</span><span className="select-wrap"><select value={auditPlayer?.name||''} onChange={e=>setSelectedAuditPlayer(e.target.value)}>{players.map(p=><option key={p.name} value={p.name}>{p.name}</option>)}</select><ChevronDown size={16}/></span></label>
           {auditPlayer ? <>
-            <div className="formula-line">{auditPlayer.name} · {fmt(auditPlayer.games)} games · Match Rating {fmt(auditPlayer.rating)}</div>
+            <div className="formula-line">{auditPlayer.name} · {fmt(auditPlayer.games)} games · Match Rating {fmtDetailed(auditPlayer.rating)}</div>
             <p className="table-note">Inputs are per game except Win %. Weighted points are category rating × weight.</p>
-            <DataTable columns={[{key:'label',label:'CATEGORY'},{key:'input',label:'INPUT',render:r=>fmt(r.input)},{key:'average',label:'BASELINE',render:r=>fmt(r.average)},{key:'adjustment',label:'ADJUSTMENT',render:r=>(r.adjustment>0?'+':'')+fmt(r.adjustment)},{key:'categoryRating',label:'CATEGORY RATING',render:r=>fmt(r.categoryRating)},{key:'weight',label:'WEIGHT',render:r=>fmt(r.weight)},{key:'weightedPoints',label:'WEIGHTED POINTS',render:r=>fmt(r.weightedPoints)}]} rows={matchRatingCategories.map(c=>{const input=auditPlayer.ratingValues[c.key], adjustment=(c.inverse?c.average-input:input-c.average)*c.multiplier, categoryRating=Math.max(1,6+adjustment);return {...c,input,adjustment,categoryRating,weightedPoints:categoryRating*c.weight};})}/>
-            <div className="formula-line">Total weighted points ÷ 7 = {fmt(auditPlayer.rating)}</div>
+            <DataTable columns={[{key:'label',label:'CATEGORY'},{key:'input',label:'INPUT',render:r=>fmt(r.input)},{key:'average',label:'BASELINE',render:r=>fmt(r.average)},{key:'adjustment',label:'ADJUSTMENT',render:r=>(r.adjustment>0?'+':'')+fmt(r.adjustment)},{key:'categoryRating',label:'CATEGORY RATING',render:r=>fmt(r.categoryRating)},{key:'weight',label:'WEIGHT',render:r=>fmt(r.weight)},{key:'weightedPoints',label:'WEIGHTED POINTS',render:r=>fmt(r.weightedPoints)}]} rows={matchRatingCategories.map(c=>{const input=auditPlayer.ratingValues[c.key], adjustment=(c.inverse?c.average-input:input-c.average)*c.multiplier, categoryRating=Math.min(10,Math.max(1,6+adjustment));return {...c,input,adjustment,categoryRating,weightedPoints:categoryRating*c.weight};})}/>
+            <div className="formula-line">Total weighted points ÷ 7 = {fmtDetailed(auditPlayer.rating)}</div>
           </> : <div className="table-empty">Import player data to see a calculation audit.</div>}
         </div>
       </section>}
