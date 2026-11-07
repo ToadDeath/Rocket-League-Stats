@@ -298,3 +298,13 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{ou
  .rating-meter.compact{min-width:84px}
  .rating-breakdown .rating-meter{width:min(100%,145px)}
 }
+
+/* Team Match Rating uses the same simple red-to-blue scale */
+.profile-rating .rating-meter{width:150px;margin-left:auto}
+.comparison-team-rating{display:grid;grid-template-columns:1fr minmax(150px,220px);align-items:center;gap:14px;padding-top:10px;border-top:1px solid #292e38}
+.comparison-team-rating>span{font-size:8px;font-weight:700;letter-spacing:1px;color:#8291a7}
+.comparison-team-rating .rating-meter{width:100%}
+@media(max-width:560px){
+ .profile-rating .rating-meter{margin-left:0}
+ .comparison-team-rating{grid-template-columns:1fr;gap:7px}
+}
