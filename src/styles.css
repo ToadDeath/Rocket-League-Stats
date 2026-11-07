@@ -279,3 +279,24 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{ou
 }
 @media(max-width:360px){.nav-item{padding:8px;font-size:9px;gap:6px}.nav-item svg{width:14px}.profile-stats{gap:6px}.profile-stats span{font-size:7px;letter-spacing:.7px}.panel{padding:11px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* Consistent gradient rating meters across profiles, directories, and comparisons */
+.rating-row>div:first-child{align-items:center}
+.rating-row>div:first-child>span{font-weight:600}
+.rating-meter{display:flex;align-items:center;gap:10px;min-width:0}
+.rating-meter>span{min-width:38px;text-align:right;color:#edf2f9;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+.rating-meter-track{position:relative;flex:1;min-width:38px;height:8px;border-radius:99px;overflow:hidden;background:linear-gradient(90deg,#f02f38 0%,#f2a93b 48%,#00aeef 100%)}
+.rating-meter-track::after{content:"";position:absolute;inset:0 0 0 auto;width:calc(100% - var(--rating-fill,0%));background:#252d38;transition:width .25s ease}
+.rating-meter.compact{gap:7px;min-width:104px}
+.rating-meter.compact>span{min-width:30px;font-size:9px}
+.rating-meter.compact .rating-meter-track{height:6px;min-width:42px}
+.rating-breakdown .rating-meter{width:min(100%,170px)}
+.rating-breakdown .rating-meter>span{min-width:42px;font-size:12px}
+.stats-table td .rating-meter{max-width:150px}
+@media(max-width:560px){
+ .rating-meter.compact{min-width:94px}
+ .rating-breakdown .rating-meter{width:min(100%,145px)}
+ .rating-breakdown .rating-meter-track{height:7px}
+}
+@media(prefers-reduced-motion:reduce){.rating-meter-track::after{transition:none}}
