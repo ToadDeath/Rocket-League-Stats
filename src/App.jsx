@@ -82,6 +82,8 @@ function App() {
       {loadError&&<section className="notice"><strong>Data could not be loaded</strong><p>{loadError}</p></section>}
       {!dataset&&!loadError&&<section className="notice"><strong>Loading league data...</strong><p>Reading the processed weekly exports.</p></section>}
       {dataset&&<section className="notice"><div className="notice-icon"><Activity size={19}/></div><div><strong>{records.length?'Week 1 data is live':'No imports for this division yet'}</strong><p>{records.length?`${records.length} player rows loaded. Add weekly CSVs under data/imports and they will be included on the next deployment.`:'Upload a weekly export for this division to populate the dashboard.'}</p></div></section>}
+      {dataset?.unmatchedTeams?.length > 0 && <section className="notice"><div><strong>Team aliases need attention</strong><p>These export names are not mapped yet: {dataset.unmatchedTeams.join(', ')}. Add them to data/team-aliases.csv and commit the change.</p></div></section>}
+      {dataset?.duplicates?.length > 0 && <section className="notice"><div><strong>Duplicate exports skipped</strong><p>{dataset.duplicates.length} file(s) had identical contents to an existing import and were skipped.</p></div></section>}
       <section className="metrics-grid">
         <MetricCard label="PLAYERS TRACKED" value={dataset?fmt(players.length):'--'} detail="Unique player identities" icon={Users}/>
         <MetricCard label="TEAMS" value={dataset?fmt(teams.length):'--'} detail="In selected division" icon={Shield}/>
