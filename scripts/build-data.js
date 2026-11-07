@@ -26,12 +26,35 @@ function readPlayerRoster(file){
   }
   return map;
 }
+function readTeamRoster(file){
+  if(!fs.existsSync(file))throw new Error('Missing data/team-aliases.csv.');
+  const rows=readCsv(file), canonicalTeams=new Set(), entries=[];
+  for(const row of rows){
+    const team=(row['Team Name']||'').trim();
+    if(!team)continue;
+    if(canonicalTeams.has(team))throw new Error('Team "'+team+'" appears more than once in data/team-aliases.csv.');
+    const league=(row.League||'').trim();
+    if(!['Premier','Championship'].includes(league))throw new Error('Team "'+team+'" must have League set to Premier or Championship.');
+    canonicalTeams.add(team);
+    entries.push({team,league,aliases:(row.Aliases||row.Alias||'').split('|').map(v=>v.trim()).filter(Boolean)});
+  }
+  const map=new Map();
+  for(const {team,league} of entries)map.set(team,{team,division:league,canonical:true});
+  for(const {team,league,aliases} of entries){
+    for(const alias of aliases){
+      if(canonicalTeams.has(alias)&&alias!==team)throw new Error('Team alias "'+alias+'" conflicts with another canonical team name.');
+      if(map.has(alias)&&map.get(alias).team!==team)throw new Error('Team alias "'+alias+'" is assigned to more than one team.');
+      map.set(alias,{team,division:league,canonical:false});
+    }
+  }
+  return map;
+}
 function findCsvFiles(dir){if(!fs.existsSync(dir))return[];return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>{const p=path.join(dir,e.name);return e.isDirectory()?findCsvFiles(p):e.isFile()&&e.name.toLowerCase().endsWith('.csv')?[p]:[];}).sort();}
 function toNumber(value){if(value===undefined||value===null||value.trim()==='')return null;const x=Number(value.replace(/,/g,''));return Number.isFinite(x)?x:null;}
 const playerAliases=readPlayerRoster(path.join(root,'data','roster.csv'));
-const teamAliases=readAliases(path.join(root,'data','team-aliases.csv'),'Team Name','Alias');
+const teamRoster=readTeamRoster(path.join(root,'data','team-aliases.csv'));
 const records=[],imports=[],duplicates=[],unmatchedTeams=new Set(),seenHashes=new Map();
-for(const file of findCsvFiles(importsRoot)){const relative=path.relative(root,file).split(path.sep).join('/'),base=path.basename(file),wm=base.match(/week[-_ ]?(\d+)/i),week=wm?Number(wm[1]):null;const hash=createHash('sha256').update(fs.readFileSync(file)).digest('hex');if(seenHashes.has(hash)){duplicates.push({file:relative,duplicateOf:seenHashes.get(hash)});continue;}seenHashes.set(hash,relative);const division=/second/i.test(base)||/second/i.test(relative)?'Second Division':/premier/i.test(base)||/premier/i.test(relative)?'Premier League':'Unassigned';const rows=readCsv(file);if(!rows.length)continue;if(!('team name'in rows[0])||!('player name'in rows[0]))throw new Error(relative+' is missing required team name/player name columns.');let imported=0;const ts=new Set(),ps=new Set();for(const source of rows){const originalTeamName=(source['team name']||'').trim(),originalPlayerName=(source['player name']||'').trim();if(!originalTeamName||!originalPlayerName)continue;const teamName=teamAliases.get(originalTeamName)||originalTeamName,playerName=playerAliases.get(originalPlayerName)||originalPlayerName;const stats={};for(const [key,value]of Object.entries(source)){if(key!=='team name'&&key!=='player name')stats[key]=toNumber(value);}records.push({division,week,sourceFile:relative,originalTeamName,teamName,originalPlayerName,playerName,stats});ts.add(teamName);ps.add(playerName);imported++;}imports.push({file:relative,division,week,rows:imported,teams:ts.size,players:ps.size});}
+for(const file of findCsvFiles(importsRoot)){const relative=path.relative(root,file).split(path.sep).join('/'),base=path.basename(file),wm=base.match(/week[-_ ]?(\d+)/i),week=wm?Number(wm[1]):null;const hash=createHash('sha256').update(fs.readFileSync(file)).digest('hex');if(seenHashes.has(hash)){duplicates.push({file:relative,duplicateOf:seenHashes.get(hash)});continue;}seenHashes.set(hash,relative);const fallbackDivision=/second/i.test(base)||/championship/i.test(base)||/second/i.test(relative)||/championship/i.test(relative)?'Championship':/premier/i.test(base)||/premier/i.test(relative)?'Premier':'Unassigned';const rows=readCsv(file);if(!rows.length)continue;if(!('team name'in rows[0])||!('player name'in rows[0]))throw new Error(relative+' is missing required team name/player name columns.');let imported=0;const ts=new Set(),ps=new Set(),ds=new Set();for(const source of rows){const originalTeamName=(source['team name']||'').trim(),originalPlayerName=(source['player name']||'').trim();if(!originalTeamName||!originalPlayerName)continue;const teamInfo=teamRoster.get(originalTeamName);const teamName=teamInfo?.team||originalTeamName;const division=teamInfo?.division||fallbackDivision;if(!teamInfo)unmatchedTeams.add(originalTeamName);const playerName=playerAliases.get(originalPlayerName)||originalPlayerName;const stats={};for(const [key,value]of Object.entries(source)){if(key!=='team name'&&key!=='player name')stats[key]=toNumber(value);}records.push({division,week,sourceFile:relative,originalTeamName,teamName,originalPlayerName,playerName,stats});ts.add(teamName);ps.add(playerName);ds.add(division);imported++;}imports.push({file:relative,division:[...ds].join(', ')||fallbackDivision,week,rows:imported,teams:ts.size,players:ps.size});}
 const availableStats=[...new Set(records.flatMap(r=>Object.keys(r.stats)))];
 fs.mkdirSync(path.dirname(outputPath),{recursive:true});
 fs.writeFileSync(outputPath,JSON.stringify({generatedAt:new Date().toISOString(),imports,duplicates,records,availableStats,unmatchedTeams:[...unmatchedTeams].sort()}));
