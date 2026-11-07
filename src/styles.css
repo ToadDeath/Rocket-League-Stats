@@ -586,7 +586,7 @@ body{font-size:16px}
 .profile-player-name{line-height:1}
 .tracker-profile-link{display:inline-flex;align-items:center;gap:7px;margin-left:5px;padding:6px 10px;border:1px solid #344354;border-radius:6px;background:linear-gradient(135deg,rgba(0,174,239,.12),rgba(16,24,34,.85));color:#9bdcf3;font:700 10px 'Barlow Condensed',sans-serif;letter-spacing:.45px;text-transform:uppercase;text-decoration:none;white-space:nowrap;transition:border-color .15s ease,background .15s ease,color .15s ease}
 .tracker-profile-link:hover{border-color:#62c8ec;background:rgba(0,174,239,.2);color:#e0f7ff}
-.tracker-link-mark{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:4px;background:#00aeef;color:#06111b;font:900 12px Arial,sans-serif}
+.tracker-link-logo{display:block;width:22px;height:22px;object-fit:contain;flex:none}
 .matchup-division-heading .division-badge{align-items:center;min-height:34px}
 .matchup-division-heading .division-badge img{display:block;flex:none;width:26px;height:26px;transform:none}
 
