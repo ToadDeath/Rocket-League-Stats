@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, ArrowUpRight, BarChart3, ChevronDown, Gauge, LayoutDashboard, Search, Shield, Swords, Users } from 'lucide-react';
+import { Activity, ArrowLeft, ArrowUpRight, BarChart3, ChevronDown, Gauge, LayoutDashboard, Search, Shield, Swords, Users } from 'lucide-react';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const divisions = ['All Divisions', 'Premier', 'Championship'];
 const navItems = [
@@ -92,10 +93,10 @@ function TeamName({ name }) {
 }
 
 function MetricCard({ label, value, detail, icon: Icon }) {
-  return <article className="metric-card"><div className="metric-top"><span>{label}</span><span className="metric-icon"><Icon size={17} /></span></div><div className="metric-value">{value}</div><div className="metric-detail">{detail}</div></article>;
+  return <article className="metric-card"><div className="metric-top"><span>{label}</span><span className="metric-icon"><Icon size={17} /></span></div><div className="metric-value">{value}</div>{detail&&<div className="metric-detail">{detail}</div>}</article>;
 }
-function DataTable({ columns, rows, empty }) {
-  return rows.length ? <div className="table-scroll"><table className="stats-table"><thead><tr>{columns.map(c => <th key={c.key}>{c.label}</th>)}</tr></thead><tbody>{rows.map((row,i)=><tr key={row.key || i}>{columns.map(c=><td key={c.key}>{c.render ? c.render(row) : row[c.key]}</td>)}</tr>)}</tbody></table></div> : <div className="table-empty">{empty || 'No data available for this selection.'}</div>;
+function DataTable({ columns, rows, empty, onRowClick }) {
+  return rows.length ? <div className="table-scroll"><table className="stats-table"><thead><tr>{columns.map(c => <th key={c.key}>{c.label}</th>)}</tr></thead><tbody>{rows.map((row,i)=><tr key={row.key || i} className={onRowClick?"clickable-row":""} onClick={onRowClick?()=>onRowClick(row):undefined}>{columns.map(c=><td key={c.key}>{c.render ? c.render(row) : row[c.key]}</td>)}</tr>)}</tbody></table></div> : <div className="table-empty">{empty || 'No data available for this selection.'}</div>;
 }
 
 function App() {
@@ -103,6 +104,7 @@ function App() {
   const [activePage, setActivePage] = useState('Overview');
   const [query, setQuery] = useState('');
   const [selectedStat, setSelectedStat] = useState('score per game');
+  const [selectedPlayer, setSelectedPlayer] = useState('');
   const [dataset, setDataset] = useState(null);
   const [loadError, setLoadError] = useState('');
 
@@ -152,11 +154,10 @@ function App() {
   const totalScore = records.reduce((s,r)=>s+n(r.stats.score),0);
   const stats = dataset?.availableStats || [];
   const statRows = [...records].sort((a,b)=>n(b.stats[selectedStat])-n(a.stats[selectedStat])).slice(0,50);
+  const activePlayer = players.find(p=>p.name===selectedPlayer);
+  const playerHistory = activePlayer ? [...new Set(activePlayer.rows.map(r=>r.week).filter(Number.isFinite))].sort((a,b)=>a-b).map(week=>{ const weekly=activePlayer.rows.filter(r=>r.week===week); const cumulative=activePlayer.rows.filter(r=>r.week<=week); return {week:'Week '+week,weekly:matchRatingForRecords(weekly).rating,cumulative:matchRatingForRecords(cumulative).rating,games:weekly.reduce((sum,r)=>sum+n(r.stats.games),0)}; }) : [];
   const description = {
-    Overview:'A league-wide look at player form, team performance, and the numbers behind every series.',
-    Players:'Compare player performance, custom Match Ratings, and week-to-week movement.',
-    Teams:'Explore team rosters and combined player performance.',
-    'Stat Explorer':'Sort the full set of exported statistics and find the numbers that matter.'
+    Overview:'', Players:'', Teams:'', 'Stat Explorer':''
   }[activePage];
 
   return <div className="app-shell">
@@ -168,17 +169,17 @@ function App() {
     </aside>
     <main className="main-content">
       <header className="topbar"><div className="breadcrumb"><span>LEAGUE HUB</span><b>/</b>{activePage.toUpperCase()}</div><div className="topbar-right"><span className="data-status"><span className="status-dot"/>{dataset?`${dataset.imports.length} FILE${dataset.imports.length===1?'':'S'} LOADED`:'LOADING DATA'}</span><div className="avatar">RL</div></div></header>
-      <section className="page-heading"><div><div className="eyebrow"><span className="eyebrow-line"/> THE NUMBERS BEHIND THE GAME</div><h1>{activePage==='Overview'?<>League <em>Overview</em></>:activePage}</h1><p>{description}</p></div><label className="division-select"><span>DIVISION</span><span className="select-wrap"><select value={division} onChange={e=>setDivision(e.target.value)}>{divisions.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label></section>
+      <section className="page-heading"><div><h1>{activePage==='Overview'?<>League <em>Overview</em></>:activePage}</h1>{description&&<p>{description}</p>}</div><label className="division-select"><span>DIVISION</span><span className="select-wrap"><select value={division} onChange={e=>setDivision(e.target.value)}>{divisions.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label></section>
       {loadError&&<section className="notice"><strong>Data could not be loaded</strong><p>{loadError}</p></section>}
       {!dataset&&!loadError&&<section className="notice"><strong>Loading league data...</strong><p>Reading the processed weekly exports.</p></section>}
       {dataset&&<section className="notice"><div className="notice-icon"><Activity size={19}/></div><div><strong>{records.length?'Week 1 data is live':'No imports for this division yet'}</strong><p>{records.length?`${records.length} player rows loaded. Add weekly CSVs under data/imports and they will be included on the next deployment.`:'Upload a weekly export for this division to populate the dashboard.'}</p></div></section>}
       {dataset?.unmatchedTeams?.length > 0 && <section className="notice"><div><strong>Team aliases need attention</strong><p>These export names are not mapped yet: {dataset.unmatchedTeams.join(', ')}. Add them to data/team-aliases.csv and commit the change.</p></div></section>}
       {dataset?.duplicates?.length > 0 && <section className="notice"><div><strong>Duplicate exports skipped</strong><p>{dataset.duplicates.length} file(s) had identical contents to an existing import and were skipped.</p></div></section>}
       <section className="metrics-grid">
-        <MetricCard label="PLAYERS TRACKED" value={dataset?fmt(players.length):'--'} detail="Unique player identities" icon={Users}/>
-        <MetricCard label="TEAMS" value={dataset?fmt(teams.length):'--'} detail="In selected division" icon={Shield}/>
-        <MetricCard label="PLAYER-GAMES" value={dataset?fmt(playerGames):'--'} detail="Individual player game appearances" icon={Swords}/>
-        <MetricCard label="AVG. MATCH RATING" value={dataset&&players.length?fmt(avg(players.reduce((sum,p)=>sum+p.rating,0),players.length)):'--'} detail="Custom seven-category rating" icon={Gauge}/>
+        <MetricCard label="PLAYERS" value={dataset?fmt(players.length):'--'} icon={Users}/>
+        <MetricCard label="TEAMS" value={dataset?fmt(teams.length):'--'} icon={Shield}/>
+        <MetricCard label="PLAYER-GAMES" value={dataset?fmt(playerGames):'--'} icon={Swords}/>
+        <MetricCard label="AVG. MATCH RATING" value={dataset&&players.length?fmt(avg(players.reduce((sum,p)=>sum+p.rating,0),players.length)):'--'} icon={Gauge}/>
       </section>
       {activePage==='Overview'&&<><section className="content-grid">
         <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">MATCH RATING</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'rating',label:'RATING',render:r=>fmt(r.rating)},{key:'ratingChange',label:'WEEKLY Δ',render:r=>r.ratingChange==null?'--':`${r.ratingChange>0?'+':''}${fmt(r.ratingChange)}`}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
