@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import sglLogo from '../SGL Logo.png';
 import { Activity, ArrowUpRight, BarChart3, ChevronDown, Gauge, LayoutDashboard, Search, Shield, Swords, Users } from 'lucide-react';
 
 const divisions = ['All Divisions', 'Premier', 'Championship'];
@@ -11,22 +10,42 @@ const n = value => Number.isFinite(Number(value)) ? Number(value) : 0;
 const fmt = value => Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
 const avg = (total, games) => games ? total / games : 0;
 
+const sglLogo = `${import.meta.env.BASE_URL}assets/league/sgl-logo.png`;
 const teamLogoFiles = {
-  'AXE & ARMY': 'Timbers Army.png',
-  'EL MATADOR': 'El Matador.png',
-  'EMERALD CITY RC': 'ECRC.png',
-  'EC DEFIANCE': 'ECD.png',
-  'EC ETERNAL': 'EC Eternal.png',
-  'KC CAULDRON': 'KC Cauldron.png',
-  'LOS VERDES': 'Los Verdes.png',
-  'STEEL ARMY': 'Steel Army.png',
-  'THE REBELLION': 'The Rebellion.png'
+  'AXE & ARMY': 'axe-and-army.png',
+  'EL MATADOR': 'el-matador.png',
+  'EMERALD CITY RC': 'emerald-city-rc.png',
+  'EC DEFIANCE': 'ec-defiance.png',
+  'EC ETERNAL': 'ec-eternal.png',
+  'KC CAULDRON': 'kc-cauldron.png',
+  'LOS VERDES': 'los-verdes.png',
+  'STEEL ARMY': 'steel-army.png',
+  'THE REBELLION': 'the-rebellion.png'
 };
+const rankLogoFiles = {
+  B1:'Bronze I.png', B2:'Bronze II.png', B3:'Bronze III.png',
+  S1:'Silver I.png', S2:'Silver II.png', S3:'Silver III.png',
+  G1:'Gold I.png', G2:'Gold II.png', G3:'Gold III.png',
+  P1:'Platinum I.png', P2:'Platinum II.png', P3:'Platinum III.png',
+  D1:'Diamond I.png', D2:'Diamond II.png', D3:'Diamond III.png',
+  C1:'Champion I.png', C2:'Champion II.png', C3:'Champion III.png',
+  GC1:'Grand Champion I.png', GC2:'Grand Champion II.png', GC3:'Grand Champion III.png',
+  SSL:'Supersonic Legend.png', UR:'Unranked.png'
+};
+
+function RankBadge({ rank }) {
+  if (!rank) return <span className="rank-empty">-</span>;
+  const file = rankLogoFiles[rank];
+  return <span className="rank-badge">
+    {file && <img src={`${import.meta.env.BASE_URL}assets/ranks/${encodeURIComponent(file)}`} alt="" />}
+    <span>{rank}</span>
+  </span>;
+}
 
 function TeamName({ name }) {
   const logo = teamLogoFiles[name];
   return <span style={{ display:'inline-flex', alignItems:'center', gap:10, whiteSpace:'nowrap' }}>
-    {logo && <img src={`${import.meta.env.BASE_URL}assets/league/${encodeURIComponent(logo)}`} alt="" style={{ width:32, height:32, objectFit:'contain', flexShrink:0 }} />}
+    {logo && <img src={`${import.meta.env.BASE_URL}assets/teams/${encodeURIComponent(logo)}`} alt="" style={{ width:32, height:32, objectFit:'contain', flexShrink:0 }} />}
     <span>{name}</span>
   </span>;
 }
@@ -65,7 +84,7 @@ function App() {
       p.score+=n(r.stats.score); p.goals+=n(r.stats.goals); p.assists+=n(r.stats.assists); p.saves+=n(r.stats.saves); p.shots+=n(r.stats.shots);
       p.demos+=n(r.stats['demos inflicted'])-n(r.stats['demos taken']);
     }
-    return [...map.values()].map(p=>({...p,teamList:[...p.teams].join(', '),winPct:p.games?p.wins/p.games*100:0,scorePerGame:avg(p.score,p.games),goalsPerGame:avg(p.goals,p.games)})).sort((a,b)=>b.scorePerGame-a.scorePerGame);
+    return [...map.values()].map(p=>({...p,rank:dataset?.playerRanks?.[p.name]||'',teamList:[...p.teams].join(', '),winPct:p.games?p.wins/p.games*100:0,scorePerGame:avg(p.score,p.games),goalsPerGame:avg(p.goals,p.games)})).sort((a,b)=>b.scorePerGame-a.scorePerGame);
   }, [records]);
 
   const teams = useMemo(() => {
@@ -112,13 +131,13 @@ function App() {
         <MetricCard label="AVG. SCORE / GAME" value={dataset?fmt(avg(totalScore,playerGames)):'--'} detail="Across selected player rows" icon={Gauge}/>
       </section>
       {activePage==='Overview'&&<><section className="content-grid">
-        <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">SCORE / GAME</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
+        <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">SCORE / GAME</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
         <article className="panel leaderboard-panel"><div className="panel-heading"><div><span className="panel-kicker">TEAM RACE</span><h2>Team performance</h2></div><span className="panel-tag">GAME DATA</span></div><DataTable columns={[{key:'name',label:'TEAM',render:r=><TeamName name={r.name}/>},{key:'playerCount',label:'PLAYERS'},{key:'winPct',label:'PLAYER GAME WIN %',render:r=>`${fmt(r.winPct)}%`}]} rows={teams.slice(0,8)} empty="Team performance will appear after importing data."/><p className="table-note">These are individual game results aggregated from player rows, not best-of-five series standings.</p></article>
       </section><section className="bottom-grid">
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">IMPORT HISTORY</span><h2>Weekly files</h2></div><Activity size={18} className="muted-icon"/></div><div className="import-list">{(dataset?.imports||[]).map(x=><div className="import-row" key={x.file}><span>{x.file}</span><b>{x.rows} players</b></div>)}</div></article>
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">DEEP DIVE</span><h2>Stat explorer</h2></div><BarChart3 size={18} className="muted-icon"/></div><div className="compact-empty">Explore all {stats.length} exported stat fields, including scoring, defense, boost, movement, and advanced stats.</div><button className="text-button" onClick={()=>setActivePage('Stat Explorer')}>Explore stats <ArrowUpRight size={15}/></button></article>
       </section></>}
-      {activePage==='Players'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">PLAYER DIRECTORY</span><h2>{players.length} players</h2></div><span className="panel-tag">SORTED BY SCORE / GAME</span></div><div className="search-box"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search players or teams..."/></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'games',label:'GAMES',render:r=>fmt(r.games)},{key:'winPct',label:'GAME WIN %',render:r=>`${fmt(r.winPct)}%`},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)},{key:'assists',label:'ASSISTS',render:r=>fmt(r.assists)},{key:'saves',label:'SAVES',render:r=>fmt(r.saves)}]} rows={filteredPlayers} empty="No players match this search."/></section>}
+      {activePage==='Players'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">PLAYER DIRECTORY</span><h2>{players.length} players</h2></div><span className="panel-tag">SORTED BY SCORE / GAME</span></div><div className="search-box"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search players or teams..."/></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'games',label:'GAMES',render:r=>fmt(r.games)},{key:'winPct',label:'GAME WIN %',render:r=>`${fmt(r.winPct)}%`},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)},{key:'assists',label:'ASSISTS',render:r=>fmt(r.assists)},{key:'saves',label:'SAVES',render:r=>fmt(r.saves)}]} rows={filteredPlayers} empty="No players match this search."/></section>}
       {activePage==='Teams'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">TEAM DIRECTORY</span><h2>{teams.length} teams</h2></div><span className="panel-tag">PLAYER TOTALS</span></div><DataTable columns={[{key:'name',label:'TEAM',render:r=><TeamName name={r.name}/>},{key:'playerCount',label:'PLAYERS'},{key:'games',label:'PLAYER-GAMES',render:r=>fmt(r.games)},{key:'winPct',label:'PLAYER GAME WIN %',render:r=>`${fmt(r.winPct)}%`},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)},{key:'assists',label:'ASSISTS',render:r=>fmt(r.assists)}]} rows={teams} empty="No team data available for this division."/><p className="table-note">Team aliases are applied before totals are combined. This is not the official series standings table.</p></section>}
       {activePage==='Stat Explorer'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">RAW EXPORT EXPLORER</span><h2>Browse exported stats</h2></div><span className="panel-tag">{stats.length} STAT FIELDS</span></div><label className="stat-select"><span>STATISTIC</span><span className="select-wrap"><select value={selectedStat} onChange={e=>setSelectedStat(e.target.value)}>{stats.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label><DataTable columns={[{key:'playerName',label:'PLAYER'},{key:'teamName',label:'TEAM'},{key:'week',label:'WEEK'},{key:'value',label:selectedStat.toUpperCase(),render:r=>fmt(r.stats[selectedStat])},{key:'sourceFile',label:'SOURCE'}]} rows={statRows} empty="No rows to explore."/></section>}
       <footer><span>RLSTATS <b>•</b> LEAGUE ANALYTICS</span><span>Built for the community <span className="footer-flame">◆</span></span></footer>
