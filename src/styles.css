@@ -480,7 +480,7 @@ body{font-size:16px}
 .stats-table th.team-column-header span{display:inline-block;width:190px;text-align:center}
 
 /* Keep the Overview player table's team column compact so Rating sits closer to the team */
-.top-player-team{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}.top-player-team .team-entity-link{min-width:0}.top-player-team .division-badge{flex:none;padding:2px 5px;gap:3px;font-size:7px}.top-player-team .division-badge img{width:20px;height:20px}
+.top-player-team{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}.top-player-team .team-entity-link{min-width:0}.top-player-team .division-badge{flex:none;padding:2px 5px;gap:3px;font-size:7px}.top-player-team .division-badge img{width:20px;height:20px}.top-player-team .division-badge>span{display:none}
 .performance-panel .stats-table{table-layout:fixed}
 .performance-panel .stats-table th:nth-child(1),.performance-panel .stats-table td:nth-child(1){width:25%}
 .performance-panel .stats-table th:nth-child(2),.performance-panel .stats-table td:nth-child(2){width:9%}
