@@ -159,6 +159,11 @@ footer b,.footer-flame{color:#f02f38}
 .formula-line{padding:12px;margin:12px 0;background:#141d28;border-radius:5px;color:#69ccec;font:700 14px 'Barlow Condensed',sans-serif}
 @media(max-width:700px){.compare-controls{grid-template-columns:1fr}.comparison-scorecards{grid-template-columns:1fr}}
 
+.entity-link{display:inline-flex;align-items:center;padding:0;border:0;background:none;color:#75cfee;font:inherit;font-weight:700;text-align:left;cursor:pointer;text-decoration:none;transition:color .15s ease}
+.entity-link:hover{color:#d1f3ff;text-decoration:underline;text-underline-offset:3px}
+.entity-link:focus-visible{outline:2px solid #62c8ec;outline-offset:3px;border-radius:3px}
+.team-entity-link{width:max-content;max-width:100%}
+.profile-team-links{display:inline-flex;align-items:center;flex-wrap:wrap;gap:2px}
 .team-name{display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
 .team-name>img{width:34px;height:34px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
 .team-monogram{width:34px;height:34px;display:inline-grid;place-items:center;flex-shrink:0;border:1px solid #3a4654;border-radius:7px;background:linear-gradient(145deg,#202a36,#10151c);color:#8edcf3;font:700 10px 'Barlow Condensed',sans-serif;letter-spacing:.4px}
