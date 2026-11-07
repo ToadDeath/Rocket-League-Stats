@@ -40,11 +40,12 @@ Because this repository is public, any CSV, JSON, or other data committed here w
 3. Commit the file to `main`. GitHub Actions processes every CSV under `data/imports/` and deploys the updated dashboard.
 4. The importer detects comma-, semicolon-, tab-, and pipe-delimited files.
 
-### Alias files
+### Master roster and player aliases
 
-- `data/player-aliases.csv`: columns `Player Name,Alias`. Add one alias per row and repeat the canonical player name for additional aliases.
-- `data/team-aliases.csv`: columns `Team Name,Alias`. Add one lobby/export team name per row and repeat the official team name for additional aliases.
-
-Matching is case-sensitive. Names without aliases are retained exactly as written. Only add a team alias when the lobby/export uses a genuinely different name, not just different capitalization.
+- `data/roster.csv` is the master player list. Its columns are `Team,Player,Rank,Aliases`.
+- Keep one row per player. Leave `Rank` blank when the player has no listed rank.
+- Put multiple alternate player names in the `Aliases` column, separated by `|` (vertical bar). Example: `Canti57|OldName`.
+- Alias matching is case-sensitive. Every alias must belong to only one player, and aliases cannot conflict with another player's canonical name.
+- `data/team-aliases.csv` is optional. Only add a mapping when an export/lobby uses a genuinely different team name, not just different capitalization.
 
 The current dashboard reports individual player-game statistics. It does not infer best-of-five series standings from player game wins.
