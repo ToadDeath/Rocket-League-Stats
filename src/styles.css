@@ -589,3 +589,11 @@ body{font-size:16px}
 .tracker-link-mark{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:4px;background:#00aeef;color:#06111b;font:900 12px Arial,sans-serif}
 .matchup-division-heading .division-badge{align-items:center;min-height:34px}
 .matchup-division-heading .division-badge img{display:block;flex:none;width:26px;height:26px;transform:none}
+
+
+/* Compact footer credit and source link */
+footer{align-items:center}
+.footer-credit{display:inline-flex;align-items:center;gap:7px;letter-spacing:.35px;text-transform:none}
+.footer-credit strong{color:#aab6c8;font-weight:700}
+.footer-credit a{display:inline-flex;align-items:center;gap:3px;margin-left:5px;color:#74859d;text-decoration:none;transition:color .15s ease}
+.footer-credit a:hover{color:#9bdcf3}
