@@ -612,3 +612,29 @@ footer{align-items:center}
  .profile-rating-row .profile-rating-label{font-size:10px}
  .profile-rating-row .profile-raw-value{font-size:8px}
 }
+
+
+/* Ranking preview and full league leaderboard */
+.ranking-preview-actions{display:flex;align-items:center;gap:12px}
+.ranking-preview-actions .text-button{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-size:10px}
+.rankings-heading{align-items:center;gap:18px}
+.rankings-heading>div{min-width:0}
+.rankings-heading h2{font-size:25px}
+.rankings-subtitle{margin:6px 0 0;color:#8795a8;font-size:10px}
+.rankings-list-panel{margin-top:18px;padding:16px;border:1px solid #252f3c;border-radius:8px;background:rgba(8,13,20,.48)}
+.rankings-list-panel .panel-heading{align-items:center;margin-bottom:12px}
+.rankings-list-panel .panel-heading h3{margin:4px 0 0;color:#edf2f9;font:700 18px 'Barlow Condensed',sans-serif}
+.rankings-list-panel .stats-table th:first-child,.rankings-list-panel .stats-table td:first-child{width:48px;color:#8291a7;text-align:center;font-variant-numeric:tabular-nums}
+.rankings-list-panel .stats-table td{padding-top:10px;padding-bottom:10px}
+.rankings-team-link{display:inline-flex;align-items:center;gap:7px;margin-right:12px}
+.rankings-team-link:last-child{margin-right:0}
+.rankings-list-panel .top-player-team{flex-wrap:wrap;gap:5px 8px}
+.rankings-page>.panel-heading{margin-bottom:8px}
+.rankings-page .export-button{flex:none}
+.select-wrap select:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:700px){
+ .ranking-preview-actions{align-items:flex-end;flex-direction:column;gap:6px}
+ .rankings-heading{align-items:flex-start;flex-direction:column}
+ .rankings-heading .export-button{width:100%;justify-content:center}
+ .rankings-list-panel{padding:11px}
+}
