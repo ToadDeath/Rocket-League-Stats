@@ -1,3 +1,3 @@
-# League logos
+# League branding
 
-Upload the SGL league logo here. Suggested filename: `sgl-logo.png`.
+The SGL league logo is stored here as `sgl-logo.png`.
