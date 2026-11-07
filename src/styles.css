@@ -454,3 +454,8 @@ body{font-size:15px}
  .matchup-panel .stats-table th,.matchup-panel .stats-table td{padding-left:7px;padding-right:7px}
  .matchup-score{font-size:11px}
 }
+
+
+.matchup-result{display:flex;flex-direction:column;align-items:center;gap:3px}
+.matchup-result small{font-size:9px;line-height:1.2;color:#a7b2c2;font-weight:500;white-space:normal;text-align:center;max-width:120px}
+.rating-unavailable{font-size:12px;color:#8e9bab}
