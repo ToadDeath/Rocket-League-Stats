@@ -471,3 +471,8 @@ body{font-size:15px}
 .comparison-category-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;line-height:1.15;font-variant-numeric:tabular-nums}
 .comparison-category-cell strong{font-size:12px;font-weight:750;color:#edf2f9}
 .comparison-category-cell small{font-size:9px;font-weight:500;color:#8f9fb3;white-space:nowrap}
+
+
+/* Keep team logos and names left-aligned in the Overview and Players tables */
+.stats-table td:has(.team-entity-link){text-align:left}
+.stats-table td:has(.team-entity-link) .team-entity-link{margin-left:0;margin-right:0}
