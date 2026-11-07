@@ -27,7 +27,7 @@ button{cursor:pointer}
 .sidebar-note{margin-top:12px;color:#68768d;font-size:10px}
 .github-link{display:inline-block;margin-top:15px;color:#9daac0;font-size:10px;text-decoration:none}
 .github-link:hover{color:#f02f38}
-.main-content{margin-left:238px;max-width:1600px;padding:0 42px}
+.main-content{margin-left:238px;width:calc(100% - 238px);max-width:none;padding:0 42px}
 .topbar{height:69px;border-bottom:1px solid #1a2535;display:flex;align-items:center;justify-content:space-between}
 .breadcrumb{font-size:9px;letter-spacing:1.4px;color:#e0e6ef;font-weight:700}
 .breadcrumb span{color:#65748b}.breadcrumb b{padding:0 10px;color:#3c4b60}
@@ -245,7 +245,7 @@ footer b,.footer-flame{color:#f02f38}
 /* Responsive refinements for common laptop, tablet, and phone viewports */
 html{scroll-behavior:smooth}
 .app-shell,.main-content,.panel,.profile-section{min-width:0}
-.main-content{width:calc(100% - 238px)}
+.main-content{width:calc(100% - 238px);max-width:none}
 .content-grid>*,.bottom-grid>*,.profile-grid>*,.compare-controls>*{min-width:0}
 .stats-table{min-width:680px}
 .table-scroll{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
@@ -378,36 +378,36 @@ footer{padding-top:32px;padding-bottom:26px}
 }
 
 /* Improve readability across the dashboard */
-body{font-size:15px}
+body{font-size:16px}
 .nav-item{font-size:13px}
 .breadcrumb{font-size:10px}
 .data-status{font-size:9px}
-.page-heading p{font-size:13px}
+.page-heading p{font-size:14px}
 .division-picker-trigger,.division-picker-menu button{font-size:12px}
-.metric-top{font-size:10px}
-.metric-detail{font-size:10px}
+.metric-top{font-size:11px}
+.metric-detail{font-size:11px}
 .panel-kicker{font-size:9px}
 .panel-tag{font-size:9px}
-.panel-heading h2{font-size:22px}
+.panel-heading h2{font-size:24px}
 .empty-chart strong,.leaderboard-empty strong{font-size:12px}
 .empty-chart>span,.leaderboard-empty>span{font-size:10px}
 .chart-legend{font-size:10px}
 .search-box input{font-size:12px}
 .text-button{font-size:11px}
 .compact-empty{font-size:11px}
-.stats-table{font-size:12px}
-.stats-table th{font-size:10px;letter-spacing:.8px}
-.stats-table td{font-size:12px}
-.table-empty{font-size:12px}
-.table-note{font-size:10px}
+.stats-table{font-size:13px}
+.stats-table th{font-size:11px;letter-spacing:.8px}
+.stats-table td{font-size:13px}
+.table-empty{font-size:13px}
+.table-note{font-size:11px}
 .stat-select>span:first-child{font-size:9px}
 .stat-select select{font-size:12px}
-.profile-team{font-size:12px}
+.profile-team{font-size:13px}
 .profile-rating span,.profile-stats span{font-size:9px;letter-spacing:1px}
 .profile-stats strong{font-size:24px}
-.rating-row>div:first-child{font-size:11px}
+.rating-row>div:first-child{font-size:12px}
 .comparison-card>span{font-size:10px}
-.comparison-card>div{font-size:11px}
+.comparison-card>div{font-size:12px}
 .calculation-details summary{font-size:13px}
 .calculation-details p,.stat-rating-method>p{font-size:11px}
 .division-badge{font-size:9px}
@@ -498,16 +498,16 @@ body{font-size:15px}
 .upcoming-matchday-heading>span{font-size:8px;letter-spacing:1px;color:#77869c}
 .upcoming-matchday-heading b{color:#cbd5e2;font-size:10px;letter-spacing:0;margin-left:5px}
 .upcoming-matchup-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.upcoming-matchup{display:grid;grid-template-columns:minmax(0,1fr) 25px minmax(0,1fr);align-items:center;gap:8px;min-width:0;padding:11px 12px;background:#0d1725;border:1px solid #202d40;border-radius:6px}
+.upcoming-matchup{display:grid;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr);align-items:center;gap:10px;min-width:0;padding:12px 16px;background:#0d1725;border:1px solid #202d40;border-radius:6px}
 .upcoming-matchup-meta{grid-column:1/-1;min-height:16px}
 .upcoming-matchup .division-badge{transform:scale(.85);transform-origin:left center}
 .upcoming-team{min-width:0;overflow:hidden}
-.upcoming-team .team-name{display:flex;gap:7px;min-width:0;font-size:10px}
-.upcoming-team .team-name img{width:25px;height:25px;flex:none}
+.upcoming-team .team-name{display:flex;gap:8px;min-width:0;font-size:12px}
+.upcoming-team .team-name img{width:28px;height:28px;flex:none}
 .upcoming-team .team-name>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.upcoming-vs{text-align:center;color:#6d7c92;font-size:8px;font-weight:800;letter-spacing:.8px}
+.upcoming-vs{text-align:center;color:#6d7c92;font-size:10px;font-weight:800;letter-spacing:.8px}
 .upcoming-empty{padding:24px 0;color:#748198;font-size:10px;text-align:center}
-@media(max-width:560px){.upcoming-matchup-grid{grid-template-columns:1fr}.upcoming-matchup{padding:10px}.upcoming-team .team-name{font-size:10px}}
+@media(max-width:560px){.upcoming-matchup-grid{grid-template-columns:1fr}.upcoming-matchup{padding:10px}.upcoming-team .team-name{font-size:11px}.upcoming-team .team-name img{width:25px;height:25px}}
 
 /* Keep the away team aligned exactly like the home team in matchup review */
 .matchup-panel .stats-table th:nth-child(3),
