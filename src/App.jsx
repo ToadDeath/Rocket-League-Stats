@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Activity, ArrowUpRight, BarChart3, ChevronDown, Crosshair, Gauge, LayoutDashboard, Search, Shield, Swords, Users } from 'lucide-react';
 
-const divisions = ['All Divisions', 'Premier League', 'Second Division'];
+const divisions = ['All Divisions', 'Premier', 'Championship'];
 const navItems = [
   { label: 'Overview', icon: LayoutDashboard }, { label: 'Players', icon: Users },
   { label: 'Teams', icon: Shield }, { label: 'Stat Explorer', icon: BarChart3 }
