@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, AlertTriangle, ArrowLeft, ArrowUpRight, BarChart3, Bell, ChevronDown, Gauge, LayoutDashboard, Search, Shield, Swords, Users } from 'lucide-react';
+import { Activity, AlertTriangle, ArrowLeft, ArrowUpRight, BarChart3, Bell, ChevronDown, Download, Gauge, LayoutDashboard, Search, Shield, Swords, Users } from 'lucide-react';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const divisions = ['All Divisions', 'Premier', 'Championship'];
@@ -135,6 +135,111 @@ function TeamName({ name }) {
   </span>;
 }
 
+
+async function downloadTeamComparisonPng({ teams, players, categories, week }) {
+  const scale = 2;
+  const width = 1920;
+  const margin = 64;
+  const gap = 28;
+  const cardWidth = (width - margin * 2 - gap) / 2;
+  const top = 260;
+  const tableHeaderHeight = 66;
+  const rowHeight = 62;
+  const height = top + tableHeaderHeight + Math.max(players.length, 1) * rowHeight + 72;
+  const canvas = document.createElement('canvas');
+  canvas.width = width * scale;
+  canvas.height = height * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+  ctx.fillStyle = '#0b1018';
+  ctx.fillRect(0, 0, width, height);
+
+  const roundRect = (x,y,w,h,r) => {
+    ctx.beginPath(); ctx.roundRect(x,y,w,h,r);
+  };
+  const drawText = (value,x,y,size=16,color='#e8edf5',weight=500,align='left') => {
+    ctx.font = `${weight} ${size}px Inter, Arial, sans-serif`;
+    ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
+    ctx.fillText(String(value),x,y);
+  };
+  const drawMeter = (value,x,y,w,h,large=false) => {
+    const score = Math.max(0,Math.min(10,n(value)));
+    const gradient = ctx.createLinearGradient(x,y,x+w,y);
+    gradient.addColorStop(0,'#e34d59'); gradient.addColorStop(.5,'#8d8b9c'); gradient.addColorStop(1,'#268bd2');
+    ctx.fillStyle='#27313e'; roundRect(x,y,w,h,6); ctx.fill();
+    ctx.save(); roundRect(x,y,w*score/10,h,6); ctx.clip(); ctx.fillStyle=gradient; ctx.fillRect(x,y,w,h); ctx.restore();
+    drawText(fmtRating(score),x+w+14,y+h/2,large?20:15,'#f2f5fa',700);
+  };
+  const loadLogo = async name => {
+    const file = teamLogoFiles[name];
+    if (!file) return null;
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = `${import.meta.env.BASE_URL}assets/teams/${encodeURIComponent(file)}`;
+    });
+  };
+  const logos = await Promise.all(teams.map(t=>loadLogo(t.name)));
+
+  drawText('SGL  /  LEAGUE ANALYTICS',margin,48,14,'#7f91a8',700);
+  drawText('TEAM COMPARISON',margin,96,36,'#f3f6fb',800);
+  drawText(`STATS WEEK ${week || 'ALL AVAILABLE'}  ·  ${players.length} PLAYER RECORDS`,margin,136,15,'#9eacbf',600);
+  ctx.fillStyle='#00aeef'; ctx.fillRect(margin,164,92,4);
+
+  teams.forEach((team,i)=>{
+    const x=margin+i*(cardWidth+gap), y=190;
+    ctx.fillStyle='#151e2a'; roundRect(x,y,cardWidth,142,12); ctx.fill();
+    ctx.strokeStyle='#2a3544'; ctx.lineWidth=1; roundRect(x,y,cardWidth,142,12); ctx.stroke();
+    const logo=logos[i];
+    if(logo){const ratio=Math.min(66/logo.width,66/logo.height);ctx.drawImage(logo,x+22,y+24,logo.width*ratio,logo.height*ratio);}
+    else drawText(team.name.split(/\\s+/).map(v=>v[0]).join('').slice(0,3),x+54,y+56,22,'#a9b6c8',800,'center');
+    drawText(team.name,x+108,y+42,22,'#f1f4f9',750);
+    drawText(`${team.players.length} players  ·  ${fmtCount(team.games)} player-games  ·  ${fmt(team.winPct)}% player-game wins`,x+108,y+76,14,'#9eacbf',500);
+    drawText('TEAM MATCH RATING',x+108,y+111,11,'#8e9db1',700);
+    if(team.rating===null) drawText('No game data',x+cardWidth-24,y+111,14,'#9eacbf',600,'right');
+    else drawMeter(team.rating,x+cardWidth-230,y+103,150,12,true);
+  });
+
+  const cols = [
+    {label:'PLAYER',width:250,align:'left'},
+    {label:'RANK',width:90,align:'center'},
+    {label:'TEAM',width:250,align:'left'},
+    {label:'GAMES',width:95,align:'center'},
+    {label:'MATCH RATING',width:180,align:'left'},
+    ...categories.map(c=>({label:c.label.toUpperCase(),width:145,align:'center'}))
+  ];
+  let x=margin;
+  ctx.fillStyle='#202b39'; roundRect(margin,top,width-margin*2,tableHeaderHeight,8); ctx.fill();
+  cols.forEach(col=>{const tx=col.align==='left'?x+16:x+col.width/2;drawText(col.label,tx,top+tableHeaderHeight/2,12,'#aab7c8',750,col.align);x+=col.width;});
+  players.forEach((p,index)=>{
+    const y=top+tableHeaderHeight+index*rowHeight;
+    ctx.fillStyle=index%2===0?'#121a25':'#0f1721';ctx.fillRect(margin,y,width-margin*2,rowHeight);
+    ctx.strokeStyle='#263241';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(margin,y+rowHeight);ctx.lineTo(width-margin,y+rowHeight);ctx.stroke();
+    let cx=margin;
+    drawText(p.playerName,cx+16,y+rowHeight/2,15,'#edf2f8',650);cx+=cols[0].width;
+    drawText(p.rank||'-',cx+cols[1].width/2,y+rowHeight/2,14,'#b9c5d4',600,'center');cx+=cols[1].width;
+    drawText(p.teamName,cx+14,y+rowHeight/2,14,'#aab8ca',550);cx+=cols[2].width;
+    drawText(fmtCount(p.games),cx+cols[3].width/2,y+rowHeight/2,14,'#dce4ee',550,'center');cx+=cols[3].width;
+    drawMeter(p.rating,cx+8,y+rowHeight/2-6,100,12);cx+=cols[4].width;
+    categories.forEach((category,i)=>{
+      const val=n(p.categories[category.key]);
+      const cellW=cols[5+i].width;
+      drawText(fmtCategory(val),cx+cellW/2,y+rowHeight/2,14,'#dce4ee',600,'center');
+      cx+=cellW;
+    });
+  });
+  drawText('SGL LEAGUE ANALYTICS  ·  PLAYER RATINGS USE INDIVIDUAL PLAYER STATISTICS',margin,height-28,11,'#6f7f93',600);
+  const blob = await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if(!blob) throw new Error('PNG export could not be created.');
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;
+  link.download=`sgl-team-comparison-week-${week||'all'}.png`;
+  document.body.appendChild(link);link.click();link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function MetricCard({ label, value, detail, icon: Icon }) {
   return <article className="metric-card"><div className="metric-top"><span>{label}</span><span className="metric-icon"><Icon size={17} /></span></div><div className="metric-value">{value}</div>{detail&&<div className="metric-detail">{detail}</div>}</article>;
 }
@@ -153,6 +258,7 @@ function App() {
   const [selectedTeam, setSelectedTeam] = useState('');
   const [selectedWeek, setSelectedWeek] = useState('');
   const [compareTeams, setCompareTeams] = useState([]);
+  const [exportingComparison, setExportingComparison] = useState(false);
   const [selectedMatchday, setSelectedMatchday] = useState('');
   const [selectedMatchup, setSelectedMatchup] = useState(null);
   const [dataset, setDataset] = useState(null);
@@ -323,7 +429,7 @@ function App() {
           <label className="stat-select"><span>TEAM 2</span><span className="select-wrap"><select value={compareTeams[1]||''} onChange={e=>setCompareTeams([compareTeams[0]||'',e.target.value].filter(Boolean))}><option value="">Choose a team</option>{compareTeamNames.filter(x=>x!==compareTeams[0]).map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
         </div>
         {comparisonTeams.length===2?<><div className="comparison-scorecards">{comparisonTeams.map(t=><article className="comparison-card" key={t.name}><div className="comparison-team-identity"><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',t.name)}><TeamName name={t.name}/></button><DivisionBadge division={t.rows[0]?.division}/></div><span>{t.players.length} players · {fmtCount(t.games)} player-games · {fmt(t.winPct)}% player-game wins</span><div className="comparison-team-rating"><span>TEAM MATCH RATING</span>{t.rating===null?<span className="rating-unavailable">No game data</span>:<RatingMeter value={t.rating}/>}</div></article>)}</div>
-          <div className="panel-heading compare-subheading"><div><h3>Individual player rating breakdowns</h3><p className="table-note">Every category below is calculated from that player's own stats, using the league's custom formulas. Team totals are not blended into these ratings.</p></div><span className="panel-tag">PLAYER RATING · 0-10</span></div>
+          <div className="panel-heading compare-subheading"><div><h3>Individual player rating breakdowns</h3></div><div className="compare-export-actions"><span className="panel-tag">PLAYER RATING · 0-10</span><button type="button" className="export-button" disabled={exportingComparison} onClick={async()=>{setExportingComparison(true);try{await downloadTeamComparisonPng({teams:comparisonTeams,players:playerComparisonRows,categories:matchRatingCategories,week:effectiveCompareWeek});}catch(error){console.error(error);window.alert('The comparison image could not be exported. Please try again.');}finally{setExportingComparison(false);}}}><Download size={15}/>{exportingComparison?'Creating PNG...':'Export PNG'}</button></div></div>
           <DataTable columns={[{key:'playerName',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>navigateTo('Players',r.playerName)}>{r.playerName}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamName',label:'TEAM',render:r=><button className="entity-link" onClick={()=>navigateTo('Teams','',r.teamName)}>{r.teamName}</button>},{key:'games',label:'GAMES',render:r=>fmtCount(r.games)},{key:'rating',label:'MATCH RATING',render:r=><RatingMeter value={r.rating} compact/>},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=>fmtCategory(r.categories[c.key])}))]} rows={playerComparisonRows} empty="No player statistics found for these teams in this period."/>
         </>:<div className="table-empty">{selectedMatchup&&!effectiveCompareWeek?'Choose the imported stats week for this matchday to load the team comparison.':'Choose two teams to compare their players’ custom rating breakdowns.'}</div>}
       </section>}
