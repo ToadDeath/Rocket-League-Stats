@@ -104,23 +104,16 @@ function readSchedule(file, teamRoster) {
     const matchday = Number(row.matchday);
     const team1Info = teamRoster.get((row['team 1'] || '').trim());
     const team2Info = teamRoster.get((row['team 2'] || '').trim());
-    const score1Text = (row['score 1'] || '').trim();
-    const score2Text = (row['score 2'] || '').trim();
-    const score1 = score1Text === '' ? null : Number(score1Text);
-    const score2 = score2Text === '' ? null : Number(score2Text);
     const statsWeekText = (row['stats week'] || '').trim();
     const statsWeek = statsWeekText === '' ? null : Number(statsWeekText);
     if (!['Premier', 'Championship'].includes(division) || !Number.isInteger(matchday) || matchday < 1 ||
         !team1Info || !team2Info || team1Info.division !== division || team2Info.division !== division ||
-        (score1Text !== '' && (!Number.isInteger(score1) || score1 < 0)) ||
-        (score2Text !== '' && (!Number.isInteger(score2) || score2 < 0)) ||
-        ((score1 === null) !== (score2 === null)) ||
+        team1Info.team === team2Info.team ||
         (statsWeek !== null && (!Number.isInteger(statsWeek) || statsWeek < 1))) {
-      throw new Error('Invalid schedule row ' + (index + 2) + ' in data/schedule.csv. Check division, teams, scores, and stats week.');
+      throw new Error('Invalid schedule row ' + (index + 2) + ' in data/schedule.csv. Check division, teams, and stats week.');
     }
     return { id: division.toLowerCase() + '-' + matchday + '-' + (index + 1), division, matchday,
-      deadline: (row.deadline || '').trim(), team1: team1Info.team, score1, score2,
-      team2: team2Info.team, statsWeek };
+      deadline: (row.deadline || '').trim(), team1: team1Info.team, team2: team2Info.team, statsWeek };
   });
   // A stats-week value entered on any fixture maps the entire matchday.
   const matchdayWeeks = new Map();
