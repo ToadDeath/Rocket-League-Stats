@@ -45,6 +45,6 @@ Because this repository is public, any CSV, JSON, or other data committed here w
 - `data/player-aliases.csv`: columns `Player Name,Alias`. Add one alias per row and repeat the canonical player name for additional aliases.
 - `data/team-aliases.csv`: columns `Team Name,Alias`. Add one lobby/export team name per row and repeat the official team name for additional aliases.
 
-Matching is case-sensitive. Names without aliases are retained as written. Team names without a mapping are reported by the data processor.
+Matching is case-sensitive. Names without aliases are retained exactly as written. Only add a team alias when the lobby/export uses a genuinely different name, not just different capitalization.
 
 The current dashboard reports individual player-game statistics. It does not infer best-of-five series standings from player game wins.
