@@ -566,7 +566,7 @@ body{font-size:16px}
 
 
 /* Give the rating breakdown priority over the history chart on player profiles */
-.profile-grid{grid-template-columns:minmax(220px,.78fr) minmax(360px,1.42fr);align-items:stretch}
+.profile-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch}
 .profile-grid>.profile-section:first-child .profile-chart{height:165px}
 .profile-grid>.profile-section:last-child{padding:19px 20px}
 .profile-grid>.profile-section:last-child .panel-heading h3{font-size:21px}
