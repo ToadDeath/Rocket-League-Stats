@@ -36,6 +36,24 @@ const matchRatingCategories = [
   { key:'boostStolenPerGame', label:'Boost stolen', average:480, multiplier:0.015, weight:0.65 },
   { key:'demosPerGame', label:'Demos +/-', average:0, multiplier:2.5, weight:0.65 }
 ];
+function teamSeriesStats(rows, teamName) {
+  const teamRows = rows.filter(r => r.teamName === teamName);
+  const playerGames = teamRows.reduce((sum, r) => sum + n(r.stats?.games), 0);
+  const playerWins = teamRows.reduce((sum, r) => sum + n(r.stats?.wins), 0);
+  const teamGames = playerGames / 3;
+  const wins = playerWins / 3;
+  const losses = (playerGames - playerWins) / 3;
+  const exact = [teamGames, wins, losses].every(Number.isInteger);
+  return {
+    hasData: teamRows.length > 0 && playerGames > 0,
+    exact,
+    teamGames,
+    wins: exact ? wins : null,
+    losses: exact ? losses : null,
+    complete: exact && teamGames >= 3 && teamGames <= 5 && (wins === 3 || losses === 3)
+  };
+}
+
 function matchRatingForRecords(rows) {
   const totals = rows.reduce((a,r) => {
     const s=r.stats||{};
@@ -59,7 +77,7 @@ function matchRatingForRecords(rows) {
     const difference=c.inverse ? c.average-values[c.key] : values[c.key]-c.average;
     return [c.key,6+difference*c.multiplier];
   }));
-  const rating = !g || values.scorePerGame===0 ? 0 : Math.min(10,Math.max(0,
+  const rating = !g ? 0 : Math.min(10,Math.max(0,
     matchRatingCategories.reduce((sum,c)=>sum+categories[c.key]*c.weight,0)/7
   ));
   return { rating, categories, values };
@@ -224,11 +242,20 @@ function App() {
   const compareTeamNames = [...new Set(records.map(r=>r.teamName))].sort();
   const scheduleRows = (dataset?.schedule || []).filter(m=>division==='All Divisions'||m.division===division);
   const scheduleMatchdays = [...new Set(scheduleRows.map(m=>m.matchday))].sort((a,b)=>a-b);
-  const completedMatchdays = scheduleRows.filter(m=>m.score1!==null&&m.score2!==null).map(m=>m.matchday);
-  const defaultMatchday = completedMatchdays.length ? Math.max(...completedMatchdays) : Math.max(0,...scheduleMatchdays);
+  const mappedMatchdays = scheduleRows.filter(m=>m.statsWeek!==null).map(m=>m.matchday);
+  const defaultMatchday = mappedMatchdays.length ? Math.max(...mappedMatchdays) : Math.max(0,...scheduleMatchdays);
   const effectiveMatchday = scheduleMatchdays.includes(Number(selectedMatchday)) ? Number(selectedMatchday) : defaultMatchday;
-  const matchupRows = scheduleRows.filter(m=>m.matchday===effectiveMatchday);
-  const comparisonTeams = compareTeams.map(name=>{ const rows=compareRows.filter(r=>r.teamName===name); const rating=matchRatingForRecords(rows); const games=rows.reduce((s,r)=>s+n(r.stats.games),0); const wins=rows.reduce((s,r)=>s+n(r.stats.wins),0); return {name,rows,rating,games,wins,players:[...new Set(rows.map(r=>r.playerName))],winPct:games?wins/games*100:0}; }).filter(t=>t.rows.length);
+  const matchupRows = scheduleRows.filter(m=>m.matchday===effectiveMatchday).map(m=>{
+    const weekRows = m.statsWeek===null ? [] : records.filter(r=>r.division===m.division&&r.week===m.statsWeek);
+    const team1Stats = teamSeriesStats(weekRows,m.team1), team2Stats = teamSeriesStats(weekRows,m.team2);
+    const hasBoth = team1Stats.hasData && team2Stats.hasData;
+    const exact = hasBoth && team1Stats.exact && team2Stats.exact;
+    const reconciles = exact && team1Stats.wins===team2Stats.losses && team2Stats.wins===team1Stats.losses && team1Stats.teamGames===team2Stats.teamGames;
+    const final = reconciles && team1Stats.complete && team2Stats.complete;
+    const status = !m.statsWeek ? 'Stats week not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : !final ? 'Partial series data' : 'Final';
+    return {...m, scoreText:exact?team1Stats.wins+' - '+team2Stats.wins:'TBD', resultStatus:status, resultFinal:final};
+  });
+  const comparisonTeams = compareTeams.map(name=>{ const rows=compareRows.filter(r=>r.teamName===name); const games=rows.reduce((s,r)=>s+n(r.stats.games),0); const wins=rows.reduce((s,r)=>s+n(r.stats.wins),0); const rating=games?matchRatingForRecords(rows).rating:null; return {name,rows,rating,games,wins,players:[...new Set(rows.map(r=>r.playerName))],winPct:games?wins/games*100:0}; }).filter(t=>t.rows.length);
   const comparisonPlayers = compareRows.filter(r=>compareTeams.includes(r.teamName)).reduce((groups,r)=>{ const key=r.teamName+'::'+r.playerName; if(!groups.has(key)) groups.set(key,{key,playerName:r.playerName,teamName:r.teamName,rows:[]}); groups.get(key).rows.push(r); return groups; },new Map());
   const playerComparisonRows = [...comparisonPlayers.values()].map(p=>{ const rating=matchRatingForRecords(p.rows); const games=p.rows.reduce((sum,r)=>sum+n(r.stats.games),0); const wins=p.rows.reduce((sum,r)=>sum+n(r.stats.wins),0); return {...p,rank:dataset?.playerRanks?.[p.playerName]||'',rating:rating.rating,categories:rating.categories,games,winPct:games?wins/games*100:0}; }).sort((a,b)=>a.teamName.localeCompare(b.teamName)||b.rating-a.rating);
   const statRows = [...records].sort((a,b)=>n(b.stats[selectedStat])-n(a.stats[selectedStat])).slice(0,50);
@@ -257,7 +284,7 @@ function App() {
       {dataset?.duplicates?.length > 0 && <section className="notice"><div><strong>Duplicate exports skipped</strong><p>{dataset.duplicates.length} file(s) had identical contents to an existing import and were skipped.</p></div></section>}
       {activePage==='Overview'&&<><section className="content-grid">
         <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top 10 players</h2></div><span className="panel-tag">MATCH RATING</span></div><DataTable columns={[{key:'name',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>navigateTo('Players',r.name)}>{r.name}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamList',label:'TEAM',render:r=><button className="entity-link team-entity-link" onClick={()=>{const team=[...r.teams][0];if(team)navigateTo('Teams','',team)}}><TeamName name={[...r.teams][0]||r.teamList}/></button>},{key:'rating',label:'RATING',render:r=><RatingMeter value={r.rating} compact/>},{key:'ratingChange',label:'WEEKLY Δ',render:r=>r.ratingChange==null?'--':(r.ratingChange>0?'+':'')+fmt(r.ratingChange)}]} rows={players.slice(0,10)} empty="Player stats will appear after importing a weekly CSV."/></article>
-        <article className="panel leaderboard-panel matchup-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SCHEDULE</span><h2>Weekly matchup review</h2></div><label className="matchday-select"><span>MATCHDAY</span><select value={effectiveMatchday||''} onChange={e=>setSelectedMatchday(e.target.value)}>{scheduleMatchdays.map(day=><option key={day} value={day}>Matchday {day}</option>)}</select></label></div><DataTable columns={[{key:'team1',label:'TEAM',render:r=><TeamName name={r.team1}/>},{key:'series',label:'SERIES',render:r=><strong className="matchup-score">{r.score1===null?'vs':r.score1+' - '+r.score2}</strong>},{key:'team2',label:'OPPONENT',render:r=><TeamName name={r.team2}/>}]} rows={matchupRows} onRowClick={r=>{setCompareTeams([r.team1,r.team2]);setSelectedWeek(r.statsWeek==null?'unmapped':String(r.statsWeek));setSelectedMatchup(r);navigateTo('Compare');}} empty="No matchups are listed for this matchday."/><p className="table-note">Select a matchup to compare both teams and their player ratings. Series scores are best-of-five.</p></article>
+        <article className="panel leaderboard-panel matchup-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SCHEDULE</span><h2>Weekly matchup review</h2></div><label className="matchday-select"><span>MATCHDAY</span><select value={effectiveMatchday||''} onChange={e=>setSelectedMatchday(e.target.value)}>{scheduleMatchdays.map(day=><option key={day} value={day}>Matchday {day}</option>)}</select></label></div><DataTable columns={[{key:'team1',label:'TEAM',render:r=><TeamName name={r.team1}/>},{key:'series',label:'SERIES',render:r=><span className="matchup-result"><strong className="matchup-score">{r.scoreText}</strong>{r.resultStatus!=='Final'&&<small>{r.resultStatus}</small>}</span>},{key:'team2',label:'OPPONENT',render:r=><TeamName name={r.team2}/>}]} rows={matchupRows} onRowClick={r=>{setCompareTeams([r.team1,r.team2]);setSelectedWeek(r.statsWeek==null?'unmapped':String(r.statsWeek));setSelectedMatchup(r);navigateTo('Compare');}} empty="No matchups are listed for this matchday."/><p className="table-note">Select a matchup to compare both teams and their player ratings. Series scores are best-of-five.</p></article>
       </section><section className="bottom-grid">
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">IMPORT HISTORY</span><h2>Weekly files</h2></div><Activity size={18} className="muted-icon"/></div><div className="import-list">{(dataset?.imports||[]).map(x=><div className="import-row" key={x.file}><span>{x.file}</span><b>{x.rows} players</b></div>)}</div></article>
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">DEEP DIVE</span><h2>Stat explorer</h2></div><BarChart3 size={18} className="muted-icon"/></div><div className="compact-empty">Explore all {stats.length} exported stat fields, including scoring, defense, boost, movement, and advanced stats.</div><button className="text-button" onClick={()=>goToSection('Stat Explorer')}>Explore stats <ArrowUpRight size={15}/></button></article>
@@ -290,7 +317,7 @@ function App() {
           <label className="stat-select"><span>TEAM 1</span><span className="select-wrap"><select value={compareTeams[0]||''} onChange={e=>setCompareTeams([e.target.value,compareTeams[1]||''].filter(Boolean))}><option value="">Choose a team</option>{compareTeamNames.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
           <label className="stat-select"><span>TEAM 2</span><span className="select-wrap"><select value={compareTeams[1]||''} onChange={e=>setCompareTeams([compareTeams[0]||'',e.target.value].filter(Boolean))}><option value="">Choose a team</option>{compareTeamNames.filter(x=>x!==compareTeams[0]).map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
         </div>
-        {comparisonTeams.length===2?<><div className="comparison-scorecards">{comparisonTeams.map(t=><article className="comparison-card" key={t.name}><div className="comparison-team-identity"><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',t.name)}><TeamName name={t.name}/></button><DivisionBadge division={t.rows[0]?.division}/></div><span>{t.players.length} players · {fmtCount(t.games)} player-games · {fmt(t.winPct)}% player-game wins</span><div className="comparison-team-rating"><span>TEAM MATCH RATING</span><RatingMeter value={t.rating}/></div></article>)}</div>
+        {comparisonTeams.length===2?<><div className="comparison-scorecards">{comparisonTeams.map(t=><article className="comparison-card" key={t.name}><div className="comparison-team-identity"><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',t.name)}><TeamName name={t.name}/></button><DivisionBadge division={t.rows[0]?.division}/></div><span>{t.players.length} players · {fmtCount(t.games)} player-games · {fmt(t.winPct)}% player-game wins</span><div className="comparison-team-rating"><span>TEAM MATCH RATING</span>{t.rating===null?<span className="rating-unavailable">No game data</span>:<RatingMeter value={t.rating}/>}</div></article>)}</div>
           <div className="panel-heading compare-subheading"><div><h3>Individual player rating breakdowns</h3><p className="table-note">Every category below is calculated from that player's own stats, using the league's custom formulas. Team totals are not blended into these ratings.</p></div><span className="panel-tag">PLAYER RATING · 0-10</span></div>
           <DataTable columns={[{key:'playerName',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>navigateTo('Players',r.playerName)}>{r.playerName}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamName',label:'TEAM',render:r=><button className="entity-link" onClick={()=>navigateTo('Teams','',r.teamName)}>{r.teamName}</button>},{key:'games',label:'GAMES',render:r=>fmtCount(r.games)},{key:'rating',label:'MATCH RATING',render:r=><RatingMeter value={r.rating} compact/>},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=>fmtCategory(r.categories[c.key])}))]} rows={playerComparisonRows} empty="No player statistics found for these teams in this period."/>
         </>:<div className="table-empty">{selectedMatchup&&!effectiveCompareWeek?'Choose the imported stats week for this matchday to load the team comparison.':'Choose two teams to compare their players’ custom rating breakdowns.'}</div>}
