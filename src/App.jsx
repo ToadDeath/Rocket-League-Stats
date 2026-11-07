@@ -105,6 +105,7 @@ function App() {
   const [activePage, setActivePage] = useState('Overview');
   const [query, setQuery] = useState('');
   const [selectedStat, setSelectedStat] = useState('score per game');
+  const [selectedAuditPlayer, setSelectedAuditPlayer] = useState('');
   const [selectedPlayer, setSelectedPlayer] = useState('');
   const [selectedTeam, setSelectedTeam] = useState('');
   const [selectedWeek, setSelectedWeek] = useState('all');
@@ -166,6 +167,7 @@ function App() {
   const playerComparisonRows = [...comparisonPlayers.values()].map(p=>{ const rating=matchRatingForRecords(p.rows); const games=p.rows.reduce((sum,r)=>sum+n(r.stats.games),0); const wins=p.rows.reduce((sum,r)=>sum+n(r.stats.wins),0); return {...p,rating:rating.rating,categories:rating.categories,games,winPct:games?wins/games*100:0}; }).sort((a,b)=>a.teamName.localeCompare(b.teamName)||b.rating-a.rating);
   const statRows = [...records].sort((a,b)=>n(b.stats[selectedStat])-n(a.stats[selectedStat])).slice(0,50);
   const activePlayer = players.find(p=>p.name===selectedPlayer);
+  const auditPlayer = players.find(p=>p.name===selectedAuditPlayer) || players[0];
   const activeTeam = teams.find(t=>t.name===selectedTeam);
   const activeTeamPlayers = activeTeam ? players.filter(p=>activeTeam.players.has(p.name)).sort((a,b)=>b.rating-a.rating) : [];
   const playerHistory = activePlayer ? [...new Set(activePlayer.rows.map(r=>r.week).filter(Number.isFinite))].sort((a,b)=>a-b).map(week=>{ const weekly=activePlayer.rows.filter(r=>r.week===week); const cumulative=activePlayer.rows.filter(r=>r.week<=week); return {week:'Week '+week,weekly:matchRatingForRecords(weekly).rating,cumulative:matchRatingForRecords(cumulative).rating,games:weekly.reduce((sum,r)=>sum+n(r.stats.games),0)}; }) : [];
@@ -212,7 +214,6 @@ function App() {
             </article>
             <article className="profile-section"><div className="panel-heading"><h3>Rating breakdown</h3></div><div className="rating-breakdown">{matchRatingCategories.map(c=><div className="rating-row" key={c.key}><div><span>{c.label}</span><b>{fmt(activePlayer.ratingCategories[c.key])}</b></div><div className="rating-track" style={{'--rating-fill':(Math.min(100,Math.max(0,activePlayer.ratingCategories[c.key]*10)))+'%'}}/></div>)}</div><p className="table-note">Category ratings are provisional until checked against the original workbook.</p></article>
           </div>
-          <article className="profile-section profile-week-table"><div className="panel-heading"><h3>Calculation audit</h3><span className="panel-tag">PROVISIONAL</span></div><p className="table-note">This shows the current website calculation for this player. Input values are per game except Win %, and weighted points are category rating × weight.</p><DataTable columns={[{key:'label',label:'CATEGORY'},{key:'input',label:'INPUT',render:r=>fmt(r.input)},{key:'average',label:'BASELINE',render:r=>fmt(r.average)},{key:'adjustment',label:'ADJUSTMENT',render:r=>(r.adjustment>0?'+':'')+fmt(r.adjustment)},{key:'categoryRating',label:'CATEGORY RATING',render:r=>fmt(r.categoryRating)},{key:'weight',label:'WEIGHT',render:r=>fmt(r.weight)},{key:'weightedPoints',label:'WEIGHTED POINTS',render:r=>fmt(r.weightedPoints)}]} rows={matchRatingCategories.map(c=>{const input=activePlayer.ratingValues[c.key], adjustment=(c.inverse?c.average-input:input-c.average)*c.multiplier, categoryRating=Math.max(1,6+adjustment);return {...c,input,adjustment,categoryRating,weightedPoints:categoryRating*c.weight};})}/><div className="formula-line">Current overall = total weighted points ÷ 7 = {fmt(activePlayer.rating)}</div></article>
           <article className="profile-section profile-week-table"><div className="panel-heading"><h3>Weekly results</h3></div><DataTable columns={[{key:'week',label:'WEEK'},{key:'games',label:'GAMES'},{key:'weekly',label:'WEEKLY RATING',render:r=>fmt(r.weekly)},{key:'cumulative',label:'SEASON RATING',render:r=>fmt(r.cumulative)}]} rows={playerHistory.slice().reverse()} empty="No weekly results yet."/></article>
         </> : <>
           <div className="panel-heading"><div><span className="panel-kicker">PLAYERS</span><h2>{players.length} players</h2></div><span className="panel-tag">MATCH RATING</span></div>
@@ -232,15 +233,30 @@ function App() {
           <div className="panel-heading compare-subheading"><div><h3>Individual player rating breakdowns</h3><p className="table-note">Every category below is calculated from that player's own stats, using the league's custom formulas. Team totals are not blended into these ratings.</p></div><span className="panel-tag">PLAYER LEVEL · 0-10</span></div>
           <DataTable columns={[{key:'playerName',label:'PLAYER'},{key:'teamName',label:'TEAM'},{key:'games',label:'GAMES',render:r=>fmt(r.games)},{key:'rating',label:'MATCH RATING',render:r=>fmt(r.rating)},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=>fmt(r.categories[c.key])}))]} rows={playerComparisonRows} empty="No player statistics found for these teams in this period."/>
         </>:<div className="table-empty">Choose two teams to compare their players' custom rating breakdowns.</div>}
-        <details className="calculation-details"><summary>How Match Rating is calculated</summary>
+      </section>}
+      {activePage==='Stat Explorer'&&<section className="panel full-panel">
+        <div className="panel-heading"><div><span className="panel-kicker">RAW EXPORT EXPLORER</span><h2>Browse exported stats</h2></div><span className="panel-tag">{stats.length} STAT FIELDS</span></div>
+        <label className="stat-select"><span>STATISTIC</span><span className="select-wrap"><select value={selectedStat} onChange={e=>setSelectedStat(e.target.value)}>{stats.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
+        <DataTable columns={[{key:'playerName',label:'PLAYER'},{key:'teamName',label:'TEAM'},{key:'week',label:'WEEK'},{key:'value',label:selectedStat.toUpperCase(),render:r=>fmt(r.stats[selectedStat])},{key:'sourceFile',label:'SOURCE'}]} rows={statRows} empty="No rows to explore."/>
+        <div className="stat-rating-method">
+          <div className="panel-heading"><div><span className="panel-kicker">RATING METHODOLOGY</span><h2>How Match Rating is calculated</h2></div><span className="panel-tag">PROVISIONAL</span></div>
           <p>Each category starts at 6. Performance relative to its baseline is multiplied by the category multiplier. Category ratings have a minimum of 1. The seven category ratings are combined using their weights and divided by 7. The final rating is limited to 0-10.</p>
           <div className="formula-line">Overall = Σ (category rating × weight) ÷ 7</div>
           <DataTable columns={[{key:'label',label:'CATEGORY'},{key:'average',label:'BASELINE',render:r=>fmt(r.average)},{key:'multiplier',label:'MULTIPLIER',render:r=>fmt(r.multiplier)},{key:'weight',label:'WEIGHT',render:r=>fmt(r.weight)},{key:'direction',label:'DIRECTION'}]} rows={matchRatingCategories.map(c=>({...c,direction:c.inverse?'Lower is better':'Higher is better'}))}/>
           <p className="table-note">Win % = wins ÷ games × 100. Other inputs are per game. GA-Saves = Goals Against per game - Saves per game, with lower values scoring better. Demos +/- = demos inflicted per game - demos taken per game.</p>
           <p className="table-note">These are the current website rules. The source spreadsheet still needs a cell-by-cell check before this can be called a verified replica.</p>
-        </details>
+        </div>
+        <div className="stat-rating-audit">
+          <div className="panel-heading"><div><span className="panel-kicker">PLAYER-LEVEL BREAKDOWN</span><h2>Match Rating calculation audit</h2></div><span className="panel-tag">CURRENT WEBSITE FORMULA</span></div>
+          <label className="stat-select"><span>PLAYER</span><span className="select-wrap"><select value={auditPlayer?.name||''} onChange={e=>setSelectedAuditPlayer(e.target.value)}>{players.map(p=><option key={p.name} value={p.name}>{p.name}</option>)}</select><ChevronDown size={16}/></span></label>
+          {auditPlayer ? <>
+            <div className="formula-line">{auditPlayer.name} · {fmt(auditPlayer.games)} games · Match Rating {fmt(auditPlayer.rating)}</div>
+            <p className="table-note">Inputs are per game except Win %. Weighted points are category rating × weight.</p>
+            <DataTable columns={[{key:'label',label:'CATEGORY'},{key:'input',label:'INPUT',render:r=>fmt(r.input)},{key:'average',label:'BASELINE',render:r=>fmt(r.average)},{key:'adjustment',label:'ADJUSTMENT',render:r=>(r.adjustment>0?'+':'')+fmt(r.adjustment)},{key:'categoryRating',label:'CATEGORY RATING',render:r=>fmt(r.categoryRating)},{key:'weight',label:'WEIGHT',render:r=>fmt(r.weight)},{key:'weightedPoints',label:'WEIGHTED POINTS',render:r=>fmt(r.weightedPoints)}]} rows={matchRatingCategories.map(c=>{const input=auditPlayer.ratingValues[c.key], adjustment=(c.inverse?c.average-input:input-c.average)*c.multiplier, categoryRating=Math.max(1,6+adjustment);return {...c,input,adjustment,categoryRating,weightedPoints:categoryRating*c.weight};})}/>
+            <div className="formula-line">Total weighted points ÷ 7 = {fmt(auditPlayer.rating)}</div>
+          </> : <div className="table-empty">Import player data to see a calculation audit.</div>}
+        </div>
       </section>}
-      {activePage==='Stat Explorer'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">RAW EXPORT EXPLORER</span><h2>Browse exported stats</h2></div><span className="panel-tag">{stats.length} STAT FIELDS</span></div><label className="stat-select"><span>STATISTIC</span><span className="select-wrap"><select value={selectedStat} onChange={e=>setSelectedStat(e.target.value)}>{stats.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label><DataTable columns={[{key:'playerName',label:'PLAYER'},{key:'teamName',label:'TEAM'},{key:'week',label:'WEEK'},{key:'value',label:selectedStat.toUpperCase(),render:r=>fmt(r.stats[selectedStat])},{key:'sourceFile',label:'SOURCE'}]} rows={statRows} empty="No rows to explore."/></section>}
       <footer><span>RLSTATS <b>•</b> LEAGUE ANALYTICS</span><span>Built for the community <span className="footer-flame">◆</span></span></footer>
     </main>
   </div>;
