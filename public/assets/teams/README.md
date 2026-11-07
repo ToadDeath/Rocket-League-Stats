@@ -1,3 +1,3 @@
 # Team logos
 
-Team logos belong in this folder. Use lowercase, hyphenated filenames based on canonical team names, for example `axe-and-army.png`, `emerald-city-rc.png`, and `wonderwall.png`. Missing logos are fine; the site will show the team name without an image.
+Use the current team logo files in this folder. Filenames match the team names shown in the roster, using uppercase names and spaces, for example `AXE & ARMY.png`, `EMERALD CITY RC.png`, and `WONDERWALL.png`. The dashboard maps each division's canonical team name to its corresponding image. Missing logos fall back to a team monogram.
