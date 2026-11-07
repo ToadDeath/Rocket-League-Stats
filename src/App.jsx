@@ -144,7 +144,7 @@ async function downloadTeamComparisonPng({ teams, players, categories, week }) {
   const cardWidth = (width - margin * 2 - gap) / 2;
   const top = 260;
   const tableHeaderHeight = 66;
-  const rowHeight = 62;
+  const rowHeight = 70;
   const height = top + tableHeaderHeight + Math.max(players.length, 1) * rowHeight + 72;
   const canvas = document.createElement('canvas');
   canvas.width = width * scale;
@@ -223,9 +223,11 @@ async function downloadTeamComparisonPng({ teams, players, categories, week }) {
     drawText(fmtCount(p.games),cx+cols[3].width/2,y+rowHeight/2,14,'#dce4ee',550,'center');cx+=cols[3].width;
     drawMeter(p.rating,cx+8,y+rowHeight/2-6,100,12);cx+=cols[4].width;
     categories.forEach((category,i)=>{
-      const val=n(p.categories[category.key]);
+      const adjusted=n(p.categories[category.key]);
+      const raw=n(p.values?.[category.key]);
       const cellW=cols[5+i].width;
-      drawText(fmtCategory(val),cx+cellW/2,y+rowHeight/2,14,'#dce4ee',600,'center');
+      drawText(fmt(adjusted),cx+cellW/2,y+25,14,'#e8edf5',700,'center');
+      drawText('Raw '+fmt(raw)+(category.key==='winPct'?'%':''),cx+cellW/2,y+48,10,'#93a3b7',500,'center');
       cx+=cellW;
     });
   });
@@ -237,7 +239,7 @@ async function downloadTeamComparisonPng({ teams, players, categories, week }) {
   link.href=url;
   link.download=`sgl-team-comparison-week-${week||'all'}.png`;
   document.body.appendChild(link);link.click();link.remove();
-  URL.revokeObjectURL(url);
+  window.setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
 
 function MetricCard({ label, value, detail, icon: Icon }) {
@@ -368,7 +370,7 @@ function App() {
   });
   const comparisonTeams = compareTeams.map(name=>{ const rows=compareRows.filter(r=>r.teamName===name); const games=rows.reduce((s,r)=>s+n(r.stats.games),0); const wins=rows.reduce((s,r)=>s+n(r.stats.wins),0); const rating=games?matchRatingForRecords(rows).rating:null; return {name,rows,rating,games,wins,players:[...new Set(rows.map(r=>r.playerName))],winPct:games?wins/games*100:0}; }).filter(t=>t.rows.length);
   const comparisonPlayers = compareRows.filter(r=>compareTeams.includes(r.teamName)).reduce((groups,r)=>{ const key=r.teamName+'::'+r.playerName; if(!groups.has(key)) groups.set(key,{key,playerName:r.playerName,teamName:r.teamName,rows:[]}); groups.get(key).rows.push(r); return groups; },new Map());
-  const playerComparisonRows = [...comparisonPlayers.values()].map(p=>{ const rating=matchRatingForRecords(p.rows); const games=p.rows.reduce((sum,r)=>sum+n(r.stats.games),0); const wins=p.rows.reduce((sum,r)=>sum+n(r.stats.wins),0); return {...p,rank:dataset?.playerRanks?.[p.playerName]||'',rating:rating.rating,categories:rating.categories,games,winPct:games?wins/games*100:0}; }).sort((a,b)=>a.teamName.localeCompare(b.teamName)||b.rating-a.rating);
+  const playerComparisonRows = [...comparisonPlayers.values()].map(p=>{ const rating=matchRatingForRecords(p.rows); const games=p.rows.reduce((sum,r)=>sum+n(r.stats.games),0); const wins=p.rows.reduce((sum,r)=>sum+n(r.stats.wins),0); return {...p,rank:dataset?.playerRanks?.[p.playerName]||'',rating:rating.rating,categories:rating.categories,values:rating.values,games,winPct:games?wins/games*100:0}; }).sort((a,b)=>a.teamName.localeCompare(b.teamName)||b.rating-a.rating);
   const statRows = [...records].sort((a,b)=>n(b.stats[selectedStat])-n(a.stats[selectedStat])).slice(0,50);
   const activePlayer = players.find(p=>p.name===selectedPlayer);
   const auditPlayer = players.find(p=>p.name===selectedAuditPlayer) || players[0];
@@ -430,7 +432,7 @@ function App() {
         </div>
         {comparisonTeams.length===2?<><div className="comparison-scorecards">{comparisonTeams.map(t=><article className="comparison-card" key={t.name}><div className="comparison-team-identity"><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',t.name)}><TeamName name={t.name}/></button><DivisionBadge division={t.rows[0]?.division}/></div><span>{t.players.length} players · {fmtCount(t.games)} player-games · {fmt(t.winPct)}% player-game wins</span><div className="comparison-team-rating"><span>TEAM MATCH RATING</span>{t.rating===null?<span className="rating-unavailable">No game data</span>:<RatingMeter value={t.rating}/>}</div></article>)}</div>
           <div className="panel-heading compare-subheading"><div><h3>Individual player rating breakdowns</h3></div><div className="compare-export-actions"><span className="panel-tag">PLAYER RATING · 0-10</span><button type="button" className="export-button" disabled={exportingComparison} onClick={async()=>{setExportingComparison(true);try{await downloadTeamComparisonPng({teams:comparisonTeams,players:playerComparisonRows,categories:matchRatingCategories,week:effectiveCompareWeek});}catch(error){console.error(error);window.alert('The comparison image could not be exported. Please try again.');}finally{setExportingComparison(false);}}}><Download size={15}/>{exportingComparison?'Creating PNG...':'Export PNG'}</button></div></div>
-          <DataTable columns={[{key:'playerName',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>navigateTo('Players',r.playerName)}>{r.playerName}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamName',label:'TEAM',render:r=><button className="entity-link" onClick={()=>navigateTo('Teams','',r.teamName)}>{r.teamName}</button>},{key:'games',label:'GAMES',render:r=>fmtCount(r.games)},{key:'rating',label:'MATCH RATING',render:r=><RatingMeter value={r.rating} compact/>},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=>fmtCategory(r.categories[c.key])}))]} rows={playerComparisonRows} empty="No player statistics found for these teams in this period."/>
+          <DataTable columns={[{key:'playerName',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>navigateTo('Players',r.playerName)}>{r.playerName}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamName',label:'TEAM',render:r=><button className="entity-link" onClick={()=>navigateTo('Teams','',r.teamName)}>{r.teamName}</button>},{key:'games',label:'GAMES',render:r=>fmtCount(r.games)},{key:'rating',label:'MATCH RATING',render:r=><RatingMeter value={r.rating} compact/>},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=><div className="comparison-category-cell"><strong>{fmt(r.categories[c.key])}</strong><small>Raw {fmt(r.values[c.key])}{c.key==='winPct'?'%':''}</small></div>}))]} rows={playerComparisonRows} empty="No player statistics found for these teams in this period."/>
         </>:<div className="table-empty">{selectedMatchup&&!effectiveCompareWeek?'Choose the imported stats week for this matchday to load the team comparison.':'Choose two teams to compare their players’ custom rating breakdowns.'}</div>}
       </section>}
       {activePage==='Stat Explorer'&&<section className="panel full-panel">
