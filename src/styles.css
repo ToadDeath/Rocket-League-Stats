@@ -466,3 +466,8 @@ body{font-size:15px}
 .export-button:hover:not(:disabled){background:#24364a;border-color:#00aeef;color:#fff}
 .export-button:disabled{opacity:.6;cursor:wait}
 @media(max-width:560px){.compare-export-actions{gap:7px;flex-wrap:wrap;justify-content:flex-end}.export-button{padding:8px 10px;font-size:10px}}
+
+
+.comparison-category-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;line-height:1.15;font-variant-numeric:tabular-nums}
+.comparison-category-cell strong{font-size:12px;font-weight:750;color:#edf2f9}
+.comparison-category-cell small{font-size:9px;font-weight:500;color:#8f9fb3;white-space:nowrap}
