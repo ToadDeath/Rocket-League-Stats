@@ -597,3 +597,18 @@ footer{align-items:center}
 .footer-credit strong{color:#aab6c8;font-weight:700}
 .footer-credit a{display:inline-flex;align-items:center;gap:3px;margin-left:5px;color:#74859d;text-decoration:none;transition:color .15s ease}
 .footer-credit a:hover{color:#9bdcf3}
+
+/* Player rating breakdown: original stats under labels, scores aligned right */
+.profile-rating-row{display:grid;grid-template-columns:minmax(105px,.9fr) minmax(0,1.5fr) 38px;align-items:center;column-gap:14px;width:100%}
+.profile-rating-meta{display:grid;gap:3px;min-width:0}
+.profile-rating-row .profile-rating-label{color:#d0d9e5;font-size:11px;font-weight:650;white-space:nowrap}
+.profile-rating-row .profile-raw-value{padding:0;color:#7f8da1;font-size:9px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.profile-rating-row .rating-meter{display:block;width:100%;max-width:none;min-width:0}
+.rating-breakdown .profile-rating-row .rating-meter .rating-meter-track{width:100%;height:8px}
+.rating-breakdown .profile-rating-row .rating-meter>span{display:none}
+.profile-category-score{color:#edf2f9;font-size:12px;font-weight:750;text-align:right;font-variant-numeric:tabular-nums}
+@media(max-width:560px){
+ .profile-rating-row{grid-template-columns:minmax(88px,.9fr) minmax(0,1.2fr) 34px;column-gap:9px}
+ .profile-rating-row .profile-rating-label{font-size:10px}
+ .profile-rating-row .profile-raw-value{font-size:8px}
+}
