@@ -5,7 +5,7 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 const divisions = ['All Divisions', 'Premier', 'Championship'];
 const navItems = [
   { label: 'Overview', icon: LayoutDashboard }, { label: 'Players', icon: Users },
-  { label: 'Teams', icon: Shield }, { label: 'Stat Explorer', icon: BarChart3 }
+  { label: 'Teams', icon: Shield }, { label: 'Compare', icon: Swords }, { label: 'Stat Explorer', icon: BarChart3 }
 ];
 const n = value => Number.isFinite(Number(value)) ? Number(value) : 0;
 const fmt = value => Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -105,6 +105,8 @@ function App() {
   const [query, setQuery] = useState('');
   const [selectedStat, setSelectedStat] = useState('score per game');
   const [selectedPlayer, setSelectedPlayer] = useState('');
+  const [selectedWeek, setSelectedWeek] = useState('all');
+  const [compareTeams, setCompareTeams] = useState([]);
   const [dataset, setDataset] = useState(null);
   const [loadError, setLoadError] = useState('');
 
@@ -153,11 +155,15 @@ function App() {
   const playerGames = records.reduce((s,r)=>s+n(r.stats.games),0);
   const totalScore = records.reduce((s,r)=>s+n(r.stats.score),0);
   const stats = dataset?.availableStats || [];
+  const availableWeeks = [...new Set(records.map(r=>r.week).filter(Number.isFinite))].sort((a,b)=>a-b);
+  const compareRows = selectedWeek === 'all' ? records : records.filter(r=>r.week===Number(selectedWeek));
+  const compareTeamNames = [...new Set(compareRows.map(r=>r.teamName))].sort();
+  const comparisonTeams = compareTeams.map(name=>{ const rows=compareRows.filter(r=>r.teamName===name); const rating=matchRatingForRecords(rows); const games=rows.reduce((s,r)=>s+n(r.stats.games),0); const wins=rows.reduce((s,r)=>s+n(r.stats.wins),0); return {name,rows,rating,games,wins,players:[...new Set(rows.map(r=>r.playerName))],winPct:games?wins/games*100:0}; });
   const statRows = [...records].sort((a,b)=>n(b.stats[selectedStat])-n(a.stats[selectedStat])).slice(0,50);
   const activePlayer = players.find(p=>p.name===selectedPlayer);
   const playerHistory = activePlayer ? [...new Set(activePlayer.rows.map(r=>r.week).filter(Number.isFinite))].sort((a,b)=>a-b).map(week=>{ const weekly=activePlayer.rows.filter(r=>r.week===week); const cumulative=activePlayer.rows.filter(r=>r.week<=week); return {week:'Week '+week,weekly:matchRatingForRecords(weekly).rating,cumulative:matchRatingForRecords(cumulative).rating,games:weekly.reduce((sum,r)=>sum+n(r.stats.games),0)}; }) : [];
   const description = {
-    Overview:'', Players:'', Teams:'', 'Stat Explorer':''
+    Overview:'', Players:'', Teams:'', Compare:'', 'Stat Explorer':''
   }[activePage];
 
   return <div className="app-shell">
@@ -207,6 +213,27 @@ function App() {
         </>}
       </section>}
       {activePage==='Teams'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">TEAM DIRECTORY</span><h2>{teams.length} teams</h2></div><span className="panel-tag">PLAYER TOTALS</span></div><DataTable columns={[{key:'name',label:'TEAM',render:r=><TeamName name={r.name}/>},{key:'playerCount',label:'PLAYERS'},{key:'games',label:'PLAYER-GAMES',render:r=>fmt(r.games)},{key:'winPct',label:'PLAYER GAME WIN %',render:r=>`${fmt(r.winPct)}%`},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)},{key:'assists',label:'ASSISTS',render:r=>fmt(r.assists)}]} rows={teams} empty="No team data available for this division."/><p className="table-note">Team aliases are applied before totals are combined. This is not the official series standings table.</p></section>}
+      {activePage==='Compare'&&<section className="panel full-panel">
+        <div className="panel-heading"><div><span className="panel-kicker">MATCH RATING</span><h2>Team comparison</h2></div><span className="panel-tag">WEEK BY WEEK</span></div>
+        <div className="compare-controls">
+          <label className="stat-select"><span>WEEK</span><span className="select-wrap"><select value={selectedWeek} onChange={e=>setSelectedWeek(e.target.value)}><option value="all">All weeks</option>{availableWeeks.map(w=><option key={w} value={w}>Week {w}</option>)}</select><ChevronDown size={16}/></span></label>
+          <label className="stat-select"><span>TEAM 1</span><span className="select-wrap"><select value={compareTeams[0]||''} onChange={e=>setCompareTeams([e.target.value,compareTeams[1]||''].filter(Boolean))}><option value="">Choose a team</option>{compareTeamNames.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
+          <label className="stat-select"><span>TEAM 2</span><span className="select-wrap"><select value={compareTeams[1]||''} onChange={e=>setCompareTeams([compareTeams[0]||'',e.target.value].filter(Boolean))}><option value="">Choose a team</option>{compareTeamNames.filter(x=>x!==compareTeams[0]).map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
+        </div>
+        {comparisonTeams.length===2?<><div className="comparison-scorecards">{comparisonTeams.map(t=><article className="comparison-card" key={t.name}><TeamName name={t.name}/><strong>{fmt(t.rating.rating)}</strong><span>Match Rating</span><div>{t.players.length} players · {fmt(t.games)} player-games · {fmt(t.winPct)}% game wins</div></article>)}</div>
+          <div className="panel-heading compare-subheading"><h3>Category comparison</h3><span className="panel-tag">0-10 EACH</span></div>
+          <DataTable columns={[{key:'category',label:'CATEGORY'},...comparisonTeams.map((t,i)=>({key:'team'+i,label:t.name,render:r=>fmt(t.rating.categories[r.key])}))]} rows={matchRatingCategories.map(c=>({key:c.key,category:c.label}))}/>
+          <div className="panel-heading compare-subheading"><h3>Player performances</h3></div>
+          <DataTable columns={[{key:'playerName',label:'PLAYER'},{key:'teamName',label:'TEAM'},{key:'games',label:'GAMES',render:r=>fmt(r.stats.games)},{key:'rating',label:'MATCH RATING',render:r=>fmt(matchRatingForRecords([r]).rating)},{key:'winPct',label:'WIN %',render:r=>n(r.stats.games)?fmt(n(r.stats.wins)/n(r.stats.games)*100)+'%':'--'},{key:'score',label:'SCORE/G',render:r=>n(r.stats.games)?fmt(n(r.stats.score)/n(r.stats.games)):'--'}]} rows={compareRows.filter(r=>compareTeams.includes(r.teamName)).sort((a,b)=>matchRatingForRecords([b]).rating-matchRatingForRecords([a]).rating)}/>
+        </>:<div className="table-empty">Choose two teams to compare their results and player ratings.</div>}
+        <details className="calculation-details"><summary>How Match Rating is calculated</summary>
+          <p>Each category starts at 6. Performance relative to its baseline is multiplied by the category multiplier. Category ratings have a minimum of 1. The seven category ratings are combined using their weights and divided by 7. The final rating is limited to 0-10.</p>
+          <div className="formula-line">Overall = Σ (category rating × weight) ÷ 7</div>
+          <DataTable columns={[{key:'label',label:'CATEGORY'},{key:'average',label:'BASELINE',render:r=>fmt(r.average)},{key:'multiplier',label:'MULTIPLIER',render:r=>fmt(r.multiplier)},{key:'weight',label:'WEIGHT',render:r=>fmt(r.weight)},{key:'direction',label:'DIRECTION'}]} rows={matchRatingCategories.map(c=>({...c,direction:c.inverse?'Lower is better':'Higher is better'}))}/>
+          <p className="table-note">Win % = wins ÷ games × 100. Other inputs are per game. GA-Saves = goals conceded per game - saves per game, with lower values scoring better. Demos +/- = demos inflicted per game - demos taken per game.</p>
+          <p className="table-note">These are the current website rules. The source spreadsheet still needs a cell-by-cell check before this can be called a verified replica.</p>
+        </details>
+      </section>}
       {activePage==='Stat Explorer'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">RAW EXPORT EXPLORER</span><h2>Browse exported stats</h2></div><span className="panel-tag">{stats.length} STAT FIELDS</span></div><label className="stat-select"><span>STATISTIC</span><span className="select-wrap"><select value={selectedStat} onChange={e=>setSelectedStat(e.target.value)}>{stats.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label><DataTable columns={[{key:'playerName',label:'PLAYER'},{key:'teamName',label:'TEAM'},{key:'week',label:'WEEK'},{key:'value',label:selectedStat.toUpperCase(),render:r=>fmt(r.stats[selectedStat])},{key:'sourceFile',label:'SOURCE'}]} rows={statRows} empty="No rows to explore."/></section>}
       <footer><span>RLSTATS <b>•</b> LEAGUE ANALYTICS</span><span>Built for the community <span className="footer-flame">◆</span></span></footer>
     </main>
