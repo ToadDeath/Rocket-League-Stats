@@ -158,3 +158,7 @@ footer b,.footer-flame{color:#f02f38}
 .calculation-details p{font-size:10px;line-height:1.65;color:#9eacbf}
 .formula-line{padding:12px;margin:12px 0;background:#141d28;border-radius:5px;color:#69ccec;font:700 14px 'Barlow Condensed',sans-serif}
 @media(max-width:700px){.compare-controls{grid-template-columns:1fr}.comparison-scorecards{grid-template-columns:1fr}}
+
+.team-name{display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
+.team-name>img{width:34px;height:34px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+.team-monogram{width:34px;height:34px;display:inline-grid;place-items:center;flex-shrink:0;border:1px solid #3a4654;border-radius:7px;background:linear-gradient(145deg,#202a36,#10151c);color:#8edcf3;font:700 10px 'Barlow Condensed',sans-serif;letter-spacing:.4px}
