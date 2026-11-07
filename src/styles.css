@@ -433,3 +433,24 @@ body{font-size:15px}
  .metric-detail{font-size:9px}
  .profile-stats span{font-size:8px}
 }
+
+
+/* Weekly matchup review */
+.matchday-select{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.matchday-select>span{font-size:9px;font-weight:700;letter-spacing:1px;color:#8291a7}
+.matchday-select select{max-width:145px;padding:8px 28px 8px 10px;border:1px solid #343d49;border-radius:6px;background:#171e28;color:#edf2f9;font:inherit;font-size:11px}
+.matchup-panel .stats-table{width:100%;min-width:0}
+.matchup-panel .stats-table th:nth-child(2),.matchup-panel .stats-table td:nth-child(2){min-width:76px}
+.matchup-panel .stats-table td{padding-top:13px;padding-bottom:13px}
+.matchup-score{font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;color:#edf2f9}
+.matchup-panel .clickable-row:hover .matchup-score{color:#00aeef}
+.matchup-context{display:flex;flex-direction:column;gap:5px;margin:8px 0 18px;padding:12px 14px;border-left:3px solid #00aeef;background:#171e28;border-radius:0 6px 6px 0}
+.matchup-context strong{font-size:12px;color:#edf2f9}
+.matchup-context span{font-size:11px;line-height:1.5;color:#9aa7b8}
+@media(max-width:560px){
+ .matchday-select{gap:6px}
+ .matchday-select>span{font-size:8px}
+ .matchday-select select{max-width:116px;padding:7px 22px 7px 7px;font-size:10px}
+ .matchup-panel .stats-table th,.matchup-panel .stats-table td{padding-left:7px;padding-right:7px}
+ .matchup-score{font-size:11px}
+}
