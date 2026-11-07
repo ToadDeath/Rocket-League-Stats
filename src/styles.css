@@ -473,8 +473,6 @@ body{font-size:15px}
 .comparison-category-cell small{font-size:9px;font-weight:500;color:#8f9fb3;white-space:nowrap}
 
 
-/* Align team cells and their headers consistently in the Overview and Players tables */
-.stats-table td:has(.team-entity-link){text-align:left}
+/* Keep the team logo and name together, centered beneath the TEAM header */
+.stats-table td:has(.team-entity-link){text-align:center}
 .stats-table td:has(.team-entity-link) .team-entity-link{margin-left:0;margin-right:0}
-.stats-table:has(tbody td:nth-child(3) .team-entity-link) th:nth-child(3),
-.stats-table:has(tbody td:nth-child(2) .team-entity-link) th:nth-child(2){text-align:left}
