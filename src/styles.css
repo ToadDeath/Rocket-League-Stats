@@ -520,3 +520,16 @@ body{font-size:15px}
 .profile-rating-row>div:first-child{margin-bottom:0}
 .profile-rating-row .rating-meter{min-width:112px}
 .profile-raw-value{display:block;padding-left:1px;color:#8291a7;font-size:9px;font-variant-numeric:tabular-nums;letter-spacing:.25px}
+
+ 
+/* Give the series score a clearly defined center column with breathing room */
+.matchup-panel .stats-table{table-layout:fixed}
+.matchup-panel .stats-table th:nth-child(1),.matchup-panel .stats-table td:nth-child(1){width:42%;padding-right:22px}
+.matchup-panel .stats-table th:nth-child(2),.matchup-panel .stats-table td:nth-child(2){width:16%;text-align:center;padding-left:8px;padding-right:8px}
+.matchup-panel .stats-table th:nth-child(3),.matchup-panel .stats-table td:nth-child(3){width:42%;padding-left:22px}
+.matchup-panel .stats-table td:nth-child(2) .matchup-result{width:100%;align-items:center}
+.profile-raw-value{padding-left:1px;color:#aab6c8;font-size:10px;font-variant-numeric:tabular-nums;letter-spacing:0}
+@media(max-width:560px){
+ .matchup-panel .stats-table th:nth-child(1),.matchup-panel .stats-table td:nth-child(1){padding-right:12px}
+ .matchup-panel .stats-table th:nth-child(3),.matchup-panel .stats-table td:nth-child(3){padding-left:12px}
+}
