@@ -376,3 +376,60 @@ footer{padding-top:32px;padding-bottom:26px}
  .compare-subheading{margin-top:22px}
  .calculation-details{padding:14px}
 }
+
+/* Improve readability across the dashboard */
+body{font-size:15px}
+.nav-item{font-size:13px}
+.breadcrumb{font-size:10px}
+.data-status{font-size:9px}
+.page-heading p{font-size:13px}
+.division-picker-trigger,.division-picker-menu button{font-size:12px}
+.metric-top{font-size:10px}
+.metric-detail{font-size:10px}
+.panel-kicker{font-size:9px}
+.panel-tag{font-size:9px}
+.panel-heading h2{font-size:22px}
+.empty-chart strong,.leaderboard-empty strong{font-size:12px}
+.empty-chart>span,.leaderboard-empty>span{font-size:10px}
+.chart-legend{font-size:10px}
+.search-box input{font-size:12px}
+.text-button{font-size:11px}
+.compact-empty{font-size:11px}
+.stats-table{font-size:12px}
+.stats-table th{font-size:10px;letter-spacing:.8px}
+.stats-table td{font-size:12px}
+.table-empty{font-size:12px}
+.table-note{font-size:10px}
+.stat-select>span:first-child{font-size:9px}
+.stat-select select{font-size:12px}
+.profile-team{font-size:12px}
+.profile-rating span,.profile-stats span{font-size:9px;letter-spacing:1px}
+.profile-stats strong{font-size:24px}
+.rating-row>div:first-child{font-size:11px}
+.comparison-card>span{font-size:10px}
+.comparison-card>div{font-size:11px}
+.calculation-details summary{font-size:13px}
+.calculation-details p,.stat-rating-method>p{font-size:11px}
+.division-badge{font-size:9px}
+.select-wrap select{font-size:12px}
+.rating-meter>span{font-size:11px}
+.rating-meter.compact>span{font-size:10px}
+.rating-breakdown .rating-meter>span{font-size:12px}
+.notification-item-title{font-size:12px}
+.notification-empty p,.notification-item p{font-size:12px}
+@media(max-width:760px){
+ .nav-item{font-size:11px}
+ .data-status{font-size:8px}
+ .metric-top{font-size:9px}
+ .metric-detail{font-size:9px}
+ .stats-table{font-size:11px}
+ .stats-table th{font-size:9px}
+ .stats-table td{font-size:11px}
+ .profile-stats strong{font-size:22px}
+}
+@media(max-width:390px){
+ .nav-item{font-size:10px}
+ .metric-top{font-size:9px}
+ .metric-detail{font-size:9px}
+ .profile-stats span{font-size:8px}
+}
