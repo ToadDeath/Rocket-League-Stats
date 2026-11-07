@@ -56,7 +56,7 @@ function readPlayerRoster(file) {
     if (map.has(alias) && map.get(alias) !== player) throw new Error('Alias "' + alias + '" is assigned to more than one player.');
     map.set(alias, player);
   }
-  return { aliases: map, ranks: Object.fromEntries(entries.map(({ player, rank }) => [player, rank])), trackerUrls: Object.fromEntries(entries.filter(({ trackerUrl }) => /^https?:\\/\\//i.test(trackerUrl)).map(({ player, trackerUrl }) => [player, trackerUrl])) };
+  return { aliases: map, ranks: Object.fromEntries(entries.map(({ player, rank }) => [player, rank])), trackerUrls: Object.fromEntries(entries.filter(({ trackerUrl }) => trackerUrl.startsWith('https://') || trackerUrl.startsWith('http://')).map(({ player, trackerUrl }) => [player, trackerUrl])) };
 }
 function readTeamRoster(file) {
   if (!fs.existsSync(file)) throw new Error('Missing data/team-aliases.csv.');
