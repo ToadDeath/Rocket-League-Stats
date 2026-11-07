@@ -97,7 +97,35 @@ const playerAliases = playerRoster.aliases;
 const playerRanks = playerRoster.ranks;
 const playerTrackerUrls = playerRoster.trackerUrls;
 const teamRoster = readTeamRoster(path.join(root, 'data', 'team-aliases.csv'));
+function readSchedule(file, teamRoster) {
+  if (!fs.existsSync(file)) return [];
+  return readCsv(file).map((row, index) => {
+    const division = (row.division || '').trim();
+    const matchday = Number(row.matchday);
+    const team1Info = teamRoster.get((row['team 1'] || '').trim());
+    const team2Info = teamRoster.get((row['team 2'] || '').trim());
+    const score1Text = (row['score 1'] || '').trim();
+    const score2Text = (row['score 2'] || '').trim();
+    const score1 = score1Text === '' ? null : Number(score1Text);
+    const score2 = score2Text === '' ? null : Number(score2Text);
+    const statsWeekText = (row['stats week'] || '').trim();
+    const statsWeek = statsWeekText === '' ? null : Number(statsWeekText);
+    if (!['Premier', 'Championship'].includes(division) || !Number.isInteger(matchday) || matchday < 1 ||
+        !team1Info || !team2Info || team1Info.division !== division || team2Info.division !== division ||
+        (score1Text !== '' && (!Number.isInteger(score1) || score1 < 0)) ||
+        (score2Text !== '' && (!Number.isInteger(score2) || score2 < 0)) ||
+        ((score1 === null) !== (score2 === null)) ||
+        (statsWeek !== null && (!Number.isInteger(statsWeek) || statsWeek < 1))) {
+      throw new Error('Invalid schedule row ' + (index + 2) + ' in data/schedule.csv. Check division, teams, scores, and stats week.');
+    }
+    return { id: division.toLowerCase() + '-' + matchday + '-' + (index + 1), division, matchday,
+      deadline: (row.deadline || '').trim(), team1: team1Info.team, score1, score2,
+      team2: team2Info.team, statsWeek };
+  });
+}
+
 const records = [], imports = [], duplicates = [], importWarnings = [], seenHashes = new Map();
+const schedule = readSchedule(path.join(root, 'data', 'schedule.csv'), teamRoster);
 
 for (const file of findCsvFiles(importsRoot)) {
   const relative = path.relative(root, file).split(path.sep).join('/');
@@ -183,7 +211,7 @@ for (const file of findCsvFiles(importsRoot)) {
 const availableStats = [...new Set(records.flatMap(r => Object.keys(r.stats)))];
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, JSON.stringify({
-  generatedAt: new Date().toISOString(), imports, duplicates, records,
+  generatedAt: new Date().toISOString(), imports, duplicates, records, schedule,
   availableStats, playerRanks, playerTrackerUrls, importWarnings
 }));
 console.log('Processed ' + imports.length + ' CSV file(s), ' + records.length + ' usable player rows, ' + availableStats.length + ' stat fields.');
