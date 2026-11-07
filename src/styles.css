@@ -478,3 +478,11 @@ body{font-size:15px}
 .stats-table td:has(.team-entity-link) .team-entity-link{margin-left:0;margin-right:0}
 .stats-table th.team-column-header{text-align:left}
 .stats-table th.team-column-header span{display:inline-block;width:190px;text-align:center}
+
+/* Keep the Overview player table's team column compact so Rating sits closer to the team */
+.performance-panel .stats-table{table-layout:fixed}
+.performance-panel .stats-table th:nth-child(1),.performance-panel .stats-table td:nth-child(1){width:25%}
+.performance-panel .stats-table th:nth-child(2),.performance-panel .stats-table td:nth-child(2){width:9%}
+.performance-panel .stats-table th:nth-child(3),.performance-panel .stats-table td:nth-child(3){width:30%}
+.performance-panel .stats-table th:nth-child(4),.performance-panel .stats-table td:nth-child(4){width:23%}
+.performance-panel .stats-table th:nth-child(5),.performance-panel .stats-table td:nth-child(5){width:13%}
