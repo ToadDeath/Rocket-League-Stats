@@ -308,3 +308,68 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{ou
  .profile-rating .rating-meter{margin-left:0}
  .comparison-team-rating{grid-template-columns:1fr;gap:7px}
 }
+
+/* Site-wide spacing and table alignment pass */
+.main-content{padding-left:clamp(24px,3vw,46px);padding-right:clamp(24px,3vw,46px)}
+.page-heading{padding-top:34px;padding-bottom:28px}
+.metrics-grid{gap:16px}
+.metric-card{padding:18px 19px}
+.content-grid,.bottom-grid{gap:17px;margin-top:17px}
+.panel{padding:21px}
+.panel-heading{gap:16px}
+.panel-heading h2{line-height:1.15}
+.panel-heading+.table-scroll,.panel-heading+.table-empty{margin-top:18px}
+.table-scroll{margin-top:18px}
+.stats-table{border-spacing:0}
+.stats-table th,.stats-table td{vertical-align:middle;padding:13px 14px}
+.stats-table th{line-height:1.35;text-align:center}
+.stats-table th:first-child,.stats-table td:first-child{text-align:left}
+.stats-table th:not(:first-child),.stats-table td:not(:first-child){text-align:center}
+.stats-table td .rating-meter{margin-left:auto;margin-right:auto}
+.profile-heading{margin:26px 0}
+.profile-stats{gap:12px;margin:19px 0}
+.profile-stats>div{padding:14px;gap:9px}
+.profile-grid{gap:17px;margin-top:17px}
+.profile-section{padding:19px}
+.profile-chart{margin-top:16px}
+.rating-breakdown{gap:19px;margin-top:22px}
+.compare-controls{gap:15px;margin:21px 0}
+.comparison-scorecards{gap:16px;margin:21px 0}
+.comparison-card{gap:12px;padding:20px}
+.compare-subheading{margin-top:28px}
+.calculation-details{margin-top:28px;padding:19px}
+.stat-select{gap:9px;margin-top:22px}
+.full-panel{margin-top:18px}
+.table-note{margin-top:15px;line-height:1.65}
+.import-list{gap:10px;margin-top:15px}
+.notification-panel{padding:17px}
+.notification-item{padding:14px 0}
+footer{padding-top:32px;padding-bottom:26px}
+
+@media(max-width:1100px){
+ .main-content{padding-left:25px;padding-right:25px}
+}
+@media(max-width:760px){
+ .main-content{padding-left:17px;padding-right:17px}
+ .page-heading{padding-top:27px;padding-bottom:22px}
+ .metrics-grid{gap:11px}
+ .metric-card{padding:14px}
+ .content-grid,.bottom-grid{gap:13px;margin-top:14px}
+ .panel{padding:16px}
+ .profile-heading{margin:20px 0}
+ .profile-stats{gap:9px;margin:15px 0}
+ .profile-section{padding:16px}
+ .compare-controls,.comparison-scorecards{gap:12px;margin:16px 0}
+ .comparison-card{padding:16px}
+}
+@media(max-width:560px){
+ .main-content{padding-left:12px;padding-right:12px}
+ .page-heading{padding-top:23px;padding-bottom:18px}
+ .panel{padding:14px}
+ .stats-table th,.stats-table td{padding:12px 11px}
+ .profile-stats{gap:8px}
+ .profile-stats>div{padding:11px}
+ .profile-section{padding:14px}
+ .compare-subheading{margin-top:22px}
+ .calculation-details{padding:14px}
+}
