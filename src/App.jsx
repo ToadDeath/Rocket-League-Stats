@@ -91,7 +91,7 @@ function App() {
 
   return <div className="app-shell">
     <aside className="sidebar">
-      <a className="brand" href="#" onClick={e=>{e.preventDefault();setActivePage('Overview')}}><span className="brand-mark"><Crosshair size={22}/></span><span className="brand-copy"><strong>RL<span>STATS</span></strong><small>LEAGUE ANALYTICS</small></span></a>
+      <a className="brand" href="#" onClick={e=>{e.preventDefault();setActivePage('Overview')}}><span className="brand-mark"><img src={`${import.meta.env.BASE_URL}SGL%20Logo.png`} alt="SGL" style={{ width:34, height:34, objectFit:"contain" }}/></span><span className="brand-copy"><strong>RL<span>STATS</span></strong><small>LEAGUE ANALYTICS</small></span></a>
       <div className="sidebar-label">WORKSPACE</div>
       <nav className="main-nav" aria-label="Main navigation">{navItems.map(({label,icon:Icon})=><button key={label} className={activePage===label?'nav-item active':'nav-item'} onClick={()=>setActivePage(label)}><Icon size={18}/><span>{label}</span>{activePage===label&&<span className="nav-indicator"/>}</button>)}</nav>
       <div className="sidebar-bottom"><div className="season-chip"><span className="live-dot"/> DATA HUB <span className="season-year">2026</span></div><div className="sidebar-note">League data, all in one place.</div><a className="github-link" href="https://github.com/ToadDeath/Rocket-League-Stats" target="_blank" rel="noreferrer">View project on GitHub ↗</a></div>
