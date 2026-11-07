@@ -1,3 +1,3 @@
 # Rank logos
 
-Upload rank icons here using the exact rank as the filename, lowercase and hyphenated, for example `bronze-1.png`, `champion-3.png`, `grand-champion-1.png`, or `ssl.png`.
+Rank icons belong in this folder. Keep the full rank names in their filenames, matching the uploaded files, for example `Champion I.png`, `Grand Champion III.png`, and `Supersonic Legend.png`. The site maps the roster abbreviations (such as `C1`, `GC3`, and `SSL`) to these images automatically.
