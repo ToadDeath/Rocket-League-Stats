@@ -86,8 +86,9 @@ function RankBadge({ rank }) {
 
 function TeamName({ name }) {
   const logo = teamLogoFiles[name];
-  return <span style={{ display:'inline-flex', alignItems:'center', gap:10, whiteSpace:'nowrap' }}>
-    {logo && <img src={`${import.meta.env.BASE_URL}assets/teams/${encodeURIComponent(logo)}`} alt="" style={{ width:32, height:32, objectFit:'contain', flexShrink:0 }} />}
+  const initials = name.split(/\\s+/).filter(Boolean).slice(0,3).map(x=>x[0]).join('').slice(0,3);
+  return <span className="team-name">
+    {logo ? <img src={`${import.meta.env.BASE_URL}assets/teams/${encodeURIComponent(logo)}`} alt="" /> : <span className="team-monogram">{initials}</span>}
     <span>{name}</span>
   </span>;
 }
@@ -187,7 +188,7 @@ function App() {
         <MetricCard label="AVG. MATCH RATING" value={dataset&&players.length?fmt(avg(players.reduce((sum,p)=>sum+p.rating,0),players.length)):'--'} icon={Gauge}/>
       </section>
       {activePage==='Overview'&&<><section className="content-grid">
-        <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">MATCH RATING</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'rating',label:'RATING',render:r=>fmt(r.rating)},{key:'ratingChange',label:'WEEKLY Δ',render:r=>r.ratingChange==null?'--':`${r.ratingChange>0?'+':''}${fmt(r.ratingChange)}`}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
+        <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">MATCH RATING</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamList',label:'TEAM',render:r=><TeamName name={[...r.teams][0]||r.teamList}/>},{key:'rating',label:'RATING',render:r=>fmt(r.rating)},{key:'ratingChange',label:'WEEKLY Δ',render:r=>r.ratingChange==null?'--':`${r.ratingChange>0?'+':''}${fmt(r.ratingChange)}`}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
         <article className="panel leaderboard-panel"><div className="panel-heading"><div><span className="panel-kicker">TEAM RACE</span><h2>Team performance</h2></div><span className="panel-tag">GAME DATA</span></div><DataTable columns={[{key:'name',label:'TEAM',render:r=><TeamName name={r.name}/>},{key:'playerCount',label:'PLAYERS'},{key:'winPct',label:'PLAYER GAME WIN %',render:r=>`${fmt(r.winPct)}%`}]} rows={teams.slice(0,8)} empty="Team performance will appear after importing data."/><p className="table-note">These are individual game results aggregated from player rows, not best-of-five series standings.</p></article>
       </section><section className="bottom-grid">
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">IMPORT HISTORY</span><h2>Weekly files</h2></div><Activity size={18} className="muted-icon"/></div><div className="import-list">{(dataset?.imports||[]).map(x=><div className="import-row" key={x.file}><span>{x.file}</span><b>{x.rows} players</b></div>)}</div></article>
