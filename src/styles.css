@@ -41,12 +41,20 @@ button{cursor:pointer}
 h1{font:800 clamp(34px,4vw,47px)/1 'Barlow Condensed',sans-serif;letter-spacing:.2px;margin:12px 0 8px;color:#f3f6fb}
 h1 em{font-style:normal;color:#f02f38}
 .page-heading p{margin:0;color:#8592a6;font-size:12px;line-height:1.6}
-.division-select{display:grid;gap:8px;min-width:180px}
+.division-select{display:grid;gap:8px;min-width:190px;position:relative;z-index:5}
 .division-select>span:first-child{font-size:8px}
-.select-wrap{position:relative}
-.select-wrap select{width:100%;appearance:none;border:1px solid #29374c;border-radius:6px;background:#111b2a;color:#e1e8f2;padding:11px 34px 11px 12px;font-size:11px;outline:none}
-.select-wrap select:focus{border-color:#f02f3888}
-.select-wrap svg{position:absolute;right:11px;top:11px;color:#91a0b5;pointer-events:none}
+.division-picker{position:relative}
+.division-picker-trigger,.division-picker-menu button{width:100%;display:flex;align-items:center;gap:10px;border:1px solid #29374c;background:#111b2a;color:#e1e8f2;padding:9px 11px;border-radius:6px;font-size:11px;text-align:left}
+.division-picker-trigger{cursor:pointer;min-height:42px}
+.division-picker-trigger>img,.division-picker-menu img{width:25px;height:25px;object-fit:contain;flex:none}
+.division-picker-trigger>span{flex:1}
+.division-picker-trigger>svg{color:#91a0b5}
+.division-picker-trigger:hover,.division-picker-menu button:hover{border-color:#f02f3888;background:#172337}
+.division-picker-menu{position:absolute;top:calc(100% + 5px);left:0;right:0;padding:5px;background:#101a29;border:1px solid #29374c;border-radius:7px;box-shadow:0 12px 30px #0009;display:grid;gap:4px}
+.division-picker-menu button{border-color:transparent;background:transparent;cursor:pointer;min-height:40px}
+.division-picker-menu button.selected{background:#f02f3814;border-color:#f02f3844;color:#f5f7fb}
+.division-picker-menu button span:nth-child(2){flex:1}
+.division-check{color:#d7f5a0;font-weight:800;font-size:14px}
 .notice{display:flex;gap:14px;align-items:flex-start;padding:15px 17px;border:1px solid #35472b;background:linear-gradient(100deg,#f02f380c,#111b24);border-radius:8px;margin-bottom:18px}
 .notice-icon{width:31px;height:31px;flex:none;display:grid;place-items:center;color:#f02f38;background:#f02f3816;border-radius:7px}
 .notice strong{display:block;color:#f5dfe0;font-size:11px;margin:1px 0 4px}
