@@ -4,8 +4,8 @@ A public league analytics dashboard for player ratings, team standings, and week
 
 ## Divisions
 
-- Premier League
-- Second Division
+- Premier
+- Championship
 - All Divisions
 
 ## Development
@@ -36,7 +36,7 @@ Because this repository is public, any CSV, JSON, or other data committed here w
 ## Adding weekly exports
 
 1. Add each original weekly player export as a `.csv` under `data/imports/2026/`.
-2. Include the week number and division in the filename, for example `week-02-premier.csv` or `week-02-second.csv`.
+2. Include the week number and division in the filename, for example `week-02-premier.csv` or `week-02-championship.csv`.
 3. Commit the file to `main`. GitHub Actions processes every CSV under `data/imports/` and deploys the updated dashboard.
 4. The importer detects comma-, semicolon-, tab-, and pipe-delimited files.
 
@@ -46,6 +46,9 @@ Because this repository is public, any CSV, JSON, or other data committed here w
 - Keep one row per player. Leave `Rank` blank when the player has no listed rank.
 - Put multiple alternate player names in the `Aliases` column, separated by `|` (vertical bar). Example: `Canti57|OldName`.
 - Alias matching is case-sensitive. Every alias must belong to only one player, and aliases cannot conflict with another player's canonical name.
-- `data/team-aliases.csv` is optional. Only add a mapping when an export/lobby uses a genuinely different team name, not just different capitalization.
+- `data/team-aliases.csv` is the master team list. Its columns are `League,Team Name,Aliases`.
+- Set `League` to `Premier` or `Championship`. This determines the division shown on the website, so filenames do not need to determine the division.
+- Put multiple alternate team names in `Aliases`, separated by `|` (vertical bar), just like player aliases. Leave it blank when there are no aliases.
+- Team and player alias matching is case-sensitive. Each alias must be unique and cannot conflict with another canonical team or player name.
 
 The current dashboard reports individual player-game statistics. It does not infer best-of-five series standings from player game wins.
