@@ -10,6 +10,47 @@ const n = value => Number.isFinite(Number(value)) ? Number(value) : 0;
 const fmt = value => Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
 const avg = (total, games) => games ? total / games : 0;
 
+// SGL Match Rating: category ratings are centered on 6, then weighted.
+// These baselines, multipliers, and weights are copied from the workbook's
+// Ballchasing Back-End rows 202-204.
+const matchRatingCategories = [
+  { key:'winPct', label:'Win %', average:50, multiplier:0.08, weight:0.5 },
+  { key:'scorePerGame', label:'Score', average:330, multiplier:0.015, weight:1.5 },
+  { key:'goalsPerGame', label:'Goals', average:0.72, multiplier:4, weight:1.5 },
+  { key:'assistsPerGame', label:'Assists', average:0.54, multiplier:5, weight:1.1 },
+  { key:'gaSaves', label:'GA-Saves', average:1.2, multiplier:2, weight:1.1, inverse:true },
+  { key:'boostStolenPerGame', label:'Boost stolen', average:480, multiplier:0.015, weight:0.65 },
+  { key:'demosPerGame', label:'Demos +/-', average:0, multiplier:2.5, weight:0.65 }
+];
+function matchRatingForRecords(rows) {
+  const totals = rows.reduce((a,r) => {
+    const s=r.stats||{};
+    a.games+=n(s.games); a.wins+=n(s.wins); a.score+=n(s.score);
+    a.goals+=n(s.goals); a.assists+=n(s.assists); a.saves+=n(s.saves);
+    a.goalsAgainst+=n(s['goals conceded']); a.boostStolen+=n(s['amount stolen']);
+    a.demosInflicted+=n(s['demos inflicted']); a.demosTaken+=n(s['demos taken']);
+    return a;
+  }, {games:0,wins:0,score:0,goals:0,assists:0,saves:0,goalsAgainst:0,boostStolen:0,demosInflicted:0,demosTaken:0});
+  const g=totals.games;
+  const values = {
+    winPct:g?totals.wins/g*100:0,
+    scorePerGame:avg(totals.score,g),
+    goalsPerGame:avg(totals.goals,g),
+    assistsPerGame:avg(totals.assists,g),
+    gaSaves:g?avg(totals.goalsAgainst,g)-avg(totals.saves,g):0,
+    boostStolenPerGame:avg(totals.boostStolen,g),
+    demosPerGame:g?avg(totals.demosInflicted,g)-avg(totals.demosTaken,g):0
+  };
+  const categories=Object.fromEntries(matchRatingCategories.map(c => {
+    const difference=c.inverse ? c.average-values[c.key] : values[c.key]-c.average;
+    return [c.key,Math.max(1,6+difference*c.multiplier)];
+  }));
+  const rating = !g || values.scorePerGame===0 ? 0 : Math.min(10,Math.max(0,
+    matchRatingCategories.reduce((sum,c)=>sum+categories[c.key]*c.weight,0)/7
+  ));
+  return { rating, categories, values };
+}
+
 const sglLogo = `${import.meta.env.BASE_URL}assets/league/sgl-logo.png`;
 const teamLogoFiles = {
   'AXE & ARMY': 'axe-and-army.png',
@@ -79,13 +120,22 @@ function App() {
   const players = useMemo(() => {
     const map = new Map();
     for (const r of records) {
-      if (!map.has(r.playerName)) map.set(r.playerName, { key:r.playerName, name:r.playerName, teams:new Set(), games:0,wins:0,score:0,goals:0,assists:0,saves:0,shots:0,demos:0 });
-      const p=map.get(r.playerName); p.teams.add(r.teamName); p.games+=n(r.stats.games); p.wins+=n(r.stats.wins);
+      if (!map.has(r.playerName)) map.set(r.playerName, { key:r.playerName, name:r.playerName, teams:new Set(), rows:[], games:0,wins:0,score:0,goals:0,assists:0,saves:0,shots:0,demos:0 });
+      const p=map.get(r.playerName); p.rows.push(r); p.teams.add(r.teamName); p.games+=n(r.stats.games); p.wins+=n(r.stats.wins);
       p.score+=n(r.stats.score); p.goals+=n(r.stats.goals); p.assists+=n(r.stats.assists); p.saves+=n(r.stats.saves); p.shots+=n(r.stats.shots);
       p.demos+=n(r.stats['demos inflicted'])-n(r.stats['demos taken']);
     }
-    return [...map.values()].map(p=>({...p,rank:dataset?.playerRanks?.[p.name]||'',teamList:[...p.teams].join(', '),winPct:p.games?p.wins/p.games*100:0,scorePerGame:avg(p.score,p.games),goalsPerGame:avg(p.goals,p.games)})).sort((a,b)=>b.scorePerGame-a.scorePerGame);
-  }, [records]);
+    const weeks=[...new Set(records.map(r=>r.week).filter(Number.isFinite))].sort((a,b)=>a-b);
+    const latestWeek=weeks.at(-1), previousWeek=weeks.length>1?weeks.at(-2):null;
+    return [...map.values()].map(p=>{
+      const current=matchRatingForRecords(p.rows.filter(r=>latestWeek==null||r.week==null||r.week<=latestWeek));
+      const previous=previousWeek==null?null:matchRatingForRecords(p.rows.filter(r=>r.week==null||r.week<=previousWeek));
+      return {...p,rank:dataset?.playerRanks?.[p.name]||'',teamList:[...p.teams].join(', '),
+        winPct:p.games?p.wins/p.games*100:0,scorePerGame:avg(p.score,p.games),goalsPerGame:avg(p.goals,p.games),
+        rating:current.rating,ratingCategories:current.categories,ratingValues:current.values,
+        ratingChange:previous?current.rating-previous.rating:null};
+    }).sort((a,b)=>b.rating-a.rating);
+  }, [records,dataset]);
 
   const teams = useMemo(() => {
     const map = new Map();
@@ -128,16 +178,16 @@ function App() {
         <MetricCard label="PLAYERS TRACKED" value={dataset?fmt(players.length):'--'} detail="Unique player identities" icon={Users}/>
         <MetricCard label="TEAMS" value={dataset?fmt(teams.length):'--'} detail="In selected division" icon={Shield}/>
         <MetricCard label="PLAYER-GAMES" value={dataset?fmt(playerGames):'--'} detail="Individual player game appearances" icon={Swords}/>
-        <MetricCard label="AVG. SCORE / GAME" value={dataset?fmt(avg(totalScore,playerGames)):'--'} detail="Across selected player rows" icon={Gauge}/>
+        <MetricCard label="AVG. MATCH RATING" value={dataset&&players.length?fmt(avg(players.reduce((sum,p)=>sum+p.rating,0),players.length)):'--'} detail="Custom seven-category rating" icon={Gauge}/>
       </section>
       {activePage==='Overview'&&<><section className="content-grid">
-        <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">SCORE / GAME</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
+        <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">MATCH RATING</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'rating',label:'RATING',render:r=>fmt(r.rating)},{key:'ratingChange',label:'WEEKLY Δ',render:r=>r.ratingChange==null?'--':`${r.ratingChange>0?'+':''}${fmt(r.ratingChange)}`}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
         <article className="panel leaderboard-panel"><div className="panel-heading"><div><span className="panel-kicker">TEAM RACE</span><h2>Team performance</h2></div><span className="panel-tag">GAME DATA</span></div><DataTable columns={[{key:'name',label:'TEAM',render:r=><TeamName name={r.name}/>},{key:'playerCount',label:'PLAYERS'},{key:'winPct',label:'PLAYER GAME WIN %',render:r=>`${fmt(r.winPct)}%`}]} rows={teams.slice(0,8)} empty="Team performance will appear after importing data."/><p className="table-note">These are individual game results aggregated from player rows, not best-of-five series standings.</p></article>
       </section><section className="bottom-grid">
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">IMPORT HISTORY</span><h2>Weekly files</h2></div><Activity size={18} className="muted-icon"/></div><div className="import-list">{(dataset?.imports||[]).map(x=><div className="import-row" key={x.file}><span>{x.file}</span><b>{x.rows} players</b></div>)}</div></article>
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">DEEP DIVE</span><h2>Stat explorer</h2></div><BarChart3 size={18} className="muted-icon"/></div><div className="compact-empty">Explore all {stats.length} exported stat fields, including scoring, defense, boost, movement, and advanced stats.</div><button className="text-button" onClick={()=>setActivePage('Stat Explorer')}>Explore stats <ArrowUpRight size={15}/></button></article>
       </section></>}
-      {activePage==='Players'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">PLAYER DIRECTORY</span><h2>{players.length} players</h2></div><span className="panel-tag">SORTED BY SCORE / GAME</span></div><div className="search-box"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search players or teams..."/></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'games',label:'GAMES',render:r=>fmt(r.games)},{key:'winPct',label:'GAME WIN %',render:r=>`${fmt(r.winPct)}%`},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)},{key:'assists',label:'ASSISTS',render:r=>fmt(r.assists)},{key:'saves',label:'SAVES',render:r=>fmt(r.saves)}]} rows={filteredPlayers} empty="No players match this search."/></section>}
+      {activePage==='Players'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">PLAYER DIRECTORY</span><h2>{players.length} players</h2></div><span className="panel-tag">SORTED BY MATCH RATING</span></div><div className="search-box"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search players or teams..."/></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'games',label:'GAMES',render:r=>fmt(r.games)},{key:'rating',label:'MATCH RATING',render:r=>fmt(r.rating)},{key:'ratingChange',label:'WEEKLY Δ',render:r=>r.ratingChange==null?'--':`${r.ratingChange>0?'+':''}${fmt(r.ratingChange)}`},{key:'winPct',label:'GAME WIN %',render:r=>`${fmt(r.winPct)}%`},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)},{key:'assists',label:'ASSISTS',render:r=>fmt(r.assists)},{key:'saves',label:'SAVES',render:r=>fmt(r.saves)},{key:'winPctRating',label:'WIN RATING',render:r=>fmt(r.ratingCategories.winPct)},{key:'scoreRating',label:'SCORE RATING',render:r=>fmt(r.ratingCategories.scorePerGame)},{key:'goalsRating',label:'GOALS RATING',render:r=>fmt(r.ratingCategories.goalsPerGame)},{key:'assistsRating',label:'ASSISTS RATING',render:r=>fmt(r.ratingCategories.assistsPerGame)},{key:'gaSavesRating',label:'GA-SAVES RATING',render:r=>fmt(r.ratingCategories.gaSaves)},{key:'boostRating',label:'BOOST RATING',render:r=>fmt(r.ratingCategories.boostStolenPerGame)},{key:'demosRating',label:'DEMOS RATING',render:r=>fmt(r.ratingCategories.demosPerGame)}]} rows={filteredPlayers} empty="No players match this search."/></section>}
       {activePage==='Teams'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">TEAM DIRECTORY</span><h2>{teams.length} teams</h2></div><span className="panel-tag">PLAYER TOTALS</span></div><DataTable columns={[{key:'name',label:'TEAM',render:r=><TeamName name={r.name}/>},{key:'playerCount',label:'PLAYERS'},{key:'games',label:'PLAYER-GAMES',render:r=>fmt(r.games)},{key:'winPct',label:'PLAYER GAME WIN %',render:r=>`${fmt(r.winPct)}%`},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)},{key:'assists',label:'ASSISTS',render:r=>fmt(r.assists)}]} rows={teams} empty="No team data available for this division."/><p className="table-note">Team aliases are applied before totals are combined. This is not the official series standings table.</p></section>}
       {activePage==='Stat Explorer'&&<section className="panel full-panel"><div className="panel-heading"><div><span className="panel-kicker">RAW EXPORT EXPLORER</span><h2>Browse exported stats</h2></div><span className="panel-tag">{stats.length} STAT FIELDS</span></div><label className="stat-select"><span>STATISTIC</span><span className="select-wrap"><select value={selectedStat} onChange={e=>setSelectedStat(e.target.value)}>{stats.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label><DataTable columns={[{key:'playerName',label:'PLAYER'},{key:'teamName',label:'TEAM'},{key:'week',label:'WEEK'},{key:'value',label:selectedStat.toUpperCase(),render:r=>fmt(r.stats[selectedStat])},{key:'sourceFile',label:'SOURCE'}]} rows={statRows} empty="No rows to explore."/></section>}
       <footer><span>RLSTATS <b>•</b> LEAGUE ANALYTICS</span><span>Built for the community <span className="footer-flame">◆</span></span></footer>
