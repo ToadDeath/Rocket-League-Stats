@@ -138,7 +138,7 @@ function TeamName({ name }) {
 
 async function downloadTeamComparisonPng({ teams, players, categories, week }) {
   const scale = 2;
-  const width = 1920;
+  const width = 2100;
   const margin = 64;
   const gap = 28;
   const cardWidth = (width - margin * 2 - gap) / 2;
