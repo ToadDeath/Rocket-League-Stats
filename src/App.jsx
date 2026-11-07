@@ -36,9 +36,9 @@ const rankLogoFiles = {
 function RankBadge({ rank }) {
   if (!rank) return <span className="rank-empty">-</span>;
   const file = rankLogoFiles[rank];
-  return <span className="rank-badge">
-    {file && <img src={`${import.meta.env.BASE_URL}assets/ranks/${encodeURIComponent(file)}`} alt="" />}
-    <span>{rank}</span>
+  if (!file) return null;
+  return <span className="rank-badge" title={rank}>
+    <img src={`${import.meta.env.BASE_URL}assets/ranks/${encodeURIComponent(file)}`} alt={rank} />
   </span>;
 }
 
@@ -131,7 +131,7 @@ function App() {
         <MetricCard label="AVG. SCORE / GAME" value={dataset?fmt(avg(totalScore,playerGames)):'--'} detail="Across selected player rows" icon={Gauge}/>
       </section>
       {activePage==='Overview'&&<><section className="content-grid">
-        <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">SCORE / GAME</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
+        <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Top performers</h2></div><span className="panel-tag">SCORE / GAME</span></div><DataTable columns={[{key:'name',label:'PLAYER'},{key:'teamList',label:'TEAM'},{key:'scorePerGame',label:'SCORE/G',render:r=>fmt(r.scorePerGame)},{key:'goals',label:'GOALS',render:r=>fmt(r.goals)}]} rows={players.slice(0,8)} empty="Player stats will appear after importing a weekly CSV."/></article>
         <article className="panel leaderboard-panel"><div className="panel-heading"><div><span className="panel-kicker">TEAM RACE</span><h2>Team performance</h2></div><span className="panel-tag">GAME DATA</span></div><DataTable columns={[{key:'name',label:'TEAM',render:r=><TeamName name={r.name}/>},{key:'playerCount',label:'PLAYERS'},{key:'winPct',label:'PLAYER GAME WIN %',render:r=>`${fmt(r.winPct)}%`}]} rows={teams.slice(0,8)} empty="Team performance will appear after importing data."/><p className="table-note">These are individual game results aggregated from player rows, not best-of-five series standings.</p></article>
       </section><section className="bottom-grid">
         <article className="panel compact-panel"><div className="panel-heading"><div><span className="panel-kicker">IMPORT HISTORY</span><h2>Weekly files</h2></div><Activity size={18} className="muted-icon"/></div><div className="import-list">{(dataset?.imports||[]).map(x=><div className="import-row" key={x.file}><span>{x.file}</span><b>{x.rows} players</b></div>)}</div></article>
