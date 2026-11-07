@@ -47,7 +47,7 @@ function readPlayerRoster(file) {
     if (!player) continue;
     if (canonicalNames.has(player)) throw new Error('Player "' + player + '" appears more than once in data/roster.csv.');
     canonicalNames.add(player);
-    entries.push({ player, rank: (row.rank || '').trim(), aliases: (row.aliases || '').split('|').map(v => v.trim()).filter(Boolean) });
+    entries.push({ player, rank: (row.rank || '').trim(), trackerUrl: (row['tracker url'] || row['tracker.gg url'] || '').trim(), aliases: (row.aliases || '').split('|').map(v => v.trim()).filter(Boolean) });
   }
   const map = new Map();
   for (const { player } of entries) map.set(player, player);
@@ -56,7 +56,7 @@ function readPlayerRoster(file) {
     if (map.has(alias) && map.get(alias) !== player) throw new Error('Alias "' + alias + '" is assigned to more than one player.');
     map.set(alias, player);
   }
-  return { aliases: map, ranks: Object.fromEntries(entries.map(({ player, rank }) => [player, rank])) };
+  return { aliases: map, ranks: Object.fromEntries(entries.map(({ player, rank }) => [player, rank])), trackerUrls: Object.fromEntries(entries.filter(({ trackerUrl }) => /^https?:\\/\\//i.test(trackerUrl)).map(({ player, trackerUrl }) => [player, trackerUrl])) };
 }
 function readTeamRoster(file) {
   if (!fs.existsSync(file)) throw new Error('Missing data/team-aliases.csv.');
@@ -95,6 +95,7 @@ function toNumber(value) {
 const playerRoster = readPlayerRoster(path.join(root, 'data', 'roster.csv'));
 const playerAliases = playerRoster.aliases;
 const playerRanks = playerRoster.ranks;
+const playerTrackerUrls = playerRoster.trackerUrls;
 const teamRoster = readTeamRoster(path.join(root, 'data', 'team-aliases.csv'));
 const records = [], imports = [], duplicates = [], importWarnings = [], seenHashes = new Map();
 
@@ -183,7 +184,7 @@ const availableStats = [...new Set(records.flatMap(r => Object.keys(r.stats)))];
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, JSON.stringify({
   generatedAt: new Date().toISOString(), imports, duplicates, records,
-  availableStats, playerRanks, importWarnings
+  availableStats, playerRanks, playerTrackerUrls, importWarnings
 }));
 console.log('Processed ' + imports.length + ' CSV file(s), ' + records.length + ' usable player rows, ' + availableStats.length + ' stat fields.');
 if (importWarnings.length) console.warn(importWarnings.length + ' import warning(s) need attention.');
