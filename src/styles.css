@@ -513,3 +513,10 @@ body{font-size:15px}
 .matchup-panel .stats-table th:nth-child(3),
 .matchup-panel .stats-table td:nth-child(3){text-align:left}
 .matchup-panel .stats-table td:nth-child(3) .team-name{justify-content:flex-start;margin-left:0;margin-right:0}
+
+
+/* Show the underlying per-game stat alongside each adjusted player category rating */
+.profile-rating-row{display:grid;gap:5px}
+.profile-rating-row>div:first-child{margin-bottom:0}
+.profile-rating-row .rating-meter{min-width:112px}
+.profile-raw-value{display:block;padding-left:1px;color:#8291a7;font-size:9px;font-variant-numeric:tabular-nums;letter-spacing:.25px}
