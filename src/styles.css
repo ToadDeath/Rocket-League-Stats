@@ -164,3 +164,9 @@ footer b,.footer-flame{color:#f02f38}
 .team-monogram{width:34px;height:34px;display:inline-grid;place-items:center;flex-shrink:0;border:1px solid #3a4654;border-radius:7px;background:linear-gradient(145deg,#202a36,#10151c);color:#8edcf3;font:700 10px 'Barlow Condensed',sans-serif;letter-spacing:.4px}
 
 .division-label{display:flex;align-items:center;gap:8px}.division-label img{width:25px;height:25px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+
+
+.import-warning{border-color:rgba(239,165,76,.38);background:rgba(239,165,76,.07)}
+.import-warning-item{padding-top:12px;margin-top:12px;border-top:1px solid rgba(239,165,76,.18)}
+.import-warning-item p{margin:6px 0 0}
+.import-warning-item code{font-size:.9em;color:var(--text)}
