@@ -774,3 +774,9 @@ footer{align-items:center}
 .standings-division .stats-table th:nth-child(2),.standings-division .stats-table td:nth-child(2){width:34%}
 .standings-division .stats-table th:nth-child(n+3),.standings-division .stats-table td:nth-child(n+3){width:auto}
 @media(max-width:1000px){.team-directory-table .stats-table{width:max-content;min-width:100%;table-layout:auto}.team-directory-table .stats-table th:nth-child(n),.team-directory-table .stats-table td:nth-child(n){width:auto}}
+
+
+/* Tighten the vertical rhythm from the Standings title through each division table. */
+.standings-panel>.panel-heading{margin-bottom:8px}
+.standings-division-heading{margin:0 0 6px}
+.standings-division .table-scroll{margin-top:0}
