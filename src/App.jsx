@@ -34,7 +34,7 @@ const matchRatingCategories = [
   { key:'goalsPerGame', label:'Goals', average:0.72, multiplier:4, weight:1.5 },
   { key:'assistsPerGame', label:'Assists', average:0.54, multiplier:5, weight:1.1 },
   { key:'gaSaves', label:'GA-Saves', average:1.2, multiplier:2, weight:1.1, inverse:true },
-  { key:'boostStolenPerGame', label:'Boost stolen', average:480, multiplier:0.015, weight:0.65 },
+  { key:'boostStolenPerGame', label:'Boost Stolen', average:480, multiplier:0.015, weight:0.65 },
   { key:'demosPerGame', label:'Demos +/-', average:0, multiplier:2.5, weight:0.65 }
 ];
 function teamSeriesStats(rows, teamName) {
@@ -137,7 +137,7 @@ function TeamName({ name }) {
 }
 
 
-async function downloadTeamComparisonPng({ teams, players, categories, week }) {
+async function downloadTeamComparisonPng({ teams, players, categories, week, score }) {
   const scale = 2;
   const width = 2100;
   const margin = 64;
@@ -166,7 +166,7 @@ async function downloadTeamComparisonPng({ teams, players, categories, week }) {
   const drawMeter = (value,x,y,w,h,large=false) => {
     const score = Math.max(0,Math.min(10,n(value)));
     const gradient = ctx.createLinearGradient(x,y,x+w,y);
-    gradient.addColorStop(0,'#e34d59'); gradient.addColorStop(.5,'#8d8b9c'); gradient.addColorStop(1,'#268bd2');
+    gradient.addColorStop(0,'#f02f38'); gradient.addColorStop(1,'#00aeef');
     ctx.fillStyle='#27313e'; roundRect(x,y,w,h,6); ctx.fill();
     ctx.save(); roundRect(x,y,w*score/10,h,6); ctx.clip(); ctx.fillStyle=gradient; ctx.fillRect(x,y,w,h); ctx.restore();
     drawText(fmtRating(score),x+w+14,y+h/2,large?20:15,'#f2f5fa',700);
@@ -182,9 +182,19 @@ async function downloadTeamComparisonPng({ teams, players, categories, week }) {
     });
   };
   const logos = await Promise.all(teams.map(t=>loadLogo(t.name)));
-
-  drawText(`${teams[0]?.name || 'Team 1'}  vs  ${teams[1]?.name || 'Team 2'}`,margin,72,34,'#f3f6fb',800);
-  drawText(`STATS WEEK ${week || 'ALL AVAILABLE'}  ·  ${players.length} PLAYER RECORDS`,margin,118,15,'#9eacbf',600);
+  const rankLogoNames=[...new Set(players.map(p=>p.rank).filter(Boolean))];
+  const rankLogos=await Promise.all(rankLogoNames.map(async rank=>[rank,await new Promise(resolve=>{
+    const file=rankLogoFiles[rank];if(!file)return resolve(null);
+    const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);
+    img.src=`${import.meta.env.BASE_URL}assets/ranks/${encodeURIComponent(file)}`;
+  })]));
+  const rankLogoMap=new Map(rankLogos);
+  drawText('HOME',margin,68,11,'#62c8ec',750);
+  drawText(teams[0]?.name || 'Home team',margin,98,29,'#f3f6fb',800);
+  drawText('AWAY',width-margin,68,11,'#62c8ec',750,'right');
+  drawText(teams[1]?.name || 'Away team',width-margin,98,29,'#f3f6fb',800,'right');
+  drawText(score || 'VS',width/2,91,score?38:24,score?'#62c8ec':'#9eacbf',850,'center');
+  drawText(`STATS WEEK ${week || 'ALL AVAILABLE'}  ·  ${players.length} PLAYER RECORDS`,margin,151,15,'#9eacbf',600);
 
   teams.forEach((team,i)=>{
     const x=margin+i*(cardWidth+gap), y=190;
@@ -193,11 +203,12 @@ async function downloadTeamComparisonPng({ teams, players, categories, week }) {
     const logo=logos[i];
     if(logo){const ratio=Math.min(66/logo.width,66/logo.height);ctx.drawImage(logo,x+22,y+24,logo.width*ratio,logo.height*ratio);}
     else drawText(team.name.split(/\\s+/).map(v=>v[0]).join('').slice(0,3),x+54,y+56,22,'#a9b6c8',800,'center');
-    drawText(team.name,x+108,y+42,22,'#f1f4f9',750);
-    drawText(`${team.players.length} players  ·  ${fmtCount(team.games)} player-games  ·  ${fmtWinPct(team.winPct)}% player-game wins`,x+108,y+76,14,'#9eacbf',500);
-    drawText('TEAM MATCH RATING',x+108,y+111,11,'#8e9db1',700);
-    if(team.rating===null) drawText('No game data',x+cardWidth-24,y+111,14,'#9eacbf',600,'right');
-    else drawMeter(team.rating,x+cardWidth-230,y+103,150,12,true);
+    drawText(i===0?'HOME':'AWAY',x+108,y+22,10,'#62c8ec',750);
+    drawText(team.name,x+108,y+49,22,'#f1f4f9',750);
+    drawText(`${team.players.length} players  ·  ${fmtCount(team.games)} player-games  ·  ${fmtWinPct(team.winPct)}% player-game wins`,x+108,y+82,14,'#9eacbf',500);
+    drawText('TEAM MATCH RATING',x+108,y+117,11,'#8e9db1',700);
+    if(team.rating===null) drawText('No game data',x+cardWidth-24,y+117,14,'#9eacbf',600,'right');
+    else drawMeter(team.rating,x+cardWidth-230,y+109,150,12,true);
   });
 
   const cols = [
@@ -217,8 +228,14 @@ async function downloadTeamComparisonPng({ teams, players, categories, week }) {
     ctx.strokeStyle='#263241';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(margin,y+rowHeight);ctx.lineTo(width-margin,y+rowHeight);ctx.stroke();
     let cx=margin;
     drawText(p.playerName,cx+16,y+rowHeight/2,15,'#edf2f8',650);cx+=cols[0].width;
-    drawText(p.rank||'-',cx+cols[1].width/2,y+rowHeight/2,14,'#b9c5d4',600,'center');cx+=cols[1].width;
-    drawText(p.teamName,cx+14,y+rowHeight/2,14,'#aab8ca',550);cx+=cols[2].width;
+    const rankLogo=rankLogoMap.get(p.rank);
+    if(rankLogo){const size=43,ratio=Math.min(size/rankLogo.width,size/rankLogo.height);ctx.drawImage(rankLogo,cx+(cols[1].width-size)/2,y+(rowHeight-size)/2,rankLogo.width*ratio,rankLogo.height*ratio);}
+    else drawText(p.rank||'-',cx+cols[1].width/2,y+rowHeight/2,14,'#b9c5d4',600,'center');
+    cx+=cols[1].width;
+    const teamLogo=await loadLogo(p.teamName);
+    if(teamLogo){const size=34,ratio=Math.min(size/teamLogo.width,size/teamLogo.height);ctx.drawImage(teamLogo,cx+12,y+(rowHeight-size)/2,teamLogo.width*ratio,teamLogo.height*ratio);}
+    else drawText(p.teamName.split(/\\s+/).map(v=>v[0]).join('').slice(0,3),cx+28,y+rowHeight/2,11,'#a9b6c8',800,'center');
+    drawText(p.teamName,cx+56,y+rowHeight/2,13,'#aab8ca',550);cx+=cols[2].width;
     drawText(fmtCount(p.games),cx+cols[3].width/2,y+rowHeight/2,14,'#dce4ee',550,'center');cx+=cols[3].width;
     drawMeter(p.rating,cx+8,y+rowHeight/2-6,100,12);cx+=cols[4].width;
     categories.forEach((category,i)=>{
@@ -440,6 +457,7 @@ function App() {
     });
     return {division:league,teams:[...table.values()].sort((a,b)=>b.points-a.points||b.matchWins-a.matchWins||b.gameWins-a.gameWins||a.name.localeCompare(b.name))};
   });
+  const comparisonMatchup = selectedMatchup&&selectedMatchup.team1===effectiveCompareTeams[0]&&selectedMatchup.team2===effectiveCompareTeams[1]?selectedMatchup:null;
   const comparisonTeams = effectiveCompareTeams.map(name=>{ const rows=compareRows.filter(r=>r.teamName===name); const games=rows.reduce((s,r)=>s+n(r.stats.games),0); const wins=rows.reduce((s,r)=>s+n(r.stats.wins),0); const rating=games?matchRatingForRecords(rows).rating:null; return {name,rows,rating,games,wins,players:[...new Set(rows.map(r=>r.playerName))],winPct:games?wins/games*100:0}; }).filter(t=>t.rows.length);
   const comparisonPlayers = compareRows.filter(r=>effectiveCompareTeams.includes(r.teamName)).reduce((groups,r)=>{ const key=r.teamName+'::'+r.playerName; if(!groups.has(key)) groups.set(key,{key,playerName:r.playerName,teamName:r.teamName,rows:[]}); groups.get(key).rows.push(r); return groups; },new Map());
   const playerComparisonRows = [...comparisonPlayers.values()].map(p=>{ const rating=matchRatingForRecords(p.rows); const games=p.rows.reduce((sum,r)=>sum+n(r.stats.games),0); const wins=p.rows.reduce((sum,r)=>sum+n(r.stats.wins),0); return {...p,rank:dataset?.playerRanks?.[p.playerName]||'',rating:rating.rating,categories:rating.categories,values:rating.values,games,winPct:games?wins/games*100:0}; }).sort((a,b)=>(b.rating??-Infinity)-(a.rating??-Infinity)||a.playerName.localeCompare(b.playerName));
@@ -477,7 +495,6 @@ function App() {
       <section className="panel standings-panel">
         <div className="panel-heading"><div><span className="panel-kicker">LEAGUE TABLES</span><h2>Standings</h2></div></div>
         <div className="standings-grid">{standingsGroups.map(group=><div className="standings-division" key={group.division}><div className="standings-division-heading"><DivisionBadge division={group.division}/></div><DataTable columns={[{key:'position',label:'#',render:(r)=>group.teams.indexOf(r)+1},{key:'name',label:'TEAM',render:r=><span className="standings-team-name"><TeamName name={r.name}/></span>},{key:'played',label:'MP'},{key:'matchWins',label:'MW'},{key:'matchLosses',label:'ML'},{key:'gameWins',label:'GW'},{key:'gameLosses',label:'GL'},{key:'points',label:'PTS',render:r=><strong className="standings-points">{r.points}</strong>}]} rows={group.teams} empty="Standings will appear when match results are confirmed." /></div>)}</div>
-        <p className="standings-note">Only confirmed final matches count. Tied point totals are ordered by match wins, then game wins.</p>
       </section>
 </>}
       {activePage==='Players'&&<section className="panel full-panel rankings-page">
@@ -505,11 +522,11 @@ function App() {
         {selectedMatchup&&<div className="matchup-context"><strong>Matchday {selectedMatchup.matchday} · {selectedMatchup.team1} <span className="comparison-series-score">{selectedMatchup.scoreText}</span> {selectedMatchup.team2}</strong><span>{effectiveCompareWeek?'Using imported Week '+effectiveCompareWeek:'This matchday has no stats-week mapping yet. Choose the matching stats week above to load the comparison.'}</span></div>}
         <div className="compare-controls">
           <label className="stat-select"><span>STATS WEEK</span><span className="select-wrap"><select value={effectiveCompareWeek} onChange={e=>setSelectedWeek(e.target.value)} disabled={!availableWeeks.length}><option value="" disabled hidden>{availableWeeks.length?'Choose stats week':'No stats weeks available'}</option>{availableWeeks.map(w=><option key={w} value={String(w)}>Week {w}</option>)}</select><ChevronDown size={16}/></span></label>
-          <label className="stat-select"><span>TEAM 1</span><span className="select-wrap"><select value={effectiveCompareTeams[0]||''} onChange={e=>setCompareTeams(current=>[e.target.value,current[1]===e.target.value?'':current[1]].filter(Boolean))} disabled={!compareTeamNames.length}><option value="" disabled hidden>{compareTeamNames.length?'Choose a team':'No teams available'}</option>{compareTeamNames.map(x=><option key={x} value={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
-          <label className="stat-select"><span>TEAM 2</span><span className="select-wrap"><select value={effectiveCompareTeams[1]||''} onChange={e=>setCompareTeams(current=>[current[0]||'',e.target.value].filter(Boolean))} disabled={!compareTeamNames.length}><option value="" disabled hidden>{compareTeamNames.length?'Choose a team':'No teams available'}</option>{compareTeamNames.filter(x=>x!==effectiveCompareTeams[0]).map(x=><option key={x} value={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
+          <label className="stat-select"><span>HOME</span><span className="select-wrap"><select value={effectiveCompareTeams[0]||''} onChange={e=>setCompareTeams(current=>[e.target.value,current[1]===e.target.value?'':current[1]].filter(Boolean))} disabled={!compareTeamNames.length}><option value="" disabled hidden>{compareTeamNames.length?'Choose a team':'No teams available'}</option>{compareTeamNames.map(x=><option key={x} value={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
+          <label className="stat-select"><span>AWAY</span><span className="select-wrap"><select value={effectiveCompareTeams[1]||''} onChange={e=>setCompareTeams(current=>[current[0]||'',e.target.value].filter(Boolean))} disabled={!compareTeamNames.length}><option value="" disabled hidden>{compareTeamNames.length?'Choose a team':'No teams available'}</option>{compareTeamNames.filter(x=>x!==effectiveCompareTeams[0]).map(x=><option key={x} value={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
         </div>
-        {comparisonTeams.length===2?<><div className="comparison-scorecards">{comparisonTeams.map((t,index)=><article className={'comparison-card'+(index===1?' comparison-card-away':'')} key={t.name}><div className="comparison-team-identity"><img className="comparison-club-logo" src={`${import.meta.env.BASE_URL}assets/teams/${encodeURIComponent(teamLogoFiles[t.name]||'')}`} alt={`${t.name} club logo`} /><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',t.name)}><span>{t.name}</span></button><DivisionBadge division={t.rows[0]?.division}/></div><span>{t.players.length} players · {fmtCount(t.games)} player-games · {fmtWinPct(t.winPct)}% player-game wins</span><div className="comparison-team-rating"><span>TEAM MATCH RATING</span>{t.rating===null?<span className="rating-unavailable">No game data</span>:<RatingMeter value={t.rating}/>}</div></article>)}</div>
-          <div className="panel-heading compare-subheading"><div><h3>Individual player rating breakdowns</h3></div><div className="compare-export-actions"><span className="panel-tag">PLAYER RATING · 0-10</span><button type="button" className="export-button" disabled={exportingComparison} onClick={async()=>{setExportingComparison(true);try{await downloadTeamComparisonPng({teams:comparisonTeams,players:playerComparisonRows,categories:matchRatingCategories,week:effectiveCompareWeek});}catch(error){console.error(error);window.alert('The comparison image could not be exported. Please try again.');}finally{setExportingComparison(false);}}}><Download size={15}/>{exportingComparison?'Creating PNG...':'Export PNG'}</button></div></div>
+        {comparisonTeams.length===2?<>{comparisonMatchup&&<div className="comparison-result-banner"><div><span>HOME</span><strong>{comparisonMatchup.team1}</strong></div><strong className="comparison-result-score">{comparisonMatchup.scoreText}</strong><div><span>AWAY</span><strong>{comparisonMatchup.team2}</strong></div></div>}<div className="comparison-scorecards">{comparisonTeams.map((t,index)=><article className={'comparison-card'+(index===1?' comparison-card-away':'')} key={t.name}><div className="comparison-team-identity"><img className="comparison-club-logo" src={`${import.meta.env.BASE_URL}assets/teams/${encodeURIComponent(teamLogoFiles[t.name]||'')}`} alt={`${t.name} club logo`} /><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',t.name)}><span>{t.name}</span></button><DivisionBadge division={t.rows[0]?.division}/></div><span className="comparison-card-side-label">{index===0?'HOME':'AWAY'} · {t.players.length} players · {fmtCount(t.games)} player-games · {fmtWinPct(t.winPct)}% player-game wins</span><div className="comparison-team-rating"><span>TEAM MATCH RATING</span>{t.rating===null?<span className="rating-unavailable">No game data</span>:<RatingMeter value={t.rating}/>}</div></article>)}</div>
+          <div className="panel-heading compare-subheading"><div><h3>Individual player rating breakdowns</h3></div><div className="compare-export-actions"><span className="panel-tag">PLAYER RATING · 0-10</span><button type="button" className="export-button" disabled={exportingComparison} onClick={async()=>{setExportingComparison(true);try{await downloadTeamComparisonPng({teams:comparisonTeams,players:playerComparisonRows,categories:matchRatingCategories,week:effectiveCompareWeek,score:comparisonMatchup?.scoreText});}catch(error){console.error(error);window.alert('The comparison image could not be exported. Please try again.');}finally{setExportingComparison(false);}}}><Download size={15}/>{exportingComparison?'Creating PNG...':'Export PNG'}</button></div></div>
           <div className="comparison-player-table"><DataTable columns={[{key:'playerName',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>navigateTo('Players',r.playerName)}>{r.playerName}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamName',label:'TEAM',render:r=><button className="entity-link" onClick={()=>navigateTo('Teams','',r.teamName)}>{r.teamName}</button>},{key:'games',label:'GAMES',render:r=>fmtCount(r.games)},{key:'rating',label:'MATCH RATING',render:r=><RatingMeter value={r.rating} compact/>},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=><div className="comparison-category-cell"><strong>{fmtRating(r.categories[c.key])}</strong><small>{(c.key==='winPct'?fmtWinPct(r.values[c.key]):fmt(r.values[c.key]))}{c.key==='winPct'?'%':''}</small></div>}))]} rows={playerComparisonRows} empty="No player statistics found for these teams in this period."/></div>
         </>:<div className="table-empty">{selectedMatchup&&!effectiveCompareWeek?'Choose the imported stats week for this matchday to load the team comparison.':'Choose two teams to compare their players’ custom rating breakdowns.'}</div>}
       </section>}
