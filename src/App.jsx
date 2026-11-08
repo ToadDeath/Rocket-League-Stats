@@ -294,7 +294,7 @@ function App() {
       const t=map.get(r.teamName); t.players.add(r.playerName); t.rows.push(r); t.games+=n(r.stats.games); t.wins+=n(r.stats.wins);
       t.score+=n(r.stats.score); t.goals+=n(r.stats.goals); t.assists+=n(r.stats.assists);
     }
-    return [...map.values()].map(t=>({...t,division:t.rows[0]?.division||'',playerCount:t.players.size,winPct:t.games?t.wins/t.games*100:0,scorePerGame:avg(t.score,t.games),goalsPerGame:avg(t.goals,t.games),assistsPerGame:avg(t.assists,t.games),rating:matchRatingForRecords(t.rows).rating})).sort((a,b)=>b.winPct-a.winPct);
+    return [...map.values()].map(t=>({...t,division:t.rows[0]?.division||t.division||'',playerCount:t.players.size,winPct:t.games?t.wins/t.games*100:0,scorePerGame:avg(t.score,t.games),goalsPerGame:avg(t.goals,t.games),assistsPerGame:avg(t.assists,t.games),rating:matchRatingForRecords(t.rows).rating})).sort((a,b)=>b.winPct-a.winPct);
   }, [records,dataset,division]);
 
   const filteredPlayers = players.filter(p=>p.name.toLowerCase().includes(query.toLowerCase())||p.teamList.toLowerCase().includes(query.toLowerCase()));
