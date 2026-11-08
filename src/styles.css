@@ -809,31 +809,27 @@ footer{align-items:center}
 
 
 
-/* Keep player sort arrows on the first header line without affecting label wrapping. */
+/* Sort arrows are visual overlays only: they must never participate in table layout. */
 .players-leaderboard-table .sortable-header{
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  width:100%;
+  display:inline-block;
+  position:relative;
+  width:auto;
   max-width:100%;
-  white-space:normal;
-  overflow-wrap:normal;
-  word-break:normal;
+  vertical-align:top;
 }
 .players-leaderboard-table .sortable-label{
-  display:block;
-  flex:0 1 auto;
-  min-width:0;
-  max-width:calc(100% - 10px);
-  text-align:center;
+  display:inline;
+  max-width:100%;
 }
 .players-leaderboard-table .sort-indicator{
-  position:static;
+  position:absolute;
+  top:0;
+  right:-8px;
+  left:auto;
   display:block;
-  flex:0 0 auto;
   width:auto;
   height:auto;
-  margin-left:3px;
+  margin:0;
   overflow:visible;
   line-height:1.25;
   vertical-align:top;
