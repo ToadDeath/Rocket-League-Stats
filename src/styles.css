@@ -791,9 +791,9 @@ footer{align-items:center}
 .matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{display:inline;min-width:max-content;max-width:none;white-space:nowrap;overflow:visible;text-overflow:clip;overflow-wrap:normal}
 
 /* Make sortable directory headers clear and easy to use. */
-.sortable-header{display:inline-flex;position:relative;align-items:center;justify-content:center;gap:4px;width:auto;max-width:100%;box-sizing:border-box;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;line-height:1.25;text-align:center;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
+.sortable-header{display:inline-block;position:relative;width:auto;max-width:100%;box-sizing:border-box;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;line-height:1.25;text-align:center;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
 .sortable-header:hover,.sortable-header.active{color:#edf2f9}
-.sort-indicator{position:static;transform:none;flex:none;color:#62c8ec;font-size:11px;line-height:1}
+.sort-indicator{position:absolute;left:calc(100% + 3px);top:50%;transform:translateY(-50%);color:#62c8ec;font-size:11px;line-height:1;pointer-events:none}
 
 
 /* Player leaderboard has many category columns. Let headers wrap instead of colliding. */
@@ -804,4 +804,4 @@ footer{align-items:center}
 .players-leaderboard-table .stats-table th:nth-child(2){min-width:110px}
 .players-leaderboard-table .stats-table th:nth-child(4){min-width:110px}
 .players-leaderboard-table .sortable-header{white-space:normal;line-height:1.25;max-width:100%;overflow-wrap:normal;word-break:normal;hyphens:none}
-.players-leaderboard-table .sort-indicator{flex:none}
+
