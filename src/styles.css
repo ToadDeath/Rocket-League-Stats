@@ -790,9 +790,9 @@ footer{align-items:center}
 .matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{display:inline;min-width:max-content;max-width:none;white-space:nowrap;overflow:visible;text-overflow:clip;overflow-wrap:normal}
 
 /* Make sortable directory headers clear and easy to use. */
-.sortable-header{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer;white-space:nowrap}
+.sortable-header{display:block;position:relative;width:100%;box-sizing:border-box;padding:0 13px 0 0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;line-height:1.25;text-align:center;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
 .sortable-header:hover,.sortable-header.active{color:#edf2f9}
-.sort-indicator{color:#62c8ec;font-size:11px;line-height:1}
+.sort-indicator{position:absolute;right:0;top:50%;transform:translateY(-50%);color:#62c8ec;font-size:11px;line-height:1}
 
 
 /* Player leaderboard has many category columns. Let headers wrap instead of colliding. */
