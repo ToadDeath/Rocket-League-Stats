@@ -834,3 +834,52 @@ footer{align-items:center}
   line-height:1;
   vertical-align:middle;
 }
+
+
+/* Keep player leaderboard columns identical across division filters. */
+.players-leaderboard-table .stats-table{
+  width:100%;
+  min-width:0;
+  table-layout:fixed;
+}
+.players-leaderboard-table .stats-table th,
+.players-leaderboard-table .stats-table td{
+  min-width:0;
+  max-width:none;
+}
+.players-leaderboard-table .stats-table th:nth-child(1),.players-leaderboard-table .stats-table td:nth-child(1){width:4%}
+.players-leaderboard-table .stats-table th:nth-child(2),.players-leaderboard-table .stats-table td:nth-child(2){width:18%}
+.players-leaderboard-table .stats-table th:nth-child(3),.players-leaderboard-table .stats-table td:nth-child(3){width:7%}
+.players-leaderboard-table .stats-table th:nth-child(4),.players-leaderboard-table .stats-table td:nth-child(4){width:20%}
+.players-leaderboard-table .stats-table th:nth-child(5),.players-leaderboard-table .stats-table td:nth-child(5){width:7%}
+.players-leaderboard-table .stats-table th:nth-child(6),.players-leaderboard-table .stats-table td:nth-child(6){width:13%}
+.players-leaderboard-table .stats-table th:nth-child(n+7),.players-leaderboard-table .stats-table td:nth-child(n+7){width:3.875%}
+
+/* Anchor the arrow to the complete wrapped label, not the edge of the column. */
+.players-leaderboard-table .sortable-header{
+  display:inline-block;
+  position:relative;
+  width:auto;
+  max-width:100%;
+  text-align:center;
+}
+.players-leaderboard-table .sortable-label{
+  display:inline-block;
+  position:relative;
+  max-width:100%;
+  text-align:center;
+}
+.players-leaderboard-table .sort-indicator{
+  position:absolute;
+  top:50%;
+  left:calc(100% + 3px);
+  right:auto;
+  width:auto;
+  height:auto;
+  margin:0;
+  transform:translateY(-50%);
+  line-height:1;
+}
+
+/* Match the centered header alignment used by the other team-directory columns. */
+.team-directory-table .stats-table th:first-child{text-align:center}
