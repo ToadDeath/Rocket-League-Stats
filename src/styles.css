@@ -734,3 +734,9 @@ footer{align-items:center}
 .comparison-card-away .comparison-club-logo{order:2}
 .comparison-card-away .comparison-team-identity>.team-entity-link{order:1}
 @media(max-width:560px){.comparison-club-logo{width:46px;height:46px;flex-basis:46px}.comparison-team-identity>.team-entity-link{font-size:14px}}
+
+
+/* Weekly player rating movement in the Players leaderboard. */
+.rating-delta-positive{color:#55c995;font-weight:700;white-space:nowrap}
+.rating-delta-negative{color:#ef747b;font-weight:700;white-space:nowrap}
+.rating-delta-neutral{color:#b9c5d4;font-weight:650;white-space:nowrap}
