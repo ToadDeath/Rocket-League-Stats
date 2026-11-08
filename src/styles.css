@@ -757,3 +757,20 @@ footer{align-items:center}
 .comparison-result-score{min-width:112px;text-align:center;color:#fff;font-size:34px;font-weight:850;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(98,200,236,.22)}
 .comparison-card-side-label{font-size:10px;color:#9eacbf}
 @media(max-width:560px){.comparison-result-banner{gap:8px;padding:12px}.comparison-result-banner>div strong{font-size:12px}.comparison-result-score{min-width:70px;font-size:27px}}
+
+/* Keep the team directory's first two columns close and distribute the rest evenly. */
+.team-directory-table .stats-table{width:100%;min-width:0;table-layout:fixed}
+.team-directory-table .stats-table th:nth-child(1),.team-directory-table .stats-table td:nth-child(1){width:26%;text-align:left}
+.team-directory-table .stats-table th:nth-child(2),.team-directory-table .stats-table td:nth-child(2){width:10%;text-align:center}
+.team-directory-table .stats-table th:nth-child(3),.team-directory-table .stats-table td:nth-child(3){width:17%}
+.team-directory-table .stats-table th:nth-child(4),.team-directory-table .stats-table td:nth-child(4){width:12%}
+.team-directory-table .stats-table th:nth-child(5),.team-directory-table .stats-table td:nth-child(5){width:15%}
+.team-directory-table .stats-table th:nth-child(6),.team-directory-table .stats-table td:nth-child(6){width:9%}
+.team-directory-table .stats-table th:nth-child(7),.team-directory-table .stats-table td:nth-child(7){width:5.5%}
+.team-directory-table .stats-table th:nth-child(8),.team-directory-table .stats-table td:nth-child(8){width:5.5%}
+.team-directory-table .stats-table td:nth-child(1) .top-player-team{gap:7px}
+.team-directory-table .stats-table td:nth-child(1) .team-entity-link{min-width:0}
+.standings-division .stats-table th:first-child,.standings-division .stats-table td:first-child{width:38px}
+.standings-division .stats-table th:nth-child(2),.standings-division .stats-table td:nth-child(2){width:34%}
+.standings-division .stats-table th:nth-child(n+3),.standings-division .stats-table td:nth-child(n+3){width:auto}
+@media(max-width:1000px){.team-directory-table .stats-table{width:max-content;min-width:100%;table-layout:auto}.team-directory-table .stats-table th:nth-child(n),.team-directory-table .stats-table td:nth-child(n){width:auto}}
