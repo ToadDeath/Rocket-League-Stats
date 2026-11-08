@@ -420,6 +420,26 @@ function App() {
     const status = !m.statsWeek ? 'Stats week not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : !final ? 'Partial series data' : 'Final';
     return {...m, scoreText:exact?team1Stats.wins+' - '+team2Stats.wins:'TBD', resultStatus:status, resultFinal:final};
   });
+  const standingsGroups = [...new Set(scheduleRows.map(m=>m.division))].sort((a,b)=>a==='Premier'?-1:b==='Premier'?1:a.localeCompare(b)).map(league=>{
+    const table=new Map();
+    const ensureTeam=name=>{if(!table.has(name))table.set(name,{name,played:0,matchWins:0,matchLosses:0,gameWins:0,gameLosses:0,points:0});return table.get(name);};
+    scheduleRows.filter(m=>m.division===league).forEach(m=>{ensureTeam(m.team1);ensureTeam(m.team2);});
+    scheduleRows.filter(m=>m.division===league&&m.statsWeek!==null).forEach(m=>{
+      const weekRows=records.filter(r=>r.division===league&&r.week===m.statsWeek);
+      const home=teamSeriesStats(weekRows,m.team1),away=teamSeriesStats(weekRows,m.team2);
+      const exact=home.hasData&&away.hasData&&home.exact&&away.exact;
+      const reconciles=exact&&home.wins===away.losses&&away.wins===home.losses&&home.teamGames===away.teamGames;
+      const final=reconciles&&home.complete&&away.complete;
+      if(!final)return;
+      const h=ensureTeam(m.team1),a=ensureTeam(m.team2);
+      h.played++;a.played++;
+      h.gameWins+=home.wins;a.gameWins+=away.wins;
+      h.gameLosses+=home.losses;a.gameLosses+=away.losses;
+      if(home.wins>away.wins){h.matchWins++;a.matchLosses++;h.points+=home.wins+1;a.points+=away.wins;}
+      else if(away.wins>home.wins){a.matchWins++;h.matchLosses++;a.points+=away.wins+1;h.points+=home.wins;}
+    });
+    return {division:league,teams:[...table.values()].sort((a,b)=>b.points-a.points||b.matchWins-a.matchWins||b.gameWins-a.gameWins||a.name.localeCompare(b.name))};
+  });
   const upcomingMatchdayNumbers = scheduleMatchdays.filter(day=>day>defaultMatchday).slice(0,2);
   const upcomingMatchdayGroups = upcomingMatchdayNumbers.map(matchday=>({
     matchday,
@@ -459,6 +479,11 @@ function App() {
       <section className="content-grid">
         <article className="panel performance-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SNAPSHOT</span><h2>Player rankings</h2></div><div className="ranking-preview-actions"><span className="panel-tag">TOP 10 PREVIEW</span><button type="button" className="text-button" onClick={()=>goToSection('Players')}>View all <ArrowUpRight size={14}/></button></div></div><DataTable columns={[{key:'position',label:'#',render:r=>players.findIndex(p=>p.name===r.name)+1},{key:'name',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>navigateTo('Players',r.name)}>{r.name}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamList',label:'TEAM',render:r=><span className="top-player-team"><button className="entity-link team-entity-link" onClick={()=>{const team=[...r.teams][0];if(team)navigateTo('Teams','',team)}}><TeamName name={[...r.teams][0]||r.teamList}/></button>{division==='All Divisions'&&[...new Set(r.rows.map(row=>row.division).filter(Boolean))].map(league=><DivisionBadge key={league} division={league}/>)}</span>},{key:'rating',label:'RATING',render:r=><RatingMeter value={r.rating} compact/>},{key:'ratingChange',label:'WEEKLY Δ',render:r=>r.ratingChange==null||r.ratingChange===0?'-':<span className={r.ratingChange>0?'rating-delta-positive':'rating-delta-negative'}>{r.ratingChange>0?'+':''}{fmt(r.ratingChange)}</span>}]} rows={players.slice(0,10)} empty="Player stats will appear after importing a weekly CSV."/></article>
         <article className="panel leaderboard-panel matchup-panel"><div className="panel-heading"><div><span className="panel-kicker">LEAGUE SCHEDULE</span><h2>Weekly matchup review</h2></div><label className="matchday-select"><span>MATCHDAY</span><select value={effectiveMatchday||''} onChange={e=>setSelectedMatchday(e.target.value)}>{scheduleMatchdays.map(day=><option key={day} value={day}>Matchday {day}</option>)}</select></label></div>{['Premier','Championship'].filter(name=>matchupRows.some(r=>r.division===name)).map(name=><div className="matchup-division-section" key={name}><div className="matchup-division-heading"><DivisionBadge division={name}/></div><DataTable columns={[{key:'team1',label:'HOME',render:r=><TeamName name={r.team1}/>},{key:'series',label:'SERIES',render:r=><span className="matchup-result"><strong className="matchup-score">{r.scoreText}</strong>{r.resultStatus!=='Final'&&<small>{r.resultStatus}</small>}</span>},{key:'team2',label:'AWAY',render:r=><TeamName name={r.team2}/>}]} rows={matchupRows.filter(r=>r.division===name)} onRowClick={r=>{setCompareTeams([r.team1,r.team2]);setSelectedWeek(r.statsWeek==null?'unmapped':String(r.statsWeek));setSelectedMatchup(r);navigateTo('Compare');}} empty="No matchups are listed for this matchday."/></div>)}{!matchupRows.length&&<div className="table-empty">No matchups are listed for this matchday.</div>}</article>
+      </section>
+      <section className="panel standings-panel">
+        <div className="panel-heading"><div><span className="panel-kicker">LEAGUE TABLES</span><h2>Standings</h2></div><span className="panel-tag">1 POINT PER GAME WIN + 1 FOR MATCH WIN</span></div>
+        <div className="standings-grid">{standingsGroups.map(group=><div className="standings-division" key={group.division}><div className="standings-division-heading"><DivisionBadge division={group.division}/></div><DataTable columns={[{key:'position',label:'#',render:(r)=>group.teams.indexOf(r)+1},{key:'name',label:'TEAM',render:r=><span className="standings-team-name"><TeamName name={r.name}/></span>},{key:'played',label:'MP'},{key:'matchWins',label:'MW'},{key:'matchLosses',label:'ML'},{key:'gameWins',label:'GW'},{key:'gameLosses',label:'GL'},{key:'points',label:'PTS',render:r=><strong className="standings-points">{r.points}</strong>}]} rows={group.teams} empty="Standings will appear when match results are confirmed." /></div>)}</div>
+        <p className="standings-note">Only confirmed final matches count. Tied point totals are ordered by match wins, then game wins.</p>
       </section>
       <section className="panel upcoming-panel">
         <div className="panel-heading"><div><span className="panel-kicker">COMING UP</span><h2>Upcoming matchups</h2></div><span className="panel-tag">NEXT TWO MATCHDAYS</span></div>
