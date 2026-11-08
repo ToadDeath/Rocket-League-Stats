@@ -654,3 +654,21 @@ footer{align-items:center}
 @media(max-width:760px){
   .main-content{width:100%;margin:0}
 }
+
+
+/* Players leaderboard alignment and compact team-to-games spacing */
+.players-leaderboard-table .stats-table{width:100%;min-width:0;table-layout:fixed}
+.players-leaderboard-table .stats-table th:nth-child(1),.players-leaderboard-table .stats-table td:nth-child(1){width:4%;text-align:center}
+.players-leaderboard-table .stats-table th:nth-child(2),.players-leaderboard-table .stats-table td:nth-child(2){width:18%;text-align:left}
+.players-leaderboard-table .stats-table th:nth-child(3),.players-leaderboard-table .stats-table td:nth-child(3){width:7%}
+.players-leaderboard-table .stats-table th:nth-child(4),.players-leaderboard-table .stats-table td:nth-child(4){width:23%;text-align:left;padding-right:5px}
+.players-leaderboard-table .stats-table th:nth-child(5),.players-leaderboard-table .stats-table td:nth-child(5){width:6%;padding-left:5px}
+.players-leaderboard-table .stats-table th:nth-child(6),.players-leaderboard-table .stats-table td:nth-child(6){width:10%}
+.players-leaderboard-table .stats-table th:nth-child(n+7),.players-leaderboard-table .stats-table td:nth-child(n+7){width:4.57%}
+.players-leaderboard-table .stats-table td:nth-child(2) .entity-link{display:block;text-align:left}
+.players-leaderboard-table .stats-table .comparison-category-cell{gap:4px}
+@media(max-width:1000px){
+ .players-leaderboard-table .stats-table{width:max-content;min-width:100%;table-layout:auto}
+ .players-leaderboard-table .stats-table th:nth-child(n),.players-leaderboard-table .stats-table td:nth-child(n){width:auto}
+ .players-leaderboard-table .stats-table th:nth-child(2),.players-leaderboard-table .stats-table td:nth-child(2){min-width:150px;text-align:left}
+}
