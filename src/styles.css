@@ -769,6 +769,7 @@ footer{align-items:center}
 .team-directory-table .stats-table th:nth-child(7),.team-directory-table .stats-table td:nth-child(7){width:5.5%}
 .team-directory-table .stats-table th:nth-child(8),.team-directory-table .stats-table td:nth-child(8){width:5.5%}
 .team-directory-table .stats-table td:nth-child(1) .top-player-team{gap:7px}
+.team-directory-table .stats-table th:last-child .sortable-header{white-space:nowrap;overflow-wrap:normal}
 .team-directory-table .stats-table td:nth-child(1) .team-entity-link{min-width:0}
 .standings-division .stats-table th:first-child,.standings-division .stats-table td:first-child{width:38px}
 .standings-division .stats-table th:nth-child(2),.standings-division .stats-table td:nth-child(2){width:34%}
@@ -790,9 +791,9 @@ footer{align-items:center}
 .matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{display:inline;min-width:max-content;max-width:none;white-space:nowrap;overflow:visible;text-overflow:clip;overflow-wrap:normal}
 
 /* Make sortable directory headers clear and easy to use. */
-.sortable-header{display:block;position:relative;width:100%;box-sizing:border-box;padding:0 13px 0 0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;line-height:1.25;text-align:center;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
+.sortable-header{display:inline-flex;position:relative;align-items:center;justify-content:center;gap:4px;width:auto;max-width:100%;box-sizing:border-box;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;line-height:1.25;text-align:center;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
 .sortable-header:hover,.sortable-header.active{color:#edf2f9}
-.sort-indicator{position:absolute;right:0;top:50%;transform:translateY(-50%);color:#62c8ec;font-size:11px;line-height:1}
+.sort-indicator{position:static;transform:none;flex:none;color:#62c8ec;font-size:11px;line-height:1}
 
 
 /* Player leaderboard has many category columns. Let headers wrap instead of colliding. */
