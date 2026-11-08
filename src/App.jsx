@@ -259,9 +259,24 @@ async function downloadLeagueRankingsPng({ players, division, categories }) {
       img.src=`${import.meta.env.BASE_URL}assets/teams/${encodeURIComponent(file)}`;
     });
   };
+  const loadRankLogo=async rank=>{
+    const file=rankLogoFiles[rank];
+    if(!file)return null;
+    return new Promise(resolve=>{
+      const img=new Image();
+      img.onload=()=>resolve(img);
+      img.onerror=()=>resolve(null);
+      img.src=`${import.meta.env.BASE_URL}assets/ranks/${encodeURIComponent(file)}`;
+    });
+  };
   const logoNames=[...new Set(players.flatMap(p=>[...(p.teams||[])]))];
-  const loadedLogos=await Promise.all(logoNames.map(async name=>[name,await loadTeamLogo(name)]));
+  const rankNames=[...new Set(players.map(p=>p.rank).filter(Boolean))];
+  const [loadedLogos,loadedRankLogos]=await Promise.all([
+    Promise.all(logoNames.map(async name=>[name,await loadTeamLogo(name)])),
+    Promise.all(rankNames.map(async rank=>[rank,await loadRankLogo(rank)]))
+  ]);
   const logosByTeam=new Map(loadedLogos);
+  const logosByRank=new Map(loadedRankLogos);
   text('SGL  ·  PLAYER RANKINGS',margin,58,16,'#62c8ec',750);
   text(division==='All Divisions'?'ALL DIVISIONS':division.toUpperCase(),margin,112,42,'#f3f6fb',800);
   text(players.length+' PLAYERS     ·     MATCH RATING + CATEGORY FORMULAS',margin,158,15,'#9eacbf',600);
@@ -271,7 +286,7 @@ async function downloadLeagueRankingsPng({ players, division, categories }) {
   const cols=[{label:'#',w:103},{label:'PLAYER',w:309},{label:'RANK',w:154},{label:'TEAM',w:592},{label:'GAMES',w:154},{label:'MATCH RATING',w:257},...categories.map(c=>({label:c.label.toUpperCase(),w:143}))];
   let cx=margin;ctx.fillStyle='#202b39';ctx.fillRect(margin,top+header,tableWidth,tableHead);
   for(const c of cols){const left=c.label==='PLAYER'||c.label==='TEAM';text(c.label,cx+(left?14:c.w/2),top+header+tableHead/2,11,'#aab7c8',750,left?'left':'center');cx+=c.w;}
-  players.forEach((p,i)=>{const y=top+header+tableHead+i*rowHeight;ctx.fillStyle=i%2===0?'#121a25':'#0f1721';ctx.fillRect(margin,y,tableWidth,rowHeight);ctx.strokeStyle='#263241';ctx.beginPath();ctx.moveTo(margin,y+rowHeight);ctx.lineTo(margin+tableWidth,y+rowHeight);ctx.stroke();let x=margin;const values=[String(i+1),p.name,p.rank||''];values.forEach((value,j)=>{const left=j===1;text(value,x+(left?14:cols[j].w/2),y+rowHeight/2,13,j===1?'#edf2f8':'#b9c5d4',j===1?650:550,left?'left':'center');x+=cols[j].w;});const teams=[...(p.teams||[])];let teamX=x+14;const teamCenter=y+rowHeight/2;ctx.save();ctx.beginPath();ctx.rect(x+8,y,cols[3].w-16,rowHeight);ctx.clip();for(const team of teams){const logo=logosByTeam.get(team);if(logo){const size=30;ctx.drawImage(logo,teamX,teamCenter-size/2,size,size);}else{text(team.split(/\\s+/).map(v=>v[0]).join('').slice(0,3),teamX+14,teamCenter,10,'#a9b6c8',800,'center');}teamX+=36;text(team,teamX,teamCenter,13,'#aab8ca',550);ctx.font='550 13px Inter,Arial,sans-serif';teamX+=ctx.measureText(team).width+20;}ctx.restore();x+=cols[3].w;text(fmtCount(p.games),x+cols[4].w/2,y+rowHeight/2,13,'#b9c5d4',550,'center');x+=cols[4].w;meter(p.rating,x+10,y+rowHeight/2-4,105);x+=cols[5].w;categories.forEach((c,j)=>{const col=cols[6+j],raw=n(p.ratingValues?.[c.key]),score=n(p.ratingCategories?.[c.key]);text(fmtRating(score),x+col.w/2,y+24,14,'#e8edf5',700,'center');text((c.key==='winPct'?fmtWinPct(raw):fmt(raw))+(c.key==='winPct'?'%':''),x+col.w/2,y+47,10,'#93a3b7',500,'center');x+=col.w;});});
+  players.forEach((p,i)=>{const y=top+header+tableHead+i*rowHeight;ctx.fillStyle=i%2===0?'#121a25':'#0f1721';ctx.fillRect(margin,y,tableWidth,rowHeight);ctx.strokeStyle='#263241';ctx.beginPath();ctx.moveTo(margin,y+rowHeight);ctx.lineTo(margin+tableWidth,y+rowHeight);ctx.stroke();let x=margin;const values=[String(i+1),p.name,p.rank||''];values.forEach((value,j)=>{if(j===2){const rankLogo=logosByRank.get(p.rank);if(rankLogo){const size=42;ctx.drawImage(rankLogo,x+(cols[j].w-size)/2,y+(rowHeight-size)/2,size,size);}else{text(value,x+cols[j].w/2,y+rowHeight/2,13,'#b9c5d4',550,'center');}}else{const left=j===1;text(value,x+(left?14:cols[j].w/2),y+rowHeight/2,13,j===1?'#edf2f8':'#b9c5d4',j===1?650:550,left?'left':'center');}x+=cols[j].w;});const teams=[...(p.teams||[])];let teamX=x+14;const teamCenter=y+rowHeight/2;ctx.save();ctx.beginPath();ctx.rect(x+8,y,cols[3].w-16,rowHeight);ctx.clip();for(const team of teams){const logo=logosByTeam.get(team);if(logo){const size=30;ctx.drawImage(logo,teamX,teamCenter-size/2,size,size);}else{text(team.split(/\\s+/).map(v=>v[0]).join('').slice(0,3),teamX+14,teamCenter,10,'#a9b6c8',800,'center');}teamX+=36;text(team,teamX,teamCenter,13,'#aab8ca',550);ctx.font='550 13px Inter,Arial,sans-serif';teamX+=ctx.measureText(team).width+20;}ctx.restore();x+=cols[3].w;text(fmtCount(p.games),x+cols[4].w/2,y+rowHeight/2,13,'#b9c5d4',550,'center');x+=cols[4].w;meter(p.rating,x+10,y+rowHeight/2-4,105);x+=cols[5].w;categories.forEach((c,j)=>{const col=cols[6+j],raw=n(p.ratingValues?.[c.key]),score=n(p.ratingCategories?.[c.key]);text(fmtRating(score),x+col.w/2,y+24,14,'#e8edf5',700,'center');text((c.key==='winPct'?fmtWinPct(raw):fmt(raw))+(c.key==='winPct'?'%':''),x+col.w/2,y+47,10,'#93a3b7',500,'center');x+=col.w;});});
   text('Category values show adjusted rating above and underlying per-game statistic below.  ·  Created by Toad Death  ·  RLSTATS',margin,height-28,11,'#74859d',500);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw new Error('PNG export could not be created.');
   const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='sgl-'+division.toLowerCase().replace(/\s+/g,'-')+'-player-rankings.png';document.body.appendChild(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),1500);
