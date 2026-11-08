@@ -701,3 +701,27 @@ footer{align-items:center}
  .performance-panel .stats-table th:nth-child(2),.performance-panel .stats-table td:nth-child(2){min-width:110px}
  .matchup-panel .stats-table td:nth-child(1) .team-name img,.matchup-panel .stats-table td:nth-child(3) .team-name img{width:25px;height:25px;flex-basis:25px}
 }
+
+
+/* Keep the player's rank visually attached to the player, not the club */
+.comparison-player-table .stats-table{width:100%;min-width:0;table-layout:fixed}
+.comparison-player-table .stats-table th:nth-child(1),.comparison-player-table .stats-table td:nth-child(1){width:16%;text-align:left}
+.comparison-player-table .stats-table th:nth-child(2),.comparison-player-table .stats-table td:nth-child(2){width:6%;text-align:center;padding-left:3px;padding-right:3px}
+.comparison-player-table .stats-table th:nth-child(3),.comparison-player-table .stats-table td:nth-child(3){width:14%;text-align:left}
+.comparison-player-table .stats-table th:nth-child(4),.comparison-player-table .stats-table td:nth-child(4){width:6%}
+.comparison-player-table .stats-table th:nth-child(5),.comparison-player-table .stats-table td:nth-child(5){width:12%}
+.comparison-player-table .stats-table th:nth-child(n+6),.comparison-player-table .stats-table td:nth-child(n+6){width:6.57%}
+.comparison-player-table .stats-table td:nth-child(1) .entity-link{display:block;text-align:left}
+.comparison-player-table .stats-table td:nth-child(3) .entity-link{display:block;text-align:left}
+.comparison-series-score{display:inline-block;margin:0 8px;padding:3px 9px;border:1px solid #3b4b60;border-radius:5px;background:#111b28;color:#62c8ec;font-variant-numeric:tabular-nums;white-space:nowrap}
+.comparison-card-away .comparison-team-identity{justify-content:flex-end}
+.comparison-card-away .comparison-team-identity>.team-entity-link{order:1}
+.comparison-card-away .comparison-team-identity>.division-badge{order:0}
+.comparison-card-away>span,.comparison-card-away .comparison-team-rating{text-align:right}
+.comparison-card-away .comparison-team-rating .rating-meter{margin-left:auto}
+@media(max-width:1000px){
+ .comparison-player-table .stats-table{table-layout:auto;width:max-content;min-width:100%}
+ .comparison-player-table .stats-table th:nth-child(n),.comparison-player-table .stats-table td:nth-child(n){width:auto}
+ .comparison-player-table .stats-table th:nth-child(1),.comparison-player-table .stats-table td:nth-child(1){min-width:130px}
+ .comparison-player-table .stats-table th:nth-child(2),.comparison-player-table .stats-table td:nth-child(2){min-width:58px}
+}
