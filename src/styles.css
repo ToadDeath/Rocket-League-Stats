@@ -797,9 +797,10 @@ footer{align-items:center}
 
 /* Player leaderboard has many category columns. Let headers wrap instead of colliding. */
 .players-leaderboard-table .stats-table{white-space:normal;table-layout:auto}
-.players-leaderboard-table .stats-table th{white-space:normal;min-width:66px;max-width:112px;padding:9px 6px;line-height:1.25;overflow-wrap:anywhere}
+.players-leaderboard-table .stats-table th{white-space:normal;min-width:66px;max-width:112px;padding:9px 6px;line-height:1.25;overflow-wrap:normal;word-break:normal;hyphens:none}
+.players-leaderboard-table .stats-table th:nth-child(7),.players-leaderboard-table .stats-table th:nth-child(11){min-width:88px;max-width:104px}
 .players-leaderboard-table .stats-table th:first-child{min-width:30px;width:30px}
 .players-leaderboard-table .stats-table th:nth-child(2){min-width:110px}
 .players-leaderboard-table .stats-table th:nth-child(4){min-width:110px}
-.players-leaderboard-table .sortable-header{white-space:normal;line-height:1.25;max-width:100%;overflow-wrap:anywhere}
+.players-leaderboard-table .sortable-header{white-space:normal;line-height:1.25;max-width:100%;overflow-wrap:normal;word-break:normal;hyphens:none}
 .players-leaderboard-table .sort-indicator{flex:none}
