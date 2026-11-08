@@ -645,7 +645,7 @@ footer{align-items:center}
 .players-leaderboard-table .stats-table th:nth-child(5),.players-leaderboard-table .stats-table td:nth-child(5){width:7%;padding-left:4px}
 .players-leaderboard-table .stats-table th:nth-child(6),.players-leaderboard-table .stats-table td:nth-child(6){width:13%}
 .players-leaderboard-table .stats-table td:nth-child(6) .rating-meter{max-width:190px;width:100%}
-.players-leaderboard-table .stats-table th:nth-child(n+7),.players-leaderboard-table .stats-table td:nth-child(n+7){width:4.57%}
+.players-leaderboard-table .stats-table th:nth-child(n+7),.players-leaderboard-table .stats-table td:nth-child(n+7){width:3.875%}
 .players-leaderboard-table .stats-table td:nth-child(2) .entity-link{display:block;text-align:left}
 .players-leaderboard-table .stats-table .comparison-category-cell{gap:4px}
 @media(max-width:1000px){
