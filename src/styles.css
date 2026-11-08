@@ -793,3 +793,13 @@ footer{align-items:center}
 .sortable-header{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer;white-space:nowrap}
 .sortable-header:hover,.sortable-header.active{color:#edf2f9}
 .sort-indicator{color:#62c8ec;font-size:11px;line-height:1}
+
+
+/* Player leaderboard has many category columns. Let headers wrap instead of colliding. */
+.players-leaderboard-table .stats-table{white-space:normal;table-layout:auto}
+.players-leaderboard-table .stats-table th{white-space:normal;min-width:66px;max-width:112px;padding:9px 6px;line-height:1.25;overflow-wrap:anywhere}
+.players-leaderboard-table .stats-table th:first-child{min-width:30px;width:30px}
+.players-leaderboard-table .stats-table th:nth-child(2){min-width:110px}
+.players-leaderboard-table .stats-table th:nth-child(4){min-width:110px}
+.players-leaderboard-table .sortable-header{white-space:normal;line-height:1.25;max-width:100%;overflow-wrap:anywhere}
+.players-leaderboard-table .sort-indicator{flex:none}
