@@ -641,9 +641,10 @@ footer{align-items:center}
 .players-leaderboard-table .stats-table th:nth-child(1),.players-leaderboard-table .stats-table td:nth-child(1){width:4%;text-align:center}
 .players-leaderboard-table .stats-table th:nth-child(2),.players-leaderboard-table .stats-table td:nth-child(2){width:18%;text-align:left}
 .players-leaderboard-table .stats-table th:nth-child(3),.players-leaderboard-table .stats-table td:nth-child(3){width:7%}
-.players-leaderboard-table .stats-table th:nth-child(4),.players-leaderboard-table .stats-table td:nth-child(4){width:23%;text-align:left;padding-right:5px}
-.players-leaderboard-table .stats-table th:nth-child(5),.players-leaderboard-table .stats-table td:nth-child(5){width:6%;padding-left:5px}
-.players-leaderboard-table .stats-table th:nth-child(6),.players-leaderboard-table .stats-table td:nth-child(6){width:10%}
+.players-leaderboard-table .stats-table th:nth-child(4),.players-leaderboard-table .stats-table td:nth-child(4){width:20%;text-align:left;padding-right:5px}
+.players-leaderboard-table .stats-table th:nth-child(5),.players-leaderboard-table .stats-table td:nth-child(5){width:7%;padding-left:4px}
+.players-leaderboard-table .stats-table th:nth-child(6),.players-leaderboard-table .stats-table td:nth-child(6){width:13%}
+.players-leaderboard-table .stats-table td:nth-child(6) .rating-meter{max-width:190px;width:100%}
 .players-leaderboard-table .stats-table th:nth-child(n+7),.players-leaderboard-table .stats-table td:nth-child(n+7){width:4.57%}
 .players-leaderboard-table .stats-table td:nth-child(2) .entity-link{display:block;text-align:left}
 .players-leaderboard-table .stats-table .comparison-category-cell{gap:4px}
@@ -723,16 +724,19 @@ footer{align-items:center}
 
 /* League standings tables on the overview. */
 .standings-panel{margin-top:22px}
-.standings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr));gap:22px}
+.standings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr));gap:16px}
 .standings-division{min-width:0}
 .standings-division-heading{display:flex;align-items:center;margin:2px 0 10px}
 .standings-division .stats-table{min-width:0}
-.standings-division .stats-table th,.standings-division .stats-table td{padding-left:9px;padding-right:9px}
+.standings-division .stats-table{table-layout:fixed;width:100%}
+.standings-division .stats-table th,.standings-division .stats-table td{padding-left:6px;padding-right:6px}
+.standings-division .stats-table th:nth-child(1),.standings-division .stats-table td:nth-child(1){width:5%}
+.standings-division .stats-table th:nth-child(2),.standings-division .stats-table td:nth-child(2){width:31%}
+.standings-division .stats-table th:nth-child(n+3),.standings-division .stats-table td:nth-child(n+3){width:9.14%}
 .standings-division .stats-table th:first-child,.standings-division .stats-table td:first-child{text-align:center;width:34px}
 .standings-division .stats-table th:nth-child(n+3),.standings-division .stats-table td:nth-child(n+3){text-align:center}
 .standings-team-name{font-weight:650;white-space:nowrap}
 .standings-points{color:#edf2f9;font-size:14px}
-.standings-note{margin:13px 0 0;color:#7f8da1;font-size:10px;line-height:1.5}
 @media(max-width:700px){.standings-grid{grid-template-columns:minmax(0,1fr);gap:18px}.standings-division .stats-table th,.standings-division .stats-table td{padding-left:5px;padding-right:5px;font-size:10px}}
 
 /* Keep standings team crests and names aligned to the left edge. */
@@ -740,3 +744,16 @@ footer{align-items:center}
 .standings-division .stats-table td:nth-child(2){text-align:left}
 .standings-division .standings-team-name{display:inline-flex;justify-content:flex-start;text-align:left}
 .standings-division .standings-team-name .team-name{justify-content:flex-start}
+
+/* Balance standings columns and comparison matchup presentation. */
+.standings-division .stats-table th:nth-child(2),.standings-division .stats-table td:nth-child(2){text-align:left}
+.standings-division .stats-table td:nth-child(2) .team-name{gap:6px}
+.standings-division .stats-table td:nth-child(2) .team-name img{width:24px;height:24px;flex:0 0 24px;object-fit:contain}
+.comparison-result-banner{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:20px;margin:18px 0 8px;padding:16px 22px;border:1px solid #2d4054;border-radius:8px;background:linear-gradient(110deg,rgba(20,43,61,.72),rgba(13,23,36,.9) 50%,rgba(20,43,61,.72))}
+.comparison-result-banner>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.comparison-result-banner>div:last-child{text-align:right}
+.comparison-result-banner>div span{font-size:9px;font-weight:800;letter-spacing:1.4px;color:#62c8ec}
+.comparison-result-banner>div strong{font-size:15px;color:#edf2f9;overflow-wrap:anywhere}
+.comparison-result-score{min-width:112px;text-align:center;color:#fff;font-size:34px;font-weight:850;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(98,200,236,.22)}
+.comparison-card-side-label{font-size:10px;color:#9eacbf}
+@media(max-width:560px){.comparison-result-banner{gap:8px;padding:12px}.comparison-result-banner>div strong{font-size:12px}.comparison-result-score{min-width:70px;font-size:27px}}
