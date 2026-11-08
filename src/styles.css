@@ -683,10 +683,10 @@ footer{align-items:center}
 .matchup-panel .stats-table td:nth-child(3) .team-name img{width:30px;height:30px;max-width:30px;flex:0 0 30px;object-fit:contain}
 .matchup-panel .stats-table td:nth-child(3) .team-name{justify-content:flex-start}
 .performance-panel .stats-table th:nth-child(1),.performance-panel .stats-table td:nth-child(1){width:7%;text-align:center}
-.performance-panel .stats-table th:nth-child(2),.performance-panel .stats-table td:nth-child(2){width:23%;text-align:left}
-.performance-panel .stats-table th:nth-child(3),.performance-panel .stats-table td:nth-child(3){width:10%}
-.performance-panel .stats-table th:nth-child(4),.performance-panel .stats-table td:nth-child(4){width:29%}
-.performance-panel .stats-table th:nth-child(5),.performance-panel .stats-table td:nth-child(5){width:19%}
+.performance-panel .stats-table th:nth-child(2),.performance-panel .stats-table td:nth-child(2){width:18%;text-align:left}
+.performance-panel .stats-table th:nth-child(3),.performance-panel .stats-table td:nth-child(3){width:8%}
+.performance-panel .stats-table th:nth-child(4),.performance-panel .stats-table td:nth-child(4){width:34%}
+.performance-panel .stats-table th:nth-child(5),.performance-panel .stats-table td:nth-child(5){width:20%}
 .performance-panel .stats-table th:nth-child(6),.performance-panel .stats-table td:nth-child(6){width:12%}
 .performance-panel .stats-table td:nth-child(2) .entity-link{display:block;text-align:left}
 .players-leaderboard-table .stats-table th:nth-child(2),.players-leaderboard-table .stats-table td:nth-child(2){width:12%;text-align:left}
