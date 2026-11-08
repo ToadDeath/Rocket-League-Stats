@@ -240,9 +240,9 @@ async function downloadTeamComparisonPng({ teams, players, categories, week }) {
   window.setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
 
-async function downloadLeagueRankingsPng({ players, division }) {
-  const scale=2, width=1800, margin=64, tableWidth=width-margin*2;
-  const top=230, header=58, tableHead=42, rowHeight=54;
+async function downloadLeagueRankingsPng({ players, division, categories }) {
+  const scale=2, width=2700, margin=64, tableWidth=width-margin*2;
+  const top=230, header=58, tableHead=48, rowHeight=64;
   const height=top+header+tableHead+players.length*rowHeight+70;
   const canvas=document.createElement('canvas');canvas.width=width*scale;canvas.height=height*scale;
   const ctx=canvas.getContext('2d');ctx.scale(scale,scale);ctx.fillStyle='#0b1018';ctx.fillRect(0,0,width,height);
@@ -251,15 +251,15 @@ async function downloadLeagueRankingsPng({ players, division }) {
   const meter=(value,x,y,w)=>{const score=Math.max(0,Math.min(10,n(value)));const gradient=ctx.createLinearGradient(x,y,x+w,y);gradient.addColorStop(0,'#e34d59');gradient.addColorStop(.5,'#8d8b9c');gradient.addColorStop(1,'#268bd2');ctx.fillStyle='#27313e';round(x,y,w,9,5);ctx.fill();ctx.save();round(x,y,w*score/10,9,5);ctx.clip();ctx.fillStyle=gradient;ctx.fillRect(x,y,w,9);ctx.restore();text(fmtRating(score),x+w+12,y+4,14,'#f2f5fa',700);};
   text('SGL  ·  PLAYER RANKINGS',margin,58,16,'#62c8ec',750);
   text(division==='All Divisions'?'ALL DIVISIONS':division.toUpperCase(),margin,112,42,'#f3f6fb',800);
-  text(players.length+' PLAYERS     ·     MATCH RATING',margin,158,15,'#9eacbf',600);
+  text(players.length+' PLAYERS     ·     MATCH RATING + CATEGORY FORMULAS',margin,158,15,'#9eacbf',600);
   ctx.fillStyle='#151e2a';round(margin,top,tableWidth,header,8);ctx.fill();
   text('PLAYER LEADERBOARD',margin+18,top+20,18,'#f1f4f9',800);
   text(players.length+' TOTAL',width-margin-18,top+20,11,'#9eacbf',600,'right');
-  const cols=[{label:'#',w:65},{label:'PLAYER',w:350},{label:'RANK',w:120},{label:'TEAM',w:520},{label:'GAMES',w:170},{label:'MATCH RATING',w:330}];
+  const cols=[{label:'#',w:60},{label:'PLAYER',w:320},{label:'RANK',w:100},{label:'TEAM',w:390},{label:'GAMES',w:120},{label:'MATCH RATING',w:180},...categories.map(c=>({label:c.label.toUpperCase(),w:190}))];
   let cx=margin;ctx.fillStyle='#202b39';ctx.fillRect(margin,top+header,tableWidth,tableHead);
-  for(const c of cols){text(c.label,cx+12,top+header+tableHead/2,11,'#aab7c8',750);cx+=c.w;}
-  players.forEach((p,i)=>{const y=top+header+tableHead+i*rowHeight;ctx.fillStyle=i%2===0?'#121a25':'#0f1721';ctx.fillRect(margin,y,tableWidth,rowHeight);ctx.strokeStyle='#263241';ctx.beginPath();ctx.moveTo(margin,y+rowHeight);ctx.lineTo(margin+tableWidth,y+rowHeight);ctx.stroke();let x=margin;const values=[String(i+1),p.name,p.rank||'-',[...p.teams].join(', '),fmtCount(p.games)];values.forEach((value,j)=>{text(value,x+12,y+rowHeight/2,13,j===1?'#edf2f8':'#b9c5d4',j===1?650:550);x+=cols[j].w;});meter(p.rating,x+12,y+rowHeight/2-4,155);});
-  text('Created by Toad Death  ·  RLSTATS',margin,height-28,11,'#74859d',500);
+  for(const c of cols){const left=c.label==='PLAYER'||c.label==='TEAM';text(c.label,cx+(left?14:c.w/2),top+header+tableHead/2,11,'#aab7c8',750,left?'left':'center');cx+=c.w;}
+  players.forEach((p,i)=>{const y=top+header+tableHead+i*rowHeight;ctx.fillStyle=i%2===0?'#121a25':'#0f1721';ctx.fillRect(margin,y,tableWidth,rowHeight);ctx.strokeStyle='#263241';ctx.beginPath();ctx.moveTo(margin,y+rowHeight);ctx.lineTo(margin+tableWidth,y+rowHeight);ctx.stroke();let x=margin;const values=[String(i+1),p.name,p.rank||'-',[...p.teams].join(', '),fmtCount(p.games)];values.forEach((value,j)=>{const left=j===1||j===3;text(value,x+(left?14:cols[j].w/2),y+rowHeight/2,13,j===1?'#edf2f8':'#b9c5d4',j===1?650:550,left?'left':'center');x+=cols[j].w;});meter(p.rating,x+10,y+rowHeight/2-4,105);x+=cols[5].w;categories.forEach((c,j)=>{const col=cols[6+j],raw=n(p.ratingValues?.[c.key]),score=n(p.ratingCategories?.[c.key]);text(fmtRating(score),x+col.w/2,y+24,14,'#e8edf5',700,'center');text((c.key==='winPct'?fmtWinPct(raw):fmt(raw))+(c.key==='winPct'?'%':''),x+col.w/2,y+47,10,'#93a3b7',500,'center');x+=col.w;});});
+  text('Category values show adjusted rating above and underlying per-game statistic below.  ·  Created by Toad Death  ·  RLSTATS',margin,height-28,11,'#74859d',500);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw new Error('PNG export could not be created.');
   const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='sgl-'+division.toLowerCase().replace(/\s+/g,'-')+'-player-rankings.png';document.body.appendChild(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
