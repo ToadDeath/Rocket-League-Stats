@@ -725,3 +725,12 @@ footer{align-items:center}
  .comparison-player-table .stats-table th:nth-child(1),.comparison-player-table .stats-table td:nth-child(1){min-width:130px}
  .comparison-player-table .stats-table th:nth-child(2),.comparison-player-table .stats-table td:nth-child(2){min-width:58px}
 }
+
+
+/* Keep the club crest prominent in team comparison cards. */
+.comparison-team-identity{gap:14px;min-height:62px}
+.comparison-club-logo{width:58px;height:58px;object-fit:contain;flex:0 0 58px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.4))}
+.comparison-team-identity>.team-entity-link{font-size:17px;font-weight:800}
+.comparison-card-away .comparison-club-logo{order:2}
+.comparison-card-away .comparison-team-identity>.team-entity-link{order:1}
+@media(max-width:560px){.comparison-club-logo{width:46px;height:46px;flex-basis:46px}.comparison-team-identity>.team-entity-link{font-size:14px}}
