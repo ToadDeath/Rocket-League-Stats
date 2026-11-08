@@ -780,3 +780,10 @@ footer{align-items:center}
 .standings-panel>.panel-heading{margin-bottom:8px}
 .standings-division-heading{margin:0 0 6px}
 .standings-division .table-scroll{margin-top:0}
+
+
+/* Keep both sides of Weekly Matchup Review on one line, including long away-team names. */
+.matchup-panel .stats-table td:nth-child(1) .team-name,
+.matchup-panel .stats-table td:nth-child(3) .team-name{flex-wrap:nowrap;white-space:nowrap;min-width:0;overflow:hidden}
+.matchup-panel .stats-table td:nth-child(1) .team-name>span:last-child,
+.matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{display:block;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
