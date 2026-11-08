@@ -947,3 +947,45 @@ footer{align-items:center}
 .stats-table th.entity-name-column .sortable-label{
   text-align:left;
 }
+
+/* Player leaderboard TEAM cells must align the team links, not just the table cell. */
+.players-leaderboard-table .stats-table td.entity-name-column{
+  text-align:left !important;
+}
+.players-leaderboard-table .stats-table td:nth-child(4) .top-player-team{
+  justify-content:flex-start;
+  text-align:left;
+  width:100%;
+}
+.players-leaderboard-table .stats-table td:nth-child(4) .rankings-team-link{
+  justify-content:flex-start;
+  text-align:left;
+}
+
+/* Keep the player sort arrow out of the text flow so it cannot resize or wrap labels. */
+.players-leaderboard-table .sortable-header{
+  display:inline-block;
+  position:relative;
+  width:auto;
+  max-width:100%;
+  vertical-align:middle;
+  text-align:inherit;
+}
+.players-leaderboard-table .sortable-label{
+  display:inline;
+  width:auto;
+  max-width:100%;
+}
+.players-leaderboard-table .sort-indicator{
+  position:absolute;
+  top:50%;
+  left:calc(100% + 3px);
+  right:auto;
+  width:0;
+  height:0;
+  margin:0;
+  transform:translateY(-50%);
+  white-space:nowrap;
+  line-height:1;
+  pointer-events:none;
+}
