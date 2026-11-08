@@ -805,7 +805,32 @@ footer{align-items:center}
 .players-leaderboard-table .stats-table th:nth-child(2){min-width:110px}
 .players-leaderboard-table .stats-table th:nth-child(4){min-width:110px}
 
-
-
-
-
+/* Player headers keep the arrow overlaid at the vertical center of the label. */
+.players-leaderboard-table .sortable-header{
+  display:block;
+  position:relative;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  padding:0;
+  text-align:center;
+  white-space:normal;
+  overflow-wrap:normal;
+}
+.players-leaderboard-table .sortable-label{
+  display:block;
+  width:100%;
+  text-align:center;
+}
+.players-leaderboard-table .sort-indicator{
+  position:absolute;
+  top:50%;
+  right:1px;
+  left:auto;
+  width:auto;
+  height:auto;
+  margin:0;
+  transform:translateY(-50%);
+  line-height:1;
+  vertical-align:middle;
+}
