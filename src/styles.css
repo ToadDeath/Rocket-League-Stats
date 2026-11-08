@@ -930,3 +930,20 @@ footer{align-items:center}
 .standings-division .stats-table th:nth-child(2),
 .standings-division .stats-table td:nth-child(2){text-align:left}
 
+
+
+/* Use consistent left alignment for player and team columns throughout the site. */
+.stats-table th.entity-name-column,
+.stats-table td.entity-name-column{
+  text-align:left !important;
+}
+.stats-table th.entity-name-column .sortable-header{
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:3px;
+  text-align:left;
+}
+.stats-table th.entity-name-column .sortable-label{
+  text-align:left;
+}
