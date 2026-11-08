@@ -142,7 +142,20 @@ async function downloadElementPng(selector, filename) {
   await document.fonts?.ready;
   const element = document.querySelector(selector);
   if (!element) throw new Error('The export area could not be found.');
+  const bounds = element.getBoundingClientRect();
+  const contentWidth = Math.ceil(Math.max(bounds.width, element.scrollWidth));
+  const contentHeight = Math.ceil(Math.max(bounds.height, element.scrollHeight));
+  const exportPadding = 14;
   const dataUrl = await toPng(element, {
+    width: contentWidth + exportPadding * 2,
+    height: contentHeight + exportPadding * 2,
+    style: {
+      width: `${contentWidth}px`,
+      height: `${contentHeight}px`,
+      padding: `${exportPadding}px`,
+      boxSizing: 'content-box',
+      overflow: 'visible'
+    },
     pixelRatio: 2,
     cacheBust: true,
     backgroundColor: '#0b1018',
