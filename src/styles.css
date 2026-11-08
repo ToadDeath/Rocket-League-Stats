@@ -842,8 +842,7 @@ footer{align-items:center}
 .players-leaderboard-table .stats-table th:nth-child(4),.players-leaderboard-table .stats-table td:nth-child(4){width:16%;text-align:left}
 .players-leaderboard-table .stats-table th:nth-child(5),.players-leaderboard-table .stats-table td:nth-child(5){width:6%;text-align:center}
 .players-leaderboard-table .stats-table th:nth-child(6),.players-leaderboard-table .stats-table td:nth-child(6){width:11%;text-align:center}
-.players-leaderboard-table .stats-table th:nth-child(7),.players-leaderboard-table .stats-table td:nth-child(7){width:4.5%;text-align:center}
-.players-leaderboard-table .stats-table th:nth-child(n+8),.players-leaderboard-table .stats-table td:nth-child(n+8){width:5.5%;text-align:center}
+.players-leaderboard-table .stats-table th:nth-child(n+7),.players-leaderboard-table .stats-table td:nth-child(n+7){width:5.5%;text-align:center}
 
 /* Keep sort arrows snug to their labels and vertically centered beside wrapped text. */
 
@@ -942,3 +941,27 @@ footer{align-items:center}
 .players-leaderboard-table .stats-table th:nth-child(4) .sortable-header{
   text-align:left;
 }
+
+
+/* Show weekly rating movement as a compact annotation beside the rating. */
+.rating-with-delta{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+  width:100%;
+}
+.stats-table td .rating-with-delta .rating-meter{
+  flex:1 1 auto;
+  min-width:76px;
+  max-width:140px;
+}
+.rating-with-delta>small{
+  flex:0 0 auto;
+  font-size:9px;
+  line-height:1;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.rating-delta-neutral{color:#8793a3}
