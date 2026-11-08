@@ -185,6 +185,17 @@ function sortRows(rows, key, direction) {
   const factor = ['name','rank','teamList'].includes(key) ? (direction === 'asc' ? -1 : 1) : (direction === 'asc' ? 1 : -1);
   const collator = new Intl.Collator(undefined,{numeric:true,sensitivity:'base'});
   return [...rows].sort((a,b) => {
+    if (key === 'ratingChange') {
+      const av = Number.isFinite(a.ratingChange) ? a.ratingChange : null;
+      const bv = Number.isFinite(b.ratingChange) ? b.ratingChange : null;
+      if (av === null || bv === null) {
+        if (av === null && bv !== null) return 1;
+        if (bv === null && av !== null) return -1;
+        return collator.compare(String(a.name||''),String(b.name||''));
+      }
+      const deltaOrder = (av - bv) * factor;
+      return deltaOrder || collator.compare(String(a.name||''),String(b.name||''));
+    }
     if (a.games !== undefined && b.games !== undefined && key !== 'name' && key !== 'rank') {
       const aHasStats = Number(a.games) > 0, bHasStats = Number(b.games) > 0;
       if (aHasStats !== bHasStats) return aHasStats ? -1 : 1;
