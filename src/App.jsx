@@ -182,7 +182,7 @@ const rlRankOrder = ['SSL','GC3','GC2','GC1','C3','C2','C1','D3','D2','D1','P3',
 const rlRankPosition = new Map(rlRankOrder.map((rank,index)=>[rank,index]));
 
 function sortRows(rows, key, direction) {
-  const factor = direction === 'asc' ? -1 : 1;
+  const factor = ['name','rank','teamList'].includes(key) ? (direction === 'asc' ? -1 : 1) : (direction === 'asc' ? 1 : -1);
   const collator = new Intl.Collator(undefined,{numeric:true,sensitivity:'base'});
   return [...rows].sort((a,b) => {
     if (a.games !== undefined && b.games !== undefined && key !== 'name' && key !== 'rank') {
