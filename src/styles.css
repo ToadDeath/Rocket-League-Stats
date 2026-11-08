@@ -807,3 +807,34 @@ footer{align-items:center}
 .players-leaderboard-table .sortable-header{white-space:normal;line-height:1.25;max-width:100%;overflow-wrap:normal;word-break:normal;hyphens:none}
 .players-leaderboard-table .sortable-label{overflow-wrap:normal;word-break:normal;hyphens:none}
 
+
+
+/* Keep player sort arrows on the first header line without affecting label wrapping. */
+.players-leaderboard-table .sortable-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  width:100%;
+  max-width:100%;
+  white-space:normal;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+.players-leaderboard-table .sortable-label{
+  display:block;
+  flex:0 1 auto;
+  min-width:0;
+  max-width:calc(100% - 10px);
+  text-align:center;
+}
+.players-leaderboard-table .sort-indicator{
+  position:static;
+  display:block;
+  flex:0 0 auto;
+  width:auto;
+  height:auto;
+  margin-left:3px;
+  overflow:visible;
+  line-height:1.25;
+  vertical-align:top;
+}
