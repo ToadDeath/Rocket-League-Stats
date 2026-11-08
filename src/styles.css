@@ -881,5 +881,52 @@ footer{align-items:center}
   line-height:1;
 }
 
-/* Match the centered header alignment used by the other team-directory columns. */
-.team-directory-table .stats-table th:first-child{text-align:center}
+/* Player leaderboard: reclaim excess name-column width for the seven rating attributes. */
+.players-leaderboard-table .stats-table th:nth-child(1),.players-leaderboard-table .stats-table td:nth-child(1){width:4%;text-align:center}
+.players-leaderboard-table .stats-table th:nth-child(2),.players-leaderboard-table .stats-table td:nth-child(2){width:14%;text-align:left}
+.players-leaderboard-table .stats-table th:nth-child(3),.players-leaderboard-table .stats-table td:nth-child(3){width:6%;text-align:center}
+.players-leaderboard-table .stats-table th:nth-child(4),.players-leaderboard-table .stats-table td:nth-child(4){width:16%;text-align:left}
+.players-leaderboard-table .stats-table th:nth-child(5),.players-leaderboard-table .stats-table td:nth-child(5){width:6%;text-align:center}
+.players-leaderboard-table .stats-table th:nth-child(6),.players-leaderboard-table .stats-table td:nth-child(6){width:11%;text-align:center}
+.players-leaderboard-table .stats-table th:nth-child(7),.players-leaderboard-table .stats-table td:nth-child(7){width:4.5%;text-align:center}
+.players-leaderboard-table .stats-table th:nth-child(n+8),.players-leaderboard-table .stats-table td:nth-child(n+8){width:5.5%;text-align:center}
+
+/* Keep sort arrows snug to their labels and vertically centered beside wrapped text. */
+.players-leaderboard-table .sortable-header{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  width:auto;
+  max-width:100%;
+  vertical-align:middle;
+}
+.players-leaderboard-table .sortable-label{
+  display:inline-block;
+  width:auto;
+  max-width:100%;
+  text-align:inherit;
+}
+.players-leaderboard-table .sort-indicator{
+  position:static;
+  flex:0 0 auto;
+  width:auto;
+  height:auto;
+  margin:0;
+  transform:none;
+  line-height:1;
+}
+
+/* Align entity-name headers with their left-aligned names; center numeric headers. */
+.players-leaderboard-table .stats-table th:nth-child(2),
+.players-leaderboard-table .stats-table th:nth-child(4){text-align:left}
+.players-leaderboard-table .stats-table th:nth-child(2) .sortable-header,
+.players-leaderboard-table .stats-table th:nth-child(4) .sortable-header{justify-content:flex-start;text-align:left}
+.team-directory-table .stats-table th:first-child,
+.team-directory-table .stats-table td:first-child{text-align:left}
+.team-directory-table .stats-table th:first-child .sortable-header{justify-content:flex-start;text-align:left}
+.standings-division .stats-table th:first-child,
+.standings-division .stats-table td:first-child{text-align:center}
+.standings-division .stats-table th:nth-child(2),
+.standings-division .stats-table td:nth-child(2){text-align:left}
+
