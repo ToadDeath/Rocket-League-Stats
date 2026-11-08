@@ -804,33 +804,8 @@ footer{align-items:center}
 .players-leaderboard-table .stats-table th:first-child{min-width:30px;width:30px}
 .players-leaderboard-table .stats-table th:nth-child(2){min-width:110px}
 .players-leaderboard-table .stats-table th:nth-child(4){min-width:110px}
-.players-leaderboard-table .sortable-header{white-space:normal;line-height:1.25;max-width:100%;overflow-wrap:normal;word-break:normal;hyphens:none}
-.players-leaderboard-table .sortable-label{overflow-wrap:normal;word-break:normal;hyphens:none}
 
 
 
-/* Sort arrows are visual overlays only: they must never participate in table layout. */
-.players-leaderboard-table .sortable-header{
-  display:inline-block;
-  position:relative;
-  width:auto;
-  max-width:100%;
-  vertical-align:top;
-}
-.players-leaderboard-table .sortable-label{
-  display:inline;
-  max-width:100%;
-}
-.players-leaderboard-table .sort-indicator{
-  position:absolute;
-  top:0;
-  right:-8px;
-  left:auto;
-  display:block;
-  width:auto;
-  height:auto;
-  margin:0;
-  overflow:visible;
-  line-height:1.25;
-  vertical-align:top;
-}
+
+
