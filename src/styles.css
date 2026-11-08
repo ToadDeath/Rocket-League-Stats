@@ -436,9 +436,13 @@ body{font-size:16px}
 
 
 /* Weekly matchup review */
-.matchday-select{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.matchday-select{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .matchday-select>span{font-size:9px;font-weight:700;letter-spacing:1px;color:#8291a7}
-.matchday-select select{max-width:145px;padding:8px 28px 8px 10px;border:1px solid #343d49;border-radius:6px;background:#171e28;color:#edf2f9;font:inherit;font-size:11px}
+.matchday-navigation{display:flex;align-items:center;gap:8px}
+.matchday-navigation strong{min-width:92px;text-align:center;color:#edf2f9;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.matchday-navigation button{display:grid;place-items:center;width:29px;height:29px;padding:0;border:1px solid #344354;border-radius:5px;background:#151e2a;color:#c7d2e0;cursor:pointer;transition:background .15s ease,border-color .15s ease,color .15s ease}
+.matchday-navigation button:hover:not(:disabled){border-color:#62c8ec;background:#1a2a39;color:#e7f8ff}
+.matchday-navigation button:disabled{opacity:.3;cursor:not-allowed}
 .matchup-panel .stats-table{width:100%;min-width:0}
 .matchup-panel .stats-table th:nth-child(2),.matchup-panel .stats-table td:nth-child(2){min-width:76px}
 .matchup-panel .stats-table td{padding-top:13px;padding-bottom:13px}
@@ -450,7 +454,9 @@ body{font-size:16px}
 @media(max-width:560px){
  .matchday-select{gap:6px}
  .matchday-select>span{font-size:8px}
- .matchday-select select{max-width:116px;padding:7px 22px 7px 7px;font-size:10px}
+ .matchday-navigation{gap:5px}
+ .matchday-navigation strong{min-width:82px;font-size:11px}
+ .matchday-navigation button{width:27px;height:27px}
  .matchup-panel .stats-table th,.matchup-panel .stats-table td{padding-left:7px;padding-right:7px}
  .matchup-score{font-size:11px}
 }
@@ -488,28 +494,6 @@ body{font-size:16px}
 .performance-panel .stats-table th:nth-child(4),.performance-panel .stats-table td:nth-child(4){width:23%}
 .performance-panel .stats-table th:nth-child(5),.performance-panel .stats-table td:nth-child(5){width:13%}
 
-
-/* Upcoming matchups */
-.upcoming-panel{margin-top:15px}
-.upcoming-matchday-list{display:grid;gap:18px;margin-top:18px}
-.upcoming-matchday{border-top:1px solid #263449;padding-top:14px}
-.upcoming-matchday:first-child{border-top:0;padding-top:0}
-.upcoming-matchday-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
-.upcoming-matchday-heading>strong{font:700 17px 'Barlow Condensed',sans-serif;color:#edf2f9}
-.upcoming-matchday-heading>span{font-size:8px;letter-spacing:1px;color:#77869c}
-.upcoming-matchday-heading b{color:#cbd5e2;font-size:10px;letter-spacing:0;margin-left:5px}
-.upcoming-matchup-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.upcoming-matchup{display:grid;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr);align-items:center;gap:10px;min-width:0;padding:12px 16px;background:#0d1725;border:1px solid #202d40;border-radius:6px}
-.upcoming-matchup-meta{grid-column:1/-1;min-height:16px}
-.upcoming-matchup .division-badge{transform:scale(.85);transform-origin:left center}
-.upcoming-team{min-width:0;overflow:hidden}
-.upcoming-team .team-name{display:flex;gap:8px;min-width:0;font-size:12px}
-.upcoming-team:last-child .team-entity-link{display:flex;width:100%;justify-content:flex-end}.upcoming-team:last-child .team-name{width:100%;flex-direction:row-reverse;justify-content:flex-start;text-align:right}
-.upcoming-team .team-name img{width:28px;height:28px;flex:none}
-.upcoming-team .team-name>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.upcoming-vs{text-align:center;color:#6d7c92;font-size:10px;font-weight:800;letter-spacing:.8px}
-.upcoming-empty{padding:24px 0;color:#748198;font-size:10px;text-align:center}
-@media(max-width:560px){.upcoming-matchup-grid{grid-template-columns:1fr}.upcoming-matchup{padding:10px}.upcoming-team .team-name{font-size:11px}.upcoming-team .team-name img{width:25px;height:25px}}
 
 /* Anchor away teams to the right edge of the matchup review */
 .matchup-panel .stats-table th:nth-child(3),
@@ -554,10 +538,6 @@ body{font-size:16px}
 .matchup-division-heading,.upcoming-division-heading{display:flex;align-items:center;margin-bottom:10px}
 .matchup-panel .panel-heading+.matchup-division-section{margin-top:20px}
 .matchup-division-heading .division-badge img{transform:translateY(2px)}
-.upcoming-division-section+.upcoming-division-section{margin-top:15px;padding-top:13px;border-top:1px solid #263449}
-.upcoming-division-heading{margin-bottom:8px}
-.upcoming-division-heading .division-badge{padding:2px 6px}
-.upcoming-matchup-meta{display:none}
 
 /* Give the away team more separation from the centered series score */
 .matchup-panel .stats-table th:nth-child(3),.matchup-panel .stats-table td:nth-child(3){padding-left:48px}
