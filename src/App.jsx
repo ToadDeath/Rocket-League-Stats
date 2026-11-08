@@ -377,7 +377,8 @@ function App() {
     const latestWeek=weeks.at(-1), previousWeek=weeks.length>1?weeks.at(-2):null;
     return [...map.values()].map(p=>{
       const current=matchRatingForRecords(p.rows.filter(r=>latestWeek==null||r.week==null||r.week<=latestWeek));
-      const previous=previousWeek==null?null:matchRatingForRecords(p.rows.filter(r=>r.week==null||r.week<=previousWeek));
+      const previousRows=previousWeek==null?[]:p.rows.filter(r=>r.week==null||r.week<=previousWeek);
+      const previous=previousRows.length?matchRatingForRecords(previousRows):null;
       return {...p,rank:dataset?.playerRanks?.[p.name]||'',trackerUrl:dataset?.playerTrackerUrls?.[p.name]||'',teamList:[...p.teams].join(', '),
         winPct:p.games?p.wins/p.games*100:0,scorePerGame:avg(p.score,p.games),goalsPerGame:avg(p.goals,p.games),
         rating:current.rating,ratingCategories:current.categories,ratingValues:current.values,
