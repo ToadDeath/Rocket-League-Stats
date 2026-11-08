@@ -782,9 +782,14 @@ footer{align-items:center}
 .standings-division .table-scroll{margin-top:0}
 
 
-/* Preserve complete team names in Weekly Matchup Review. Narrow screens scroll the table instead of truncating names. */
-.matchup-panel .stats-table{min-width:800px}
+/* Keep full matchup team names on one line without widening the table or adding a scrollbar. */
+.matchup-panel .stats-table{min-width:0}
 .matchup-panel .stats-table td:nth-child(1) .team-name,
-.matchup-panel .stats-table td:nth-child(3) .team-name{flex-wrap:nowrap;white-space:nowrap;min-width:max-content;max-width:none;overflow:visible}
+.matchup-panel .stats-table td:nth-child(3) .team-name{flex-wrap:nowrap;white-space:nowrap;min-width:0;max-width:none;overflow:visible}
 .matchup-panel .stats-table td:nth-child(1) .team-name>span:last-child,
 .matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{display:inline;min-width:max-content;max-width:none;white-space:nowrap;overflow:visible;text-overflow:clip;overflow-wrap:normal}
+
+/* Make sortable directory headers clear and easy to use. */
+.sortable-header{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer;white-space:nowrap}
+.sortable-header:hover,.sortable-header.active{color:#edf2f9}
+.sort-indicator{color:#62c8ec;font-size:11px;line-height:1}
