@@ -672,3 +672,32 @@ footer{align-items:center}
  .players-leaderboard-table .stats-table th:nth-child(n),.players-leaderboard-table .stats-table td:nth-child(n){width:auto}
  .players-leaderboard-table .stats-table th:nth-child(2),.players-leaderboard-table .stats-table td:nth-child(2){min-width:150px;text-align:left}
 }
+
+
+/* Overview matchup logos and compact player leaderboard columns */
+.matchup-panel .stats-table td:nth-child(1) .team-name,
+.matchup-panel .stats-table td:nth-child(3) .team-name{display:flex;align-items:center;gap:7px;min-width:0;max-width:100%}
+.matchup-panel .stats-table td:nth-child(1) .team-name>span:last-child,
+.matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{min-width:0;overflow-wrap:anywhere;white-space:normal}
+.matchup-panel .stats-table td:nth-child(1) .team-name img,
+.matchup-panel .stats-table td:nth-child(3) .team-name img{width:30px;height:30px;max-width:30px;flex:0 0 30px;object-fit:contain}
+.matchup-panel .stats-table td:nth-child(3) .team-name{justify-content:flex-start}
+.performance-panel .stats-table th:nth-child(1),.performance-panel .stats-table td:nth-child(1){width:7%;text-align:center}
+.performance-panel .stats-table th:nth-child(2),.performance-panel .stats-table td:nth-child(2){width:23%;text-align:left}
+.performance-panel .stats-table th:nth-child(3),.performance-panel .stats-table td:nth-child(3){width:10%}
+.performance-panel .stats-table th:nth-child(4),.performance-panel .stats-table td:nth-child(4){width:29%}
+.performance-panel .stats-table th:nth-child(5),.performance-panel .stats-table td:nth-child(5){width:19%}
+.performance-panel .stats-table th:nth-child(6),.performance-panel .stats-table td:nth-child(6){width:12%}
+.performance-panel .stats-table td:nth-child(2) .entity-link{display:block;text-align:left}
+.players-leaderboard-table .stats-table th:nth-child(2),.players-leaderboard-table .stats-table td:nth-child(2){width:12%;text-align:left}
+.players-leaderboard-table .stats-table th:nth-child(3),.players-leaderboard-table .stats-table td:nth-child(3){width:6%}
+.players-leaderboard-table .stats-table td:nth-child(2) .entity-link{display:block;text-align:left}
+.players-leaderboard-table .stats-table th:nth-child(4),.players-leaderboard-table .stats-table td:nth-child(4){padding-left:7px}
+.players-leaderboard-table .stats-table th:nth-child(5),.players-leaderboard-table .stats-table td:nth-child(5){padding-left:4px}
+@media(max-width:1000px){
+ .performance-panel .stats-table{table-layout:auto}
+ .performance-panel .stats-table th,.performance-panel .stats-table td{width:auto}
+ .performance-panel .stats-table th:first-child,.performance-panel .stats-table td:first-child{min-width:34px}
+ .performance-panel .stats-table th:nth-child(2),.performance-panel .stats-table td:nth-child(2){min-width:110px}
+ .matchup-panel .stats-table td:nth-child(1) .team-name img,.matchup-panel .stats-table td:nth-child(3) .team-name img{width:25px;height:25px;flex-basis:25px}
+}
