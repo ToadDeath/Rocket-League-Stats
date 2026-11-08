@@ -97,6 +97,12 @@ const playerAliases = playerRoster.aliases;
 const playerRanks = playerRoster.ranks;
 const playerTrackerUrls = playerRoster.trackerUrls;
 const teamRoster = readTeamRoster(path.join(root, 'data', 'team-aliases.csv'));
+const roster = readCsv(path.join(root, 'data', 'roster.csv')).map(row => {
+  const teamInfo = teamRoster.get((row.team || '').trim());
+  const playerName = (row.player || '').trim();
+  if (!teamInfo || !playerName) return null;
+  return { playerName, teamName: teamInfo.team, division: teamInfo.division };
+}).filter(Boolean);
 function readSchedule(file, teamRoster) {
   if (!fs.existsSync(file)) return [];
   const entries = readCsv(file).map((row, index) => {
@@ -218,7 +224,7 @@ for (const file of findCsvFiles(importsRoot)) {
 const availableStats = [...new Set(records.flatMap(r => Object.keys(r.stats)))];
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, JSON.stringify({
-  generatedAt: new Date().toISOString(), imports, duplicates, records, schedule,
+  generatedAt: new Date().toISOString(), imports, duplicates, records, schedule, roster,
   availableStats, playerRanks, playerTrackerUrls, importWarnings
 }));
 console.log('Processed ' + imports.length + ' CSV file(s), ' + records.length + ' usable player rows, ' + availableStats.length + ' stat fields.');
