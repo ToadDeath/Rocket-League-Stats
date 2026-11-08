@@ -740,3 +740,17 @@ footer{align-items:center}
 .rating-delta-positive{color:#55c995;font-weight:700;white-space:nowrap}
 .rating-delta-negative{color:#ef747b;font-weight:700;white-space:nowrap}
 .rating-delta-neutral{color:#b9c5d4;font-weight:650;white-space:nowrap}
+
+/* League standings tables on the overview. */
+.standings-panel{margin-top:22px}
+.standings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr));gap:22px}
+.standings-division{min-width:0}
+.standings-division-heading{display:flex;align-items:center;margin:2px 0 10px}
+.standings-division .stats-table{min-width:0}
+.standings-division .stats-table th,.standings-division .stats-table td{padding-left:9px;padding-right:9px}
+.standings-division .stats-table th:first-child,.standings-division .stats-table td:first-child{text-align:center;width:34px}
+.standings-division .stats-table th:nth-child(n+3),.standings-division .stats-table td:nth-child(n+3){text-align:center}
+.standings-team-name{font-weight:650;white-space:nowrap}
+.standings-points{color:#edf2f9;font-size:14px}
+.standings-note{margin:13px 0 0;color:#7f8da1;font-size:10px;line-height:1.5}
+@media(max-width:700px){.standings-grid{grid-template-columns:minmax(0,1fr);gap:18px}.standings-division .stats-table th,.standings-division .stats-table td{padding-left:5px;padding-right:5px;font-size:10px}}
