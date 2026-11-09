@@ -1130,3 +1130,8 @@ footer{align-items:center}
 .team-profile-roster-section .panel-heading h3{font-size:21px}
 .team-profile-roster-table{min-width:0}
 @media(max-width:520px){.team-profile-name-line .team-name>img{width:34px;height:34px}.team-profile-roster-section{padding:14px}}
+
+
+/* Team profile summary uses a balanced four-by-two metric grid */
+.team-profile-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:700px){.team-profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
