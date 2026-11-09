@@ -1294,13 +1294,28 @@ footer{align-items:center}
 .expanded-metric-side{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;gap:10px;padding:10px 13px;min-width:0}
 .expanded-metric-side+ .expanded-metric-side{border-left:1px solid #202d3a}
 .expanded-metric-side strong{font:700 15px 'Barlow Condensed',sans-serif;font-variant-numeric:tabular-nums;color:#f0f4f9;white-space:nowrap}
-.expanded-metric-track{height:12px;border-radius:10px;background:#202d3a;overflow:hidden;display:flex}
+.expanded-metric-track{height:8px;border-radius:10px;background:#202d3a;overflow:hidden;display:flex}
 .expanded-metric-track span{display:block;height:100%;border-radius:10px;background:var(--team-color);min-width:0}
 .expanded-metric-side.team-side-0 .expanded-metric-track span{margin-left:auto}
+.expanded-metric-side.team-side-1{grid-template-columns:minmax(0,1fr) 44px}
+.expanded-metric-side.team-side-1 strong{grid-column:2;grid-row:1;text-align:right}
+.expanded-metric-side.team-side-1 .expanded-metric-track{grid-column:1;grid-row:1}
 .expanded-metric-side.team-side-1 .expanded-metric-track span{margin-right:auto}
 .expanded-roster-column .rating-meter.compact{display:flex;width:100%;min-width:0;gap:7px}
 .expanded-roster-column .rating-meter.compact>span{min-width:30px;font-size:11px}
-.expanded-roster-column .rating-meter.compact .rating-meter-track{height:12px;min-width:0;flex:1}
+.expanded-roster-column .rating-meter.compact .rating-meter-track{height:5px;min-width:0;flex:1}
+.expanded-roster-team{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
+.expanded-roster-team img{width:30px;height:30px;object-fit:contain;flex:none}
+.expanded-roster-team strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.expanded-roster-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;min-width:0}
+.expanded-roster-heading>span{flex:none;white-space:nowrap;margin-left:auto}
+.expanded-roster-column .rating-meter.compact .rating-meter-track{background:linear-gradient(90deg,#f02f38 0%,#00aeef 100%)}
+.expanded-roster-column .stats-table{table-layout:fixed}
+.expanded-roster-column .stats-table th:nth-child(1),.expanded-roster-column .stats-table td:nth-child(1){width:27%}
+.expanded-roster-column .stats-table th:nth-child(2),.expanded-roster-column .stats-table td:nth-child(2){width:11%}
+.expanded-roster-column .stats-table th:nth-child(3),.expanded-roster-column .stats-table td:nth-child(3){width:11%}
+.expanded-roster-column .stats-table th:nth-child(4),.expanded-roster-column .stats-table td:nth-child(4){width:37%}
+.expanded-roster-column .stats-table th:nth-child(5),.expanded-roster-column .stats-table td:nth-child(5){width:14%}
 .expanded-metric-side.team-side-0{--team-color:#4a9be8}
 .expanded-metric-side.team-side-1{--team-color:#d99a52}
 .expanded-roster-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
