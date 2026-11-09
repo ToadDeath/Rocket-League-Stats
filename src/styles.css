@@ -483,7 +483,9 @@ body{font-size:16px}
 .stats-table td:has(.team-entity-link){text-align:left}
 .stats-table td:has(.team-entity-link) .team-entity-link{margin-left:0;margin-right:0}
 .stats-table th.team-column-header{text-align:left}
-.stats-table th.team-column-header span{display:inline-block;width:190px;text-align:center}
+.stats-table th.team-column-header .sortable-header{justify-content:flex-start}
+.stats-table th.team-column-header .sortable-label{text-align:left}
+.stats-table th.team-column-header>span{display:inline-block;width:auto;text-align:left}
 
 /* Keep the Overview player table's team column compact so Rating sits closer to the team */
 .top-player-team{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}.top-player-team .team-entity-link{min-width:0}.top-player-team .division-badge{flex:none;padding:2px 5px;gap:3px;font-size:7px}.top-player-team .division-badge img{width:20px;height:20px}.top-player-team .division-badge>span{display:none}
@@ -773,7 +775,7 @@ footer{align-items:center}
 .standings-division .stats-table th:first-child,.standings-division .stats-table td:first-child{width:38px}
 .standings-division .stats-table th:nth-child(2),.standings-division .stats-table td:nth-child(2){width:34%}
 .standings-division .stats-table th:nth-child(n+3),.standings-division .stats-table td:nth-child(n+3){width:auto}
-@media(max-width:1000px){.team-directory-table .stats-table{width:max-content;min-width:100%;table-layout:auto}.team-directory-table .stats-table th:nth-child(n),.team-directory-table .stats-table td:nth-child(n){width:auto}}
+@media(max-width:1000px){.team-directory-table .stats-table{width:100%;min-width:0;table-layout:fixed}.team-directory-table .stats-table th,.team-directory-table .stats-table td{min-width:0}.team-directory-table .stats-table th{white-space:normal;overflow-wrap:anywhere}.team-directory-table .stats-table td{white-space:normal}}
 
 
 /* Tighten the vertical rhythm from the Standings title through each division table. */
@@ -876,29 +878,57 @@ footer{align-items:center}
 
 
 /* Show weekly rating movement as a compact annotation beside the rating. */
+/* Rating numbers sit to the left, the bar owns the center, and weekly delta sits right. */
 .rating-with-delta{
-  display:flex;
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) 34px;
   align-items:center;
-  justify-content:flex-end;
-  gap:5px;
+  gap:6px;
   min-width:0;
   width:100%;
 }
 .stats-table td .rating-with-delta .rating-meter{
-  flex:0 1 140px;
-  min-width:76px;
-  max-width:140px;
+  display:contents;
 }
-.stats-table td .rating-meter{
-  margin-left:auto;
+.stats-table td .rating-with-delta .rating-meter>span{
+  grid-column:1;
+  min-width:0;
+  text-align:right;
+  font-size:9px;
+}
+.stats-table td .rating-with-delta .rating-meter .rating-meter-track{
+  grid-column:2;
+  width:100%;
+  min-width:0;
 }
 .rating-with-delta>small{
-  flex:0 0 auto;
+  grid-column:3;
+  min-width:0;
+  text-align:left;
   font-size:9px;
   line-height:1;
   font-weight:700;
   font-variant-numeric:tabular-nums;
   white-space:nowrap;
+}
+.stats-table td .rating-meter{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  align-items:center;
+  gap:6px;
+  width:100%;
+  max-width:none;
+  min-width:0;
+  margin:0;
+}
+.stats-table td .rating-meter>span{
+  min-width:0;
+  text-align:right;
+  font-size:9px;
+}
+.stats-table td .rating-meter .rating-meter-track{
+  width:100%;
+  min-width:0;
 }
 .rating-delta-neutral{color:#8793a3}
 
@@ -973,7 +1003,7 @@ footer{align-items:center}
   --sort-arrow-offset:-5px;
 }
 .team-directory-table .stats-table th:nth-child(8){
-  --sort-arrow-offset:11px;
+  --sort-arrow-offset:9px;
 }
 /* The Team header follows the same left alignment as Player headers. */
 .team-directory-table .stats-table th:first-child .sortable-header{
