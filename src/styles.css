@@ -1179,3 +1179,22 @@ footer{align-items:center}
 .team-profile-history-table .team-history-opponent-link .team-name{display:inline-flex;align-items:center;gap:7px;min-width:0}
 .team-profile-history-table .team-history-opponent-link .team-name>img,.team-profile-history-table .team-history-opponent-link .team-monogram{width:25px;height:25px;flex:none;object-fit:contain}
 .team-profile-history-table .team-history-opponent-link .team-name>span:last-child{white-space:normal}
+
+
+/* Player weekly results identify every opponent with its club logo. */
+.player-week-opponents{display:flex;align-items:center;flex-wrap:wrap;gap:7px;min-width:0}
+.player-week-opponents .team-entity-link{display:inline-flex;align-items:center;min-width:0}
+.player-week-opponents .team-name{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.player-week-opponents .team-name>img,.player-week-opponents .team-monogram{width:23px;height:23px;flex:none;object-fit:contain}
+.player-week-opponents .team-name>span:last-child{font-size:10px}
+
+/* Team profile roster: bring rank beside the player and give Match Rating the room. */
+.team-profile-roster-table .stats-table th:nth-child(1),.team-profile-roster-table .stats-table td:nth-child(1){width:36%;text-align:left}
+.team-profile-roster-table .stats-table th:nth-child(2),.team-profile-roster-table .stats-table td:nth-child(2){width:8%;text-align:center}
+.team-profile-roster-table .stats-table th:nth-child(3),.team-profile-roster-table .stats-table td:nth-child(3){width:15%;text-align:center}
+.team-profile-roster-table .stats-table th:nth-child(4),.team-profile-roster-table .stats-table td:nth-child(4){width:41%;text-align:center}
+.team-profile-roster-table .stats-table th:nth-child(4) .sortable-header{justify-content:center}
+.team-profile-roster-table .stats-table th:nth-child(4) .sortable-label{text-align:center}
+.team-profile-roster-table .stats-table td:nth-child(4) .rating-meter{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:8px;width:100%;max-width:none;min-width:0}
+.team-profile-roster-table .stats-table td:nth-child(4) .rating-meter>span{font-size:12px;min-width:0;text-align:right}
+.team-profile-roster-table .stats-table td:nth-child(4) .rating-meter .rating-meter-track{width:100%;min-width:0}
