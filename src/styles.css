@@ -997,9 +997,15 @@ footer{align-items:center}
 .stats-table th.entity-name-column .sortable-label{text-align:left}
 
 /* Fine-tune wrapped category labels so their arrows stay visually snug. */
-.players-leaderboard-table .stats-table th:nth-child(11),
+.players-leaderboard-table .stats-table th:nth-child(11){
+  --sort-arrow-offset:-7px;
+}
 .players-leaderboard-table .stats-table th:nth-child(12),
 .players-leaderboard-table .stats-table th:nth-child(13){
+  --sort-arrow-offset:-5px;
+}
+/* Boost Stolen is the sixth rating category in Player Comparison. */
+.comparison-player-table .stats-table th:nth-child(11){
   --sort-arrow-offset:-5px;
 }
 .team-directory-table .stats-table th:nth-child(8){
