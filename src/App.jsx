@@ -209,8 +209,8 @@ function sortRows(rows, key, direction) {
       const aHasStats = Number(a.games) > 0, bHasStats = Number(b.games) > 0;
       if (aHasStats !== bHasStats) return aHasStats ? -1 : 1;
     }
-    const av = key === 'rank' ? (rlRankPosition.get(String(a.rank||'').toUpperCase()) ?? Number.MAX_SAFE_INTEGER) : (a.ratingCategories?.[key] ?? a[key] ?? a.ratingValues?.[key] ?? null);
-    const bv = key === 'rank' ? (rlRankPosition.get(String(b.rank||'').toUpperCase()) ?? Number.MAX_SAFE_INTEGER) : (b.ratingCategories?.[key] ?? b[key] ?? b.ratingValues?.[key] ?? null);
+    const av = key === 'rank' ? (rlRankPosition.get(String(a.rank||'').toUpperCase()) ?? Number.MAX_SAFE_INTEGER) : (a.ratingCategories?.[key] ?? a.categories?.[key] ?? a[key] ?? a.ratingValues?.[key] ?? a.values?.[key] ?? null);
+    const bv = key === 'rank' ? (rlRankPosition.get(String(b.rank||'').toUpperCase()) ?? Number.MAX_SAFE_INTEGER) : (b.ratingCategories?.[key] ?? b.categories?.[key] ?? b[key] ?? b.ratingValues?.[key] ?? b.values?.[key] ?? null);
     const aMissing = av === null || av === undefined || av === '';
     const bMissing = bv === null || bv === undefined || bv === '';
     if (aMissing !== bMissing) return aMissing ? 1 : -1;
