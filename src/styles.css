@@ -1087,3 +1087,6 @@ footer{align-items:center}
 .selected-compare-team:hover{border-color:#62c8ec;color:#fff}
 .comparison-scorecards.multi-team{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
 @media(max-width:700px){.compare-controls{grid-template-columns:1fr}}
+
+.notification-button,.notification-button.clear{border:0;background:transparent;padding:6px;color:#8995a5}
+.notification-button:hover,.notification-button.active,.notification-button.clear:hover,.notification-button.clear.active{border:0;background:#182431;color:#eef5fc}
