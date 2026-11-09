@@ -447,6 +447,7 @@ body{font-size:16px}
 .matchup-panel .stats-table th:nth-child(2),.matchup-panel .stats-table td:nth-child(2){min-width:76px}
 .matchup-panel .stats-table td{padding-top:13px;padding-bottom:13px}
 .matchup-score{font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;color:#edf2f9}
+.matchup-score-partial{color:#d8a84e}
 .matchup-panel .clickable-row:hover .matchup-score{color:#00aeef}
 .matchup-context{display:flex;flex-direction:column;gap:5px;margin:8px 0 18px;padding:12px 14px;border-left:3px solid #00aeef;background:#171e28;border-radius:0 6px 6px 0}
 .matchup-context strong{font-size:12px;color:#edf2f9}
@@ -536,7 +537,7 @@ body{font-size:16px}
 }
 
 /* Division headers appear once per section, not on every matchup */
-.matchup-division-section+.matchup-division-section{margin-top:18px;padding-top:15px;border-top:1px solid #263449}
+.matchup-division-section+.matchup-division-section{margin-top:18px;padding-top:0;border-top:0}
 .matchup-division-heading,.upcoming-division-heading{display:flex;align-items:center;margin-bottom:10px}
 .matchup-panel .panel-heading+.matchup-division-section{margin-top:20px}
 .matchup-division-heading .division-badge img{transform:translateY(2px)}
