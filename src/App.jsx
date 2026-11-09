@@ -154,15 +154,19 @@ async function downloadElementPng(selector, filename, options = {}) {
   const bounds = element.getBoundingClientRect();
   const contentWidth = Math.ceil(Math.max(bounds.width, element.scrollWidth));
   const contentHeight = Math.ceil(Math.max(bounds.height, element.scrollHeight));
+  const cropTarget = options.trimToSelector ? document.querySelector(options.trimToSelector) : null;
+  const croppedContentHeight = cropTarget
+    ? Math.min(contentHeight, Math.ceil(cropTarget.getBoundingClientRect().bottom - bounds.top + (options.bottomGap ?? 8)))
+    : Math.max(0, contentHeight - (options.trimBottom ?? 0));
   const paddingTop = options.paddingTop ?? 14;
   const paddingBottom = options.paddingBottom ?? 14;
   const paddingX = options.paddingX ?? 14;
   const dataUrl = await toPng(element, {
     width: contentWidth + paddingX * 2,
-    height: contentHeight + paddingTop + paddingBottom - (options.trimBottom ?? 0),
+    height: croppedContentHeight + paddingTop + paddingBottom,
     style: {
       width: `${contentWidth}px`,
-      height: `${contentHeight}px`,
+      height: `${croppedContentHeight}px`,
       padding: `${paddingTop}px ${paddingX}px ${paddingBottom}px`,
       boxSizing: 'content-box',
       overflow: 'visible'
@@ -479,7 +483,7 @@ function App() {
           </div>
           <article className="profile-section profile-week-table"><div className="panel-heading"><h3>Weekly results</h3></div><DataTable columns={[{key:'week',label:'WEEK'},{key:'opponents',label:'OPPONENTS',render:r=><div className="player-week-opponents">{r.opponents.length?r.opponents.map(team=><button type="button" className="entity-link team-entity-link" key={team} onClick={()=>navigateTo('Teams','',team)}><TeamName name={team}/></button>):'-'}</div>},{key:'games',label:'GAMES',render:r=>r.games>0?fmtCount(r.games):'-'},{key:'weekly',label:'WEEKLY RATING',render:r=>fmt(r.weekly)},{key:'cumulative',label:'SEASON RATING',render:r=>fmt(r.cumulative)}]} rows={playerHistory.slice().reverse()} empty="No weekly results yet."/></article>
         </> : <>
-          <div className="player-rankings-export"><div className="panel-heading rankings-heading"><div><span className="panel-kicker">PLAYER LEADERBOARD</span><h2>{players.length} players</h2><p className="rankings-subtitle">Ranked by Match Rating</p></div><button data-export-ignore="true" type="button" className="export-button" onClick={async()=>{setExportingComparison(true);try{await downloadElementPng('.player-rankings-export',`sgl-${division.toLowerCase().replace(/\\s+/g,'-')}-player-rankings.png`,{paddingTop:14,paddingBottom:0,trimBottom:15});}catch(error){console.error(error);window.alert('The player rankings image could not be exported. Please try again.');}finally{setExportingComparison(false);}}} disabled={exportingComparison}><Download size={15}/>{exportingComparison?'Creating PNG...':'Export PNG'}</button></div>
+          <div className="player-rankings-export"><div className="panel-heading rankings-heading"><div><span className="panel-kicker">PLAYER LEADERBOARD</span><h2>{players.length} players</h2><p className="rankings-subtitle">Ranked by Match Rating</p></div><button data-export-ignore="true" type="button" className="export-button" onClick={async()=>{setExportingComparison(true);try{await downloadElementPng('.player-rankings-export',`sgl-${division.toLowerCase().replace(/\\s+/g,'-')}-player-rankings.png`,{paddingTop:14,paddingBottom:0,trimToSelector:'.players-leaderboard-table',bottomGap:8});}catch(error){console.error(error);window.alert('The player rankings image could not be exported. Please try again.');}finally{setExportingComparison(false);}}} disabled={exportingComparison}><Download size={15}/>{exportingComparison?'Creating PNG...':'Export PNG'}</button></div>
           <div className="search-box" data-export-ignore="true"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search players or teams..."/></div>
           <div className="players-leaderboard-table"><DataTable columns={[{key:'position',label:'#',render:r=>r.displayRank},{key:'name',label:'PLAYER',render:r=><button className="entity-link" onClick={()=>navigateTo('Players',r.name)}>{r.name}</button>},{key:'rank',label:'RANK',render:r=><RankBadge rank={r.rank}/>},{key:'teamList',label:'TEAM',render:r=><span className="top-player-team">{[...r.teams].map(team=><span className="rankings-team-link" key={team}><button className="entity-link team-entity-link" onClick={()=>navigateTo('Teams','',team)}><TeamName name={team}/></button>{division==='All Divisions'&&[...new Set(r.rows.filter(row=>row.teamName===team).map(row=>row.division).filter(Boolean))].map(league=><DivisionBadge key={league} division={league}/>)}</span>)}</span>},{key:'games',label:'GAMES',render:r=>fmtCount(r.games)},{key:'rating',label:'MATCH RATING',render:r=>r.games>0?<RatingWithDelta value={r.rating} delta={r.ratingChange} compact/>:'-'},...matchRatingCategories.map(c=>({key:c.key,label:c.label,render:r=>r.games>0?<div className="comparison-category-cell"><strong>{fmtRating(r.ratingCategories[c.key])}</strong><small>{(c.key==='winPct'?fmtWinPct(r.ratingValues[c.key]):fmt(r.ratingValues[c.key]))}{c.key==='winPct'?'%':''}</small></div>:'-'}))]} rows={sortedFilteredPlayers} sortKey={playerSort.key} sortDirection={playerSort.direction} onSort={key=>updateSort(setPlayerSort,key)} empty="No players found."/></div></div>
         </>}
