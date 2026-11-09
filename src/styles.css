@@ -1157,7 +1157,7 @@ footer{align-items:center}
 }
 
 /* Team profile: compact roster beside completed match history */
-.team-profile-details-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px;margin-top:17px;align-items:start}
+.team-profile-details-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:17px;align-items:start}
 .team-profile-details-grid .profile-section{margin-top:0;min-width:0;padding:17px 16px}
 .team-profile-details-grid .panel-heading{margin-bottom:12px;gap:8px}
 .team-profile-details-grid .panel-heading h3{font-size:19px}
