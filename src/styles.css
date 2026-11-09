@@ -1234,3 +1234,9 @@ footer{align-items:center}
 .comparison-player-team-link .team-name{gap:6px}
 .comparison-player-team-link .team-name>img,.comparison-player-team-link .team-monogram{width:22px;height:22px;flex-basis:22px}
 .comparison-player-team-link .team-name>span:last-child{font-size:10px}
+
+
+/* Keep the selected stats period visible in comparison exports. */
+.comparison-export-period{display:flex;align-items:baseline;gap:9px;margin:0 0 12px;padding:0 2px}
+.comparison-export-period span{font-size:9px;font-weight:800;letter-spacing:1.35px;color:#8291a7}
+.comparison-export-period strong{font:700 18px 'Barlow Condensed',sans-serif;color:#edf2f9}
