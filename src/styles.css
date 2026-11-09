@@ -1119,3 +1119,14 @@ footer{align-items:center}
 .team-profile-roster-table .stats-table th:nth-child(4),.team-profile-roster-table .stats-table td:nth-child(4){width:11%}
 .team-profile-roster-table .stats-table th:nth-child(5),.team-profile-roster-table .stats-table td:nth-child(5){width:15%}
 .team-profile-roster-table .stats-table th:nth-child(6),.team-profile-roster-table .stats-table td:nth-child(6){width:19%}
+
+
+/* Align team profile identity and roster section with player profile styling */
+.team-profile-name-line{min-height:42px;gap:12px}
+.team-profile-name-line .team-name{display:inline-flex;align-items:center;gap:10px}
+.team-profile-name-line .team-name>img{width:40px;height:40px;object-fit:contain;flex:none}
+.team-profile-roster-section{margin-top:17px;padding:19px 20px}
+.team-profile-roster-section .panel-heading{margin-bottom:14px}
+.team-profile-roster-section .panel-heading h3{font-size:21px}
+.team-profile-roster-table{min-width:0}
+@media(max-width:520px){.team-profile-name-line .team-name>img{width:34px;height:34px}.team-profile-roster-section{padding:14px}}
