@@ -1334,3 +1334,12 @@ footer{align-items:center}
 .expanded-roster-column:nth-child(2) .expanded-roster-heading>span{margin-left:0}
 .expanded-roster-column:nth-child(2) .expanded-roster-team{flex:0 1 auto;flex-direction:row-reverse;justify-content:flex-start;text-align:right}
 .expanded-roster-column:nth-child(2) .expanded-roster-team strong{text-align:right}
+
+
+/* Keep both team values together above the shared/advantage comparison bar. */
+.expanded-metric-values{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;padding:10px 13px;border-bottom:1px solid #202d3a}
+.expanded-metric-value-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.expanded-metric-value-row .expanded-metric-value{min-width:0}
+.expanded-metric-value-row .expanded-metric-value.team-side-0{text-align:left}
+.expanded-metric-value-row .expanded-metric-value.team-side-1{text-align:right}
+@media(max-width:520px){.expanded-metric-values{grid-template-columns:minmax(0,1fr);gap:6px;padding:9px 7px}.expanded-metric-value-row{gap:8px}}
