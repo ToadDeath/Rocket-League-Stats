@@ -1109,3 +1109,13 @@ footer{align-items:center}
 .compare-team-picker-menu button img{width:29px;height:29px;flex:none;object-fit:contain}
 .compare-team-picker-menu button span{min-width:0}
 .compare-week-picker-menu button[aria-selected="true"]{border-color:#3b5266;background:#192633;color:#fff}
+
+
+/* Keep team profile roster columns consistent across teams */
+.team-profile-roster-table .stats-table{width:100%;table-layout:fixed}
+.team-profile-roster-table .stats-table th:nth-child(1),.team-profile-roster-table .stats-table td:nth-child(1){width:30%}
+.team-profile-roster-table .stats-table th:nth-child(2),.team-profile-roster-table .stats-table td:nth-child(2){width:13%}
+.team-profile-roster-table .stats-table th:nth-child(3),.team-profile-roster-table .stats-table td:nth-child(3){width:19%}
+.team-profile-roster-table .stats-table th:nth-child(4),.team-profile-roster-table .stats-table td:nth-child(4){width:10%}
+.team-profile-roster-table .stats-table th:nth-child(5),.team-profile-roster-table .stats-table td:nth-child(5){width:13%}
+.team-profile-roster-table .stats-table th:nth-child(6),.team-profile-roster-table .stats-table td:nth-child(6){width:15%}
