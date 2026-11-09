@@ -946,7 +946,7 @@ footer{align-items:center}
 }
 .stats-table th .sort-indicator{
   position:absolute;
-  left:calc(100% + 3px);
+  left:calc(100% + var(--sort-arrow-offset, 3px));
   top:50%;
   transform:translateY(-50%);
   display:block;
@@ -965,4 +965,22 @@ footer{align-items:center}
 .stats-table th .sort-indicator.visible{visibility:visible}
 .stats-table th.entity-name-column .sortable-header{justify-content:flex-start}
 .stats-table th.entity-name-column .sortable-label{text-align:left}
+
+/* Fine-tune wrapped category labels so their arrows stay visually snug. */
+.players-leaderboard-table .stats-table th:nth-child(11),
+.players-leaderboard-table .stats-table th:nth-child(12),
+.players-leaderboard-table .stats-table th:nth-child(13){
+  --sort-arrow-offset:-5px;
+}
+.team-directory-table .stats-table th:nth-child(8){
+  --sort-arrow-offset:11px;
+}
+/* The Team header follows the same left alignment as Player headers. */
+.team-directory-table .stats-table th:first-child .sortable-header{
+  justify-content:flex-start;
+}
+.team-directory-table .stats-table th:first-child .sortable-label{
+  text-align:left;
+}
+
 
