@@ -1259,3 +1259,7 @@ footer{align-items:center}
 .comparison-scorecards.has-matchup .comparison-card-slot:first-child .comparison-card,
 .comparison-scorecards.has-matchup .comparison-card-slot:last-child .comparison-card{padding-bottom:13px}
 @media(max-width:560px){.comparison-scorecards.has-matchup{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:6px}.comparison-scorecards.has-matchup .comparison-card{padding:10px 7px}.comparison-inline-score{padding:5px 7px}}
+
+/* Align the selected week text cleanly with the STATS PERIOD label. */
+.comparison-export-period{align-items:center;min-height:22px}
+.comparison-export-period>span,.comparison-export-period>strong{display:inline-flex;align-items:center;line-height:1}
