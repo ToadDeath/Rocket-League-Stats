@@ -1013,4 +1013,30 @@ footer{align-items:center}
   text-align:left;
 }
 
+/* The Players tab's TEAM header is the fourth column and must start at the left edge. */
+.players-leaderboard-table .stats-table th.team-column-header .sortable-header{
+  justify-content:flex-start !important;
+}
+.players-leaderboard-table .stats-table th.team-column-header .sortable-label{
+  text-align:left !important;
+}
+/* Team comparison cards use the same value-left, centered-bar layout as tables. */
+.comparison-team-rating .rating-meter{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  width:100%;
+  min-width:0;
+}
+.comparison-team-rating .rating-meter>span{
+  min-width:0;
+  text-align:right;
+}
+.comparison-team-rating .rating-meter-track{
+  width:100%;
+  min-width:0;
+}
+
+
 
