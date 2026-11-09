@@ -205,7 +205,7 @@ function sortRows(rows, key, direction) {
       const deltaOrder = (av - bv) * factor;
       return deltaOrder || collator.compare(String(a.name||''),String(b.name||''));
     }
-    if (a.games !== undefined && b.games !== undefined && key !== 'name' && key !== 'rank') {
+    if (a.games !== undefined && b.games !== undefined && key !== 'name' && key !== 'rank' && key !== 'teamList') {
       const aHasStats = Number(a.games) > 0, bHasStats = Number(b.games) > 0;
       if (aHasStats !== bHasStats) return aHasStats ? -1 : 1;
     }
