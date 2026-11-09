@@ -338,7 +338,7 @@ function App() {
   const sortedTeams = sortRows(teams,teamSort.key,teamSort.direction);
   const updateSort = (setter, key) => setter(current => ({
     key,
-    direction: current.key===key ? (current.direction==='asc'?'desc':'asc') : (['name','teamList','rank'].includes(key)?'asc':'desc')
+    direction: current.key===key ? (current.direction==='asc'?'desc':'asc') : (['name','playerName','teamName','teamList','rank'].includes(key)?'asc':'desc')
   }));
   const playerGames = records.reduce((s,r)=>s+n(r.stats.games),0);
   const totalScore = records.reduce((s,r)=>s+n(r.stats.score),0);
