@@ -366,9 +366,10 @@ function App() {
     const exact = hasBoth && team1Stats.exact && team2Stats.exact;
     const reconciles = exact && team1Stats.wins===team2Stats.losses && team2Stats.wins===team1Stats.losses && team1Stats.teamGames===team2Stats.teamGames;
     const hasManualResult = Number.isInteger(m.resultTeam1Wins) && Number.isInteger(m.resultTeam2Wins);
-    const final = hasManualResult || (reconciles && team1Stats.complete && team2Stats.complete);
-    const status = hasManualResult ? 'Final' : !m.statsWeek ? 'Stats week not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : !final ? 'Partial series data' : 'Final';
-    const scoreText = hasManualResult ? m.resultTeam1Wins+' - '+m.resultTeam2Wins : exact ? team1Stats.wins+' - '+team2Stats.wins : '-';
+    const importedFinal = reconciles && team1Stats.complete && team2Stats.complete;
+    const final = importedFinal || hasManualResult;
+    const status = final ? 'Final' : !m.statsWeek ? 'Stats week not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : 'Partial series data';
+    const scoreText = importedFinal ? team1Stats.wins+' - '+team2Stats.wins : hasManualResult ? m.resultTeam1Wins+' - '+m.resultTeam2Wins : exact ? team1Stats.wins+' - '+team2Stats.wins : '-';
     return {...m, scoreText, resultStatus:status, resultFinal:final};
   });
   const standingsGroups = [...new Set(scheduleRows.map(m=>m.division))].sort((a,b)=>a==='Premier'?-1:b==='Premier'?1:a.localeCompare(b)).map(league=>{
@@ -381,11 +382,12 @@ function App() {
       const exact=home.hasData&&away.hasData&&home.exact&&away.exact;
       const reconciles=exact&&home.wins===away.losses&&away.wins===home.losses&&home.teamGames===away.teamGames;
       const hasManualResult=Number.isInteger(m.resultTeam1Wins)&&Number.isInteger(m.resultTeam2Wins);
-      const final=hasManualResult||(reconciles&&home.complete&&away.complete);
+      const importedFinal=reconciles&&home.complete&&away.complete;
+      const final=importedFinal||hasManualResult;
       if(!final)return;
       const h=ensureTeam(m.team1),a=ensureTeam(m.team2);
-      const homeWins=hasManualResult?m.resultTeam1Wins:home.wins;
-      const awayWins=hasManualResult?m.resultTeam2Wins:away.wins;
+      const homeWins=importedFinal?home.wins:m.resultTeam1Wins;
+      const awayWins=importedFinal?away.wins:m.resultTeam2Wins;
       h.played++;a.played++;
       h.gameWins+=homeWins;a.gameWins+=awayWins;
       h.gameLosses+=awayWins;a.gameLosses+=homeWins;
