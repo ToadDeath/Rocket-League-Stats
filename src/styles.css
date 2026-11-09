@@ -1108,3 +1108,4 @@ footer{align-items:center}
 .compare-team-picker-menu button:hover,.compare-team-picker-menu button:focus-visible{border-color:#3b5266;background:#192633;outline:none}
 .compare-team-picker-menu button img{width:29px;height:29px;flex:none;object-fit:contain}
 .compare-team-picker-menu button span{min-width:0}
+.compare-week-picker-menu button[aria-selected="true"]{border-color:#3b5266;background:#192633;color:#fff}
