@@ -231,6 +231,8 @@ footer b,.footer-flame{color:#f02f38}
 .comparison-card .team-name>img{width:46px;height:46px}
 .comparison-card .division-badge img{width:30px;height:30px}
 .profile-heading .division-badge img{width:30px;height:30px}
+.profile-heading .division-badge-profile{padding:0;border:0;background:none}
+.profile-heading .division-badge-profile img{width:38px;height:38px}
 
 
 /* Restore consistent custom styling for native dropdown controls */
