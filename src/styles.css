@@ -995,7 +995,7 @@ footer{align-items:center}
 .stats-table th .sort-indicator.visible{visibility:visible}
 /* Nudge every Players-tab sort arrow down slightly for better vertical alignment. */
 .players-leaderboard-table .stats-table th .sort-indicator{
-  transform:translateY(calc(-50% + 2px));
+  transform:translateY(calc(-50% + 1px));
 }
 
 .stats-table th.entity-name-column .sortable-header{justify-content:flex-start}
