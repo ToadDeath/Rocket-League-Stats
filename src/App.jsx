@@ -383,7 +383,7 @@ function App() {
     });
     return {division:league,teams:[...table.values()].sort((a,b)=>b.points-a.points||b.matchWins-a.matchWins||b.gameWins-a.gameWins||a.name.localeCompare(b.name))};
   });
-  const comparisonMatchup = selectedMatchup&&selectedMatchup.team1===effectiveCompareTeams[0]&&selectedMatchup.team2===effectiveCompareTeams[1]?selectedMatchup:null;
+  const comparisonMatchup = effectiveCompareTeams.length===2&&selectedMatchup&&selectedMatchup.team1===effectiveCompareTeams[0]&&selectedMatchup.team2===effectiveCompareTeams[1]?selectedMatchup:null;
   const comparisonTeams = effectiveCompareTeams.map(name=>{ const rows=compareRows.filter(r=>r.teamName===name); const games=rows.reduce((s,r)=>s+n(r.stats.games),0); const wins=rows.reduce((s,r)=>s+n(r.stats.wins),0); const rating=games?matchRatingForRecords(rows).rating:null; return {name,rows,rating,games,wins,players:[...new Set(rows.map(r=>r.playerName))],winPct:games?wins/games*100:0}; }).filter(t=>t.rows.length);
   const comparisonPlayers = compareRows.filter(r=>effectiveCompareTeams.includes(r.teamName)).reduce((groups,r)=>{ const key=r.teamName+'::'+r.playerName; if(!groups.has(key)) groups.set(key,{key,playerName:r.playerName,teamName:r.teamName,rows:[]}); groups.get(key).rows.push(r); return groups; },new Map());
   const playerComparisonRows = [...comparisonPlayers.values()].map(p=>{ const rating=matchRatingForRecords(p.rows); const games=p.rows.reduce((sum,r)=>sum+n(r.stats.games),0); const wins=p.rows.reduce((sum,r)=>sum+n(r.stats.wins),0); return {...p,rank:dataset?.playerRanks?.[p.playerName]||'',rating:rating.rating,categories:rating.categories,values:rating.values,games,winPct:games?wins/games*100:0}; });
