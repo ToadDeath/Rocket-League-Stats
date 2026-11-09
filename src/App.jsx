@@ -356,8 +356,22 @@ function App() {
   const effectiveCompareTeams = compareTeams.filter((name,index)=>compareTeamNames.includes(name)&&compareTeams.indexOf(name)===index);
   const scheduleRows = (dataset?.schedule || []).filter(m=>division==='All Divisions'||m.division===division);
   const scheduleMatchdays = [...new Set(scheduleRows.map(m=>m.matchday))].sort((a,b)=>a-b);
-  const mappedMatchdays = scheduleRows.filter(m=>m.statsWeek!==null).map(m=>m.matchday);
-  const defaultMatchday = mappedMatchdays.length ? Math.max(...mappedMatchdays) : Math.max(0,...scheduleMatchdays);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let scheduleYear = today.getFullYear();
+  let previousScheduleMonth = -1;
+  const scheduleDates = scheduleMatchdays.map(matchday => {
+    const deadline = scheduleRows.find(m=>m.matchday===matchday)?.deadline || '';
+    const parsed = deadline.match(/^([A-Za-z]+)\s+(\d{1,2})$/);
+    if (!parsed) return {matchday,date:null};
+    const month = new Date(parsed[1]+' 1, 2000').getMonth();
+    if (previousScheduleMonth >= 0 && month < previousScheduleMonth) scheduleYear++;
+    previousScheduleMonth = month;
+    return {matchday,date:new Date(scheduleYear,month,Number(parsed[2]))};
+  });
+  const currentScheduleDate = scheduleDates.filter(item=>item.date&&item.date<=today).at(-1)
+    || scheduleDates.find(item=>item.date);
+  const defaultMatchday = currentScheduleDate?.matchday ?? Math.max(0,...scheduleMatchdays);
   const effectiveMatchday = scheduleMatchdays.includes(Number(selectedMatchday)) ? Number(selectedMatchday) : defaultMatchday;
   const matchupRows = scheduleRows.filter(m=>m.matchday===effectiveMatchday).map(m=>{
     const weekRows = m.statsWeek===null ? [] : records.filter(r=>r.division===m.division&&r.week===m.statsWeek);
