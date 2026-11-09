@@ -1193,6 +1193,7 @@ footer{align-items:center}
 .team-profile-roster-table .stats-table th:nth-child(2),.team-profile-roster-table .stats-table td:nth-child(2){width:8%;text-align:center}
 .team-profile-roster-table .stats-table th:nth-child(3),.team-profile-roster-table .stats-table td:nth-child(3){width:15%;text-align:center}
 .team-profile-roster-table .stats-table th:nth-child(4),.team-profile-roster-table .stats-table td:nth-child(4){width:41%;text-align:center}
+.team-profile-roster-table .stats-table th:nth-child(4){text-align:center;white-space:nowrap}
 .team-profile-roster-table .stats-table th:nth-child(4) .sortable-header{justify-content:center}
 .team-profile-roster-table .stats-table th:nth-child(4) .sortable-label{text-align:center}
 .team-profile-roster-table .stats-table td:nth-child(4) .rating-meter{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:8px;width:100%;max-width:none;min-width:0}
