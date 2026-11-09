@@ -1218,3 +1218,19 @@ footer{align-items:center}
 .team-profile-roster-table .stats-table td:nth-child(4){width:36%;text-align:center}
 .team-profile-roster-table .stats-table th:nth-child(2),
 .team-profile-roster-table .stats-table th:nth-child(3){white-space:nowrap}
+
+
+/* Matchup review team labels use the same weight as the standings table. */
+.matchup-team-name{font-weight:650;white-space:nowrap}
+
+/* Show club marks anywhere a team is named in the comparison controls and results. */
+.selected-compare-team .team-name{gap:6px}
+.selected-compare-team .team-name>img,.selected-compare-team .team-monogram{width:22px;height:22px;flex-basis:22px}
+.selected-compare-team .team-name>span:last-child{font-size:10px}
+.comparison-result-banner .team-name{gap:8px}
+.comparison-result-banner .team-name>img,.comparison-result-banner .team-monogram{width:30px;height:30px;flex-basis:30px}
+.comparison-result-banner>div:last-child .team-name{flex-direction:row-reverse}
+.comparison-result-banner>div:last-child{text-align:right}
+.comparison-player-team-link .team-name{gap:6px}
+.comparison-player-team-link .team-name>img,.comparison-player-team-link .team-monogram{width:22px;height:22px;flex-basis:22px}
+.comparison-player-team-link .team-name>span:last-child{font-size:10px}
