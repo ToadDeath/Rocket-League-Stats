@@ -1263,3 +1263,10 @@ footer{align-items:center}
 /* Align the selected week text cleanly with the STATS PERIOD label. */
 .comparison-export-period{align-items:center;min-height:22px}
 .comparison-export-period>span,.comparison-export-period>strong{display:inline-flex;align-items:center;line-height:1}
+
+/* Center the Compare table's Match Rating heading over its column.
+   Keep the sort arrow out of the text-centering calculation. */
+.comparison-player-table .stats-table th:nth-child(5) .sortable-header{justify-content:center}
+.comparison-player-table .stats-table th:nth-child(5) .sortable-label{display:block;width:100%;max-width:100%;text-align:center}
+.comparison-player-table .stats-table th:nth-child(5) .sortable-text{text-align:center}
+.comparison-player-table .stats-table th:nth-child(5) .sort-indicator{left:auto;right:0}
