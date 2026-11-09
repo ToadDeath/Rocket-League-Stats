@@ -769,7 +769,6 @@ footer{align-items:center}
 .team-directory-table .stats-table th:nth-child(7),.team-directory-table .stats-table td:nth-child(7){width:5.5%}
 .team-directory-table .stats-table th:nth-child(8),.team-directory-table .stats-table td:nth-child(8){width:5.5%}
 .team-directory-table .stats-table td:nth-child(1) .top-player-team{gap:7px}
-.team-directory-table .stats-table th:last-child .sortable-header{white-space:nowrap;overflow-wrap:normal}
 .team-directory-table .stats-table td:nth-child(1) .team-entity-link{min-width:0}
 .standings-division .stats-table th:first-child,.standings-division .stats-table td:first-child{width:38px}
 .standings-division .stats-table th:nth-child(2),.standings-division .stats-table td:nth-child(2){width:34%}
@@ -789,12 +788,6 @@ footer{align-items:center}
 .matchup-panel .stats-table td:nth-child(3) .team-name{flex-wrap:nowrap;white-space:nowrap;min-width:0;max-width:none;overflow:visible}
 .matchup-panel .stats-table td:nth-child(1) .team-name>span:last-child,
 .matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{display:inline;min-width:max-content;max-width:none;white-space:nowrap;overflow:visible;text-overflow:clip;overflow-wrap:normal}
-
-/* Make sortable directory headers clear and easy to use. */
-.sortable-header{display:inline;position:relative;width:auto;max-width:100%;box-sizing:border-box;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;line-height:1.25;text-align:center;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
-.sortable-header:hover,.sortable-header.active{color:#edf2f9}
-.sortable-label{white-space:inherit}
-.sort-indicator{display:inline-block;position:relative;left:3px;width:0;height:0;overflow:visible;vertical-align:baseline;color:#62c8ec;font-size:11px;line-height:1;pointer-events:none}
 
 
 /* Player leaderboard has many category columns. Let headers wrap instead of colliding. */
@@ -852,11 +845,8 @@ footer{align-items:center}
 /* Align entity-name headers with their left-aligned names; center numeric headers. */
 .players-leaderboard-table .stats-table th:nth-child(2),
 .players-leaderboard-table .stats-table th:nth-child(4){text-align:left}
-.players-leaderboard-table .stats-table th:nth-child(2) .sortable-header,
-.players-leaderboard-table .stats-table th:nth-child(4) .sortable-header{justify-content:flex-start;text-align:left}
 .team-directory-table .stats-table th:first-child,
 .team-directory-table .stats-table td:first-child{text-align:left}
-.team-directory-table .stats-table th:first-child .sortable-header{justify-content:flex-start;text-align:left}
 .standings-division .stats-table th:first-child,
 .standings-division .stats-table td:first-child{text-align:center}
 .standings-division .stats-table th:nth-child(2),
@@ -868,16 +858,6 @@ footer{align-items:center}
 .stats-table th.entity-name-column,
 .stats-table td.entity-name-column{
   text-align:left !important;
-}
-.stats-table th.entity-name-column .sortable-header{
-  display:inline-flex;
-  align-items:center;
-  justify-content:flex-start;
-  gap:3px;
-  text-align:left;
-}
-.stats-table th.entity-name-column .sortable-label{
-  text-align:left;
 }
 
 /* Player leaderboard TEAM cells must align the team links, not just the table cell. */
@@ -891,54 +871,6 @@ footer{align-items:center}
 }
 .players-leaderboard-table .stats-table td:nth-child(4) .rankings-team-link{
   justify-content:flex-start;
-  text-align:left;
-}
-
-/* Keep the player sort arrow out of the text flow so it cannot resize or wrap labels. */
-
-
-
-
-
-/* Player table sorting: keep arrows attached to their own labels without affecting layout. */
-.players-leaderboard-table .sortable-header{
-  display:block;
-  position:relative;
-  box-sizing:border-box;
-  width:100%;
-  max-width:100%;
-  padding:0;
-  text-align:center;
-  white-space:normal;
-  overflow-wrap:normal;
-}
-.players-leaderboard-table .sortable-label{
-  display:inline-block;
-  position:relative;
-  box-sizing:border-box;
-  max-width:calc(100% - 14px);
-  text-align:inherit;
-  vertical-align:middle;
-}
-.players-leaderboard-table .sort-indicator{
-  position:absolute;
-  top:50%;
-  left:calc(100% + 3px);
-  right:auto;
-  display:block;
-  width:auto;
-  height:auto;
-  margin:0;
-  transform:translateY(-50%);
-  vertical-align:middle;
-  white-space:nowrap;
-  line-height:1;
-  pointer-events:none;
-}
-
-/* Preserve the intended left alignment for PLAYER and TEAM headers. */
-.players-leaderboard-table .stats-table th:nth-child(2) .sortable-header,
-.players-leaderboard-table .stats-table th:nth-child(4) .sortable-header{
   text-align:left;
 }
 
@@ -969,53 +901,65 @@ footer{align-items:center}
 
 /* Final table header alignment and sort indicator rules. */
 .players-leaderboard-table .stats-table th:nth-child(6){text-align:center}
-.players-leaderboard-table .stats-table th:nth-child(6) .sortable-header{text-align:center}
-.players-leaderboard-table .stats-table th:nth-child(4) .sortable-label,
-.team-directory-table .stats-table th:first-child .sortable-label{
-  display:inline-block;
-  position:relative;
-  width:fit-content;
-  max-width:calc(100% - 12px);
-  vertical-align:middle;
-}
-.sortable-header{
-  display:block;
-  position:relative;
+.profile-rating>small.rating-delta-positive{color:#55c995}
+.profile-rating>small.rating-delta-negative{color:#ef747b}
+.profile-rating>small.rating-delta-neutral{color:#8793a3}
+
+
+/* Canonical sortable table header layout. Keep arrows in normal flow beside labels. */
+.stats-table th .sortable-header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
   width:100%;
-  box-sizing:border-box;
+  min-width:0;
+  margin:0;
   padding:0;
+  border:0;
+  background:none;
+  color:inherit;
+  font:inherit;
+  letter-spacing:inherit;
+  line-height:1.25;
   text-align:center;
   white-space:normal;
+  cursor:pointer;
+}
+.stats-table th .sortable-header:hover,
+.stats-table th .sortable-header.active{color:#edf2f9}
+.stats-table th .sortable-label{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  min-width:0;
+  max-width:100%;
+  white-space:normal;
+  text-align:center;
+}
+.stats-table th .sortable-text{
+  min-width:0;
   overflow-wrap:normal;
+  word-break:normal;
 }
-.sortable-label{
+.stats-table th .sort-indicator{
+  position:static;
   display:inline-block;
-  position:relative;
-  width:fit-content;
-  max-width:calc(100% - 12px);
-  vertical-align:middle;
-  text-align:inherit;
-}
-.sort-indicator{
-  position:absolute;
-  left:calc(100% + 3px);
-  right:auto;
-  top:50%;
-  transform:translateY(-50%);
-  display:block;
+  flex:0 0 auto;
   width:auto;
   height:auto;
   margin:0;
   padding:0;
-  white-space:nowrap;
+  overflow:visible;
+  color:#62c8ec;
+  font-size:11px;
   line-height:1;
+  vertical-align:middle;
+  white-space:nowrap;
   pointer-events:none;
 }
-.players-leaderboard-table .stats-table th:nth-child(11) .sortable-label{
-  max-width:calc(100% - 15px);
+.stats-table th.entity-name-column .sortable-header,
+.stats-table th.entity-name-column .sortable-label{
+  justify-content:flex-start;
+  text-align:left;
 }
-.team-directory-table .stats-table th:first-child .sortable-header,
-.team-directory-table .stats-table th:first-child .sortable-label{text-align:left}
-.profile-rating>small.rating-delta-positive{color:#55c995}
-.profile-rating>small.rating-delta-negative{color:#ef747b}
-.profile-rating>small.rating-delta-neutral{color:#8793a3}
