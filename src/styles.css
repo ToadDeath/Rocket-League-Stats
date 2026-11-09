@@ -1240,3 +1240,15 @@ footer{align-items:center}
 .comparison-export-period{display:flex;align-items:baseline;gap:9px;margin:0 0 12px;padding:0 2px}
 .comparison-export-period span{font-size:9px;font-weight:800;letter-spacing:1.35px;color:#8291a7}
 .comparison-export-period strong{font:700 18px 'Barlow Condensed',sans-serif;color:#edf2f9}
+
+
+/* Show a selected match score between the two comparison teams, avoiding duplicate team names. */
+.comparison-scorecards.has-matchup{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:10px}
+.comparison-scorecards.has-matchup .comparison-card-slot{display:contents}
+.comparison-scorecards.has-matchup .comparison-card{padding:13px 14px}
+.comparison-inline-score{grid-column:1 / -1;grid-row:1;align-self:center;justify-self:center;display:flex;align-items:center;gap:12px;padding:7px 16px;border:1px solid #2d4054;border-radius:7px;background:linear-gradient(110deg,rgba(20,43,61,.9),rgba(13,23,36,.96));z-index:1}
+.comparison-inline-score span{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#8fa4bb}
+.comparison-inline-score strong{color:#fff;font-size:27px;font-weight:850;letter-spacing:1px;font-variant-numeric:tabular-nums}
+.comparison-scorecards.has-matchup .comparison-card-slot:first-child .comparison-card{padding-bottom:48px}
+.comparison-scorecards.has-matchup .comparison-card-slot:last-child .comparison-card{padding-bottom:48px}
+@media(max-width:560px){.comparison-inline-score{gap:7px;padding:6px 10px}.comparison-inline-score strong{font-size:22px}.comparison-inline-score span{font-size:8px}.comparison-scorecards.has-matchup .comparison-card{padding:11px 9px}}
