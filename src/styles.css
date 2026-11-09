@@ -1174,3 +1174,8 @@ footer{align-items:center}
 .team-history-loss{color:#e17a7a}
 @media(max-width:1050px){.team-profile-details-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:520px){.team-profile-details-grid .profile-section{padding:14px}.team-profile-history-table .stats-table th,.team-profile-history-table .stats-table td{padding-left:5px;padding-right:5px}}
+
+.team-profile-history-table .team-history-opponent-link{display:inline-flex;align-items:center;min-width:0;text-align:left}
+.team-profile-history-table .team-history-opponent-link .team-name{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.team-profile-history-table .team-history-opponent-link .team-name>img,.team-profile-history-table .team-history-opponent-link .team-monogram{width:25px;height:25px;flex:none;object-fit:contain}
+.team-profile-history-table .team-history-opponent-link .team-name>span:last-child{white-space:normal}
