@@ -1365,3 +1365,11 @@ footer{align-items:center}
 .expanded-metric-bar-fill{border-radius:5px;overflow:visible}
 .expanded-metric-bar-fill::after{content:"";position:absolute;right:-2px;top:-3px;width:3px;height:13px;border-radius:2px;background:inherit;box-shadow:0 0 0 1px rgba(10,18,27,.45)}
 @media(max-width:520px){.expanded-metric-bar-fill::after{top:-3px;height:12px;width:3px}}
+
+
+/* Team logo colors drive the matchup bar and value */
+.expanded-metric-bar-fill.team-side-0,.expanded-metric-bar-fill.team-side-1{background:var(--team-color)}
+.expanded-metric-bar-track .expanded-metric-value.team-side-0,.expanded-metric-bar-track .expanded-metric-value.team-side-1{color:var(--team-color)}
+.expanded-team-legend-item{--team-color:#4a9be8}
+.expanded-team-legend-item.team-side-1{--team-color:#d99a52}
+.expanded-team-legend-item .team-color-key{background:var(--team-color)}
