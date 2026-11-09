@@ -1359,3 +1359,9 @@ footer{align-items:center}
 .expanded-metric-bar-track .expanded-metric-value.team-side-0{color:#4a9be8}
 .expanded-metric-bar-track .expanded-metric-value.team-side-1{color:#d99a52}
 @media(max-width:520px){.expanded-metric-values{gap:3px;padding:7px 8px}.expanded-metric-bar-row{height:19px}.expanded-metric-bar-fill{top:7px;height:6px}.expanded-metric-bar-track .expanded-metric-value{font-size:12px}}
+
+
+/* Give each comparison bar a crisp, visible endpoint */
+.expanded-metric-bar-fill{border-radius:5px;overflow:visible}
+.expanded-metric-bar-fill::after{content:"";position:absolute;right:-2px;top:-3px;width:3px;height:13px;border-radius:2px;background:inherit;box-shadow:0 0 0 1px rgba(10,18,27,.45)}
+@media(max-width:520px){.expanded-metric-bar-fill::after{top:-3px;height:12px;width:3px}}
