@@ -10,7 +10,7 @@ const navItems = [
 ];
 const n = value => Number.isFinite(Number(value)) ? Number(value) : 0;
 const fmt = value => Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-const fmtWinPct = value => Number(value) === 0 || Number(value) === 100 ? String(Number(value)) : fmt(value);
+const fmtWinPct = value => String(Math.round(Number(value) || 0));
 const fmtDetailed = value => Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtCategory = value => Number(value) >= 10 ? '10' : fmtDetailed(value);
 const fmtRating = value => Number(value) >= 10 ? '10' : fmt(value);
