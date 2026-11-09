@@ -336,7 +336,6 @@ function App() {
   const filteredPlayers = players.filter(p=>p.name.toLowerCase().includes(query.toLowerCase())||p.teamList.toLowerCase().includes(query.toLowerCase()));
   const sortedFilteredPlayers = sortRows(filteredPlayers,playerSort.key,playerSort.direction).map((player,index)=>({...player,displayRank:index+1}));
   const sortedTeams = sortRows(teams,teamSort.key,teamSort.direction);
-  const sortedComparisonPlayers = sortRows(playerComparisonRows,comparisonSort.key,comparisonSort.direction);
   const updateSort = (setter, key) => setter(current => ({
     key,
     direction: current.key===key ? (current.direction==='asc'?'desc':'asc') : (['name','teamList','rank'].includes(key)?'asc':'desc')
@@ -388,6 +387,7 @@ function App() {
   const comparisonTeams = effectiveCompareTeams.map(name=>{ const rows=compareRows.filter(r=>r.teamName===name); const games=rows.reduce((s,r)=>s+n(r.stats.games),0); const wins=rows.reduce((s,r)=>s+n(r.stats.wins),0); const rating=games?matchRatingForRecords(rows).rating:null; return {name,rows,rating,games,wins,players:[...new Set(rows.map(r=>r.playerName))],winPct:games?wins/games*100:0}; }).filter(t=>t.rows.length);
   const comparisonPlayers = compareRows.filter(r=>effectiveCompareTeams.includes(r.teamName)).reduce((groups,r)=>{ const key=r.teamName+'::'+r.playerName; if(!groups.has(key)) groups.set(key,{key,playerName:r.playerName,teamName:r.teamName,rows:[]}); groups.get(key).rows.push(r); return groups; },new Map());
   const playerComparisonRows = [...comparisonPlayers.values()].map(p=>{ const rating=matchRatingForRecords(p.rows); const games=p.rows.reduce((sum,r)=>sum+n(r.stats.games),0); const wins=p.rows.reduce((sum,r)=>sum+n(r.stats.wins),0); return {...p,rank:dataset?.playerRanks?.[p.playerName]||'',rating:rating.rating,categories:rating.categories,values:rating.values,games,winPct:games?wins/games*100:0}; });
+  const sortedComparisonPlayers = sortRows(playerComparisonRows,comparisonSort.key,comparisonSort.direction);
   const statRows = [...records].sort((a,b)=>n(b.stats[selectedStat])-n(a.stats[selectedStat])).slice(0,50);
   const activePlayer = players.find(p=>p.name===selectedPlayer);
   const auditPlayer = players.find(p=>p.name===selectedAuditPlayer) || players[0];
