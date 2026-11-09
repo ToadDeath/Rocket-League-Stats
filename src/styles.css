@@ -1338,11 +1338,11 @@ footer{align-items:center}
 
 /* Keep both team values together above the shared/advantage comparison bar. */
 .expanded-metric-values{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;padding:10px 13px;border-bottom:1px solid #202d3a}
-.expanded-metric-value-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.expanded-metric-value-row{display:flex;align-items:center;justify-content:center;gap:28px}
 .expanded-metric-value-row .expanded-metric-value{min-width:0}
 .expanded-metric-value-row .expanded-metric-value.team-side-0{text-align:left}
 .expanded-metric-value-row .expanded-metric-value.team-side-1{text-align:right}
-@media(max-width:520px){.expanded-metric-values{grid-template-columns:minmax(0,1fr);gap:6px;padding:9px 7px}.expanded-metric-value-row{gap:8px}}
+@media(max-width:520px){.expanded-metric-values{grid-template-columns:minmax(0,1fr);gap:6px;padding:9px 7px}.expanded-metric-value-row{gap:16px}}
 
 /* The roster heading is cleaner without a repeated player-count label. */
 .expanded-roster-heading{justify-content:flex-start}
