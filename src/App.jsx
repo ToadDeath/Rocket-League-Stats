@@ -365,9 +365,11 @@ function App() {
     const hasBoth = team1Stats.hasData && team2Stats.hasData;
     const exact = hasBoth && team1Stats.exact && team2Stats.exact;
     const reconciles = exact && team1Stats.wins===team2Stats.losses && team2Stats.wins===team1Stats.losses && team1Stats.teamGames===team2Stats.teamGames;
-    const final = reconciles && team1Stats.complete && team2Stats.complete;
-    const status = !m.statsWeek ? 'Stats week not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : !final ? 'Partial series data' : 'Final';
-    return {...m, scoreText:exact?team1Stats.wins+' - '+team2Stats.wins:'-', resultStatus:status, resultFinal:final};
+    const hasManualResult = Number.isInteger(m.resultTeam1Wins) && Number.isInteger(m.resultTeam2Wins);
+    const final = hasManualResult || (reconciles && team1Stats.complete && team2Stats.complete);
+    const status = hasManualResult ? 'Final' : !m.statsWeek ? 'Stats week not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : !final ? 'Partial series data' : 'Final';
+    const scoreText = hasManualResult ? m.resultTeam1Wins+' - '+m.resultTeam2Wins : exact ? team1Stats.wins+' - '+team2Stats.wins : '-';
+    return {...m, scoreText, resultStatus:status, resultFinal:final};
   });
   const standingsGroups = [...new Set(scheduleRows.map(m=>m.division))].sort((a,b)=>a==='Premier'?-1:b==='Premier'?1:a.localeCompare(b)).map(league=>{
     const table=new Map();
@@ -378,14 +380,17 @@ function App() {
       const home=teamSeriesStats(weekRows,m.team1),away=teamSeriesStats(weekRows,m.team2);
       const exact=home.hasData&&away.hasData&&home.exact&&away.exact;
       const reconciles=exact&&home.wins===away.losses&&away.wins===home.losses&&home.teamGames===away.teamGames;
-      const final=reconciles&&home.complete&&away.complete;
+      const hasManualResult=Number.isInteger(m.resultTeam1Wins)&&Number.isInteger(m.resultTeam2Wins);
+      const final=hasManualResult||(reconciles&&home.complete&&away.complete);
       if(!final)return;
       const h=ensureTeam(m.team1),a=ensureTeam(m.team2);
+      const homeWins=hasManualResult?m.resultTeam1Wins:home.wins;
+      const awayWins=hasManualResult?m.resultTeam2Wins:away.wins;
       h.played++;a.played++;
-      h.gameWins+=home.wins;a.gameWins+=away.wins;
-      h.gameLosses+=home.losses;a.gameLosses+=away.losses;
-      if(home.wins>away.wins){h.matchWins++;a.matchLosses++;h.points+=home.wins+1;a.points+=away.wins;}
-      else if(away.wins>home.wins){a.matchWins++;h.matchLosses++;a.points+=away.wins+1;h.points+=home.wins;}
+      h.gameWins+=homeWins;a.gameWins+=awayWins;
+      h.gameLosses+=awayWins;a.gameLosses+=homeWins;
+      if(homeWins>awayWins){h.matchWins++;a.matchLosses++;h.points+=homeWins+1;a.points+=awayWins;}
+      else if(awayWins>homeWins){a.matchWins++;h.matchLosses++;a.points+=awayWins+1;h.points+=homeWins;}
     });
     return {division:league,teams:[...table.values()].sort((a,b)=>b.points-a.points||b.matchWins-a.matchWins||b.gameWins-a.gameWins||a.name.localeCompare(b.name))};
   });
