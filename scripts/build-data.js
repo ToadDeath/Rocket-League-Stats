@@ -112,14 +112,23 @@ function readSchedule(file, teamRoster) {
     const team2Info = teamRoster.get((row['team 2'] || '').trim());
     const statsWeekText = (row['stats week'] || '').trim();
     const statsWeek = statsWeekText === '' ? null : Number(statsWeekText);
+    const resultTeam1WinsText = (row['result team 1 wins'] || '').trim();
+    const resultTeam2WinsText = (row['result team 2 wins'] || '').trim();
+    const resultTeam1Wins = resultTeam1WinsText === '' ? null : Number(resultTeam1WinsText);
+    const resultTeam2Wins = resultTeam2WinsText === '' ? null : Number(resultTeam2WinsText);
+    const hasManualResult = resultTeam1Wins !== null || resultTeam2Wins !== null;
     if (!['Premier', 'Championship'].includes(division) || !Number.isInteger(matchday) || matchday < 1 ||
         !team1Info || !team2Info || team1Info.division !== division || team2Info.division !== division ||
         team1Info.team === team2Info.team ||
-        (statsWeek !== null && (!Number.isInteger(statsWeek) || statsWeek < 1))) {
+        (statsWeek !== null && (!Number.isInteger(statsWeek) || statsWeek < 1)) ||
+        (hasManualResult && (!Number.isInteger(resultTeam1Wins) || !Number.isInteger(resultTeam2Wins) ||
+          resultTeam1Wins < 0 || resultTeam2Wins < 0 || resultTeam1Wins > 3 || resultTeam2Wins > 3 ||
+          (resultTeam1Wins !== 3 && resultTeam2Wins !== 3)))) {
       throw new Error('Invalid schedule row ' + (index + 2) + ' in data/schedule.csv. Check division, teams, and stats week.');
     }
     return { id: division.toLowerCase() + '-' + matchday + '-' + (index + 1), division, matchday,
-      deadline: (row.deadline || '').trim(), team1: team1Info.team, team2: team2Info.team, statsWeek };
+      deadline: (row.deadline || '').trim(), team1: team1Info.team, team2: team2Info.team, statsWeek,
+      resultTeam1Wins, resultTeam2Wins };
   });
   // A stats-week value entered on any fixture maps the entire matchday.
   const matchdayWeeks = new Map();
