@@ -10,7 +10,7 @@ const navItems = [
 ];
 const n = value => Number.isFinite(Number(value)) ? Number(value) : 0;
 const fmt = value => Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-const fmtWinPct = value => Number(value) === 0 || Number(value) === 100 ? String(Number(value)) : fmt(value);
+const fmtWinPct = value => String(Math.round(n(value)));
 const fmtDetailed = value => Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtCategory = value => Number(value) >= 10 ? '10' : fmtDetailed(value);
 const fmtRating = value => Number(value) >= 10 ? '10' : fmt(value);
@@ -436,7 +436,7 @@ function App() {
   }).filter(Boolean).sort((a,b)=>b.matchday-a.matchday) : [];
   const playerDivision = activePlayer?.rows[0]?.division;
   const historyWeekCount = Math.max(1,...(dataset?.schedule||[]).filter(m=>m.division===playerDivision).map(m=>m.matchday));
-  const playerHistory = activePlayer ? [...new Set(activePlayer.rows.map(r=>r.week).filter(Number.isFinite))].sort((a,b)=>a-b).map(week=>{ const weekly=activePlayer.rows.filter(r=>r.week===week); const cumulative=activePlayer.rows.filter(r=>r.week<=week); return {week:'Week '+week,weekNumber:week,weekly:matchRatingForRecords(weekly).rating,cumulative:matchRatingForRecords(cumulative).rating,games:weekly.reduce((sum,r)=>sum+n(r.stats.games),0)}; }) : [];
+  const playerHistory = activePlayer ? [...new Set(activePlayer.rows.map(r=>r.week).filter(Number.isFinite))].sort((a,b)=>a-b).map(week=>{ const weekly=activePlayer.rows.filter(r=>r.week===week); const cumulative=activePlayer.rows.filter(r=>r.week<=week); const weeklyTeams=[...new Set(weekly.map(r=>r.teamName))]; const opponents=[...new Set((dataset?.schedule||[]).filter(m=>m.division===playerDivision&&m.statsWeek===week&&(weeklyTeams.includes(m.team1)||weeklyTeams.includes(m.team2))).map(m=>weeklyTeams.includes(m.team1)?m.team2:m.team1))]; return {week:'Week '+week,weekNumber:week,weekly:matchRatingForRecords(weekly).rating,cumulative:matchRatingForRecords(cumulative).rating,games:weekly.reduce((sum,r)=>sum+n(r.stats.games),0),opponents}; }) : [];
   const description = {
     Overview:'', Players:'', Teams:'', Rankings:'All players and teams, ranked by Match Rating.', Compare:'', 'Stat Explorer':''
   }[activePage];
@@ -477,7 +477,7 @@ function App() {
             </article>
             <article className="profile-section"><div className="panel-heading"><h3>Rating breakdown</h3></div><div className="rating-breakdown">{matchRatingCategories.map(c=><div className="rating-row profile-rating-row" key={c.key}><div className="profile-rating-meta"><span className="profile-rating-label">{c.label}</span><small className="profile-raw-value">{(c.key==='winPct'?fmtWinPct(activePlayer.ratingValues[c.key]):fmt(activePlayer.ratingValues[c.key]))}{c.key==='winPct'?'%':''}</small></div><RatingMeter value={activePlayer.ratingCategories[c.key]}/><strong className="profile-category-score">{fmtRating(activePlayer.ratingCategories[c.key])}</strong></div>)}</div></article>
           </div>
-          <article className="profile-section profile-week-table"><div className="panel-heading"><h3>Weekly results</h3></div><DataTable columns={[{key:'week',label:'WEEK'},{key:'games',label:'GAMES',render:r=>r.games>0?fmtCount(r.games):'-'},{key:'weekly',label:'WEEKLY RATING',render:r=>fmt(r.weekly)},{key:'cumulative',label:'SEASON RATING',render:r=>fmt(r.cumulative)}]} rows={playerHistory.slice().reverse()} empty="No weekly results yet."/></article>
+          <article className="profile-section profile-week-table"><div className="panel-heading"><h3>Weekly results</h3></div><DataTable columns={[{key:'week',label:'WEEK'},{key:'opponents',label:'OPPONENTS',render:r=><div className="player-week-opponents">{r.opponents.length?r.opponents.map(team=><button type="button" className="entity-link team-entity-link" key={team} onClick={()=>navigateTo('Teams','',team)}><TeamName name={team}/></button>):'-'}</div>},{key:'games',label:'GAMES',render:r=>r.games>0?fmtCount(r.games):'-'},{key:'weekly',label:'WEEKLY RATING',render:r=>fmt(r.weekly)},{key:'cumulative',label:'SEASON RATING',render:r=>fmt(r.cumulative)}]} rows={playerHistory.slice().reverse()} empty="No weekly results yet."/></article>
         </> : <>
           <div className="player-rankings-export"><div className="panel-heading rankings-heading"><div><span className="panel-kicker">PLAYER LEADERBOARD</span><h2>{players.length} players</h2><p className="rankings-subtitle">Ranked by Match Rating</p></div><button data-export-ignore="true" type="button" className="export-button" onClick={async()=>{setExportingComparison(true);try{await downloadElementPng('.player-rankings-export',`sgl-${division.toLowerCase().replace(/\\s+/g,'-')}-player-rankings.png`,{paddingTop:14,paddingBottom:0});}catch(error){console.error(error);window.alert('The player rankings image could not be exported. Please try again.');}finally{setExportingComparison(false);}}} disabled={exportingComparison}><Download size={15}/>{exportingComparison?'Creating PNG...':'Export PNG'}</button></div>
           <div className="search-box" data-export-ignore="true"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search players or teams..."/></div>
