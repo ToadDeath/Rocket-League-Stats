@@ -1264,9 +1264,9 @@ footer{align-items:center}
 .comparison-export-period{align-items:center;min-height:22px}
 .comparison-export-period>span,.comparison-export-period>strong{display:inline-flex;align-items:center;line-height:1}
 
-/* Center the Compare table's Match Rating heading over its column.
-   Keep the sort arrow out of the text-centering calculation. */
+/* Keep the Compare Match Rating label centered while its sort arrow
+   stays immediately beside the text, using the shared sortable-header layout. */
 .comparison-player-table .stats-table th:nth-child(5) .sortable-header{justify-content:center}
-.comparison-player-table .stats-table th:nth-child(5) .sortable-label{display:block;width:100%;max-width:100%;text-align:center}
+.comparison-player-table .stats-table th:nth-child(5) .sortable-label{display:inline-block;width:auto;max-width:calc(100% - 13px);text-align:center}
 .comparison-player-table .stats-table th:nth-child(5) .sortable-text{text-align:center}
-.comparison-player-table .stats-table th:nth-child(5) .sort-indicator{left:auto;right:0}
+.comparison-player-table .stats-table th:nth-child(5) .sort-indicator{left:calc(100% + var(--sort-arrow-offset, 3px));right:auto}
