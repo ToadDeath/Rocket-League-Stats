@@ -1324,3 +1324,13 @@ footer{align-items:center}
 .expanded-roster-column .stats-table th:nth-child(n+3),.expanded-roster-column .stats-table td:nth-child(n+3){text-align:center}
 @media(max-width:760px){.expanded-team-metrics{grid-template-columns:100px minmax(0,1fr)}.expanded-roster-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:520px){.compare-view-switch{width:100%}.compare-view-switch button{flex:1;padding:9px 7px;font-size:9px}.expanded-team-legend-item{padding:10px 8px;gap:7px}.expanded-team-legend-item img{width:29px;height:29px}.expanded-team-legend-item strong{font-size:11px}.expanded-team-metrics{grid-template-columns:90px minmax(0,1fr)}.expanded-metric-values{grid-template-columns:37px minmax(0,1fr) 37px;gap:6px;padding:9px 7px}.expanded-metric-value{font-size:13px}.expanded-metric-label{padding:9px 8px;font-size:8px}.expanded-roster-heading{padding:11px}}
+
+
+/* Right-align the second team throughout the Team Matchup comparison. */
+.expanded-team-legend-item:nth-child(2){justify-content:flex-end;text-align:right}
+.expanded-team-legend-item:nth-child(2)>div{justify-items:end;text-align:right}
+.expanded-team-legend-item:nth-child(2) small{justify-content:flex-end}
+.expanded-roster-column:nth-child(2) .expanded-roster-heading{justify-content:flex-end;text-align:right}
+.expanded-roster-column:nth-child(2) .expanded-roster-heading>span{margin-left:0}
+.expanded-roster-column:nth-child(2) .expanded-roster-team{flex:0 1 auto;flex-direction:row-reverse;justify-content:flex-start;text-align:right}
+.expanded-roster-column:nth-child(2) .expanded-roster-team strong{text-align:right}
