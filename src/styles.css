@@ -1135,3 +1135,10 @@ footer{align-items:center}
 /* Team profile summary uses a balanced four-by-two metric grid */
 .team-profile-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:700px){.team-profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Paired per-game metrics in team profile summary cards */
+.team-profile-split-stat>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:1px}
+.team-profile-split-stat>div>span{display:grid;gap:2px;min-width:0}
+.team-profile-split-stat>div small{font-size:8px;letter-spacing:.7px;color:#8291a7;font-weight:700}
+.team-profile-split-stat>div strong{font:700 20px 'Barlow Condensed',sans-serif;color:#eef3fa;font-variant-numeric:tabular-nums}
