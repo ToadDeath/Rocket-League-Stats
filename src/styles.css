@@ -1006,7 +1006,7 @@ footer{align-items:center}
 }
 /* Boost Stolen is the sixth rating category in Player Comparison. */
 .comparison-player-table .stats-table th:nth-child(11){
-  --sort-arrow-offset:-9px;
+  --sort-arrow-offset:-15px;
 }
 .team-directory-table .stats-table th:nth-child(8){
   --sort-arrow-offset:2px;
