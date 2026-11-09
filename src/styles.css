@@ -1072,3 +1072,18 @@ footer{align-items:center}
 .comparison-player-table .stats-table th:nth-child(4),.comparison-player-table .stats-table td:nth-child(4){width:6%;text-align:center}
 .comparison-player-table .stats-table th:nth-child(5),.comparison-player-table .stats-table td:nth-child(5){width:12%;text-align:center}
 .comparison-player-table .stats-table th:nth-child(n+6),.comparison-player-table .stats-table td:nth-child(n+6){width:6.57%;text-align:center}
+
+
+/* Compact top-right controls: the notification bell stands on its own. */
+.topbar-right{gap:0}
+.notification-button{gap:0;padding:8px;border-radius:6px}
+.notification-button i{position:absolute;top:-6px;right:-6px}
+
+/* The comparison picker adds teams one at a time and keeps selected teams removable. */
+.compare-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+.selected-compare-teams{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.selected-compare-team{display:inline-flex;align-items:center;gap:9px;padding:6px 9px;border:1px solid #344457;border-radius:5px;background:#111b28;color:#dce6f2;font-size:10px;font-weight:650}
+.selected-compare-team span{color:#91a1b5;font-size:15px;line-height:10px}
+.selected-compare-team:hover{border-color:#62c8ec;color:#fff}
+.comparison-scorecards.multi-team{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+@media(max-width:700px){.compare-controls{grid-template-columns:1fr}}
