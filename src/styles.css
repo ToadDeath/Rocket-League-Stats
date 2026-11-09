@@ -1040,3 +1040,24 @@ footer{align-items:center}
 
 
 
+
+
+/* Keep the Teams directory inside its panel at every desktop width. */
+.team-directory-table .table-scroll{overflow-x:hidden;min-width:0}
+.team-directory-table .stats-table{width:100%;min-width:0;max-width:100%;table-layout:fixed;white-space:normal}
+.team-directory-table .stats-table th,.team-directory-table .stats-table td{min-width:0;padding-left:6px;padding-right:6px;overflow-wrap:anywhere}
+.team-directory-table .stats-table th{white-space:normal;line-height:1.25}
+.team-directory-table .stats-table td:first-child .top-player-team{min-width:0;flex-wrap:wrap}
+.team-directory-table .stats-table td:first-child .team-entity-link{min-width:0;white-space:normal}
+
+/* The comparison breakdown follows the Players leaderboard table behavior. */
+.comparison-player-table .table-scroll{overflow-x:hidden;min-width:0}
+.comparison-player-table .stats-table{width:100%;min-width:0;table-layout:fixed;white-space:normal}
+.comparison-player-table .stats-table th,.comparison-player-table .stats-table td{min-width:0;max-width:none;padding:9px 6px}
+.comparison-player-table .stats-table th{white-space:normal;line-height:1.25;overflow-wrap:anywhere}
+.comparison-player-table .stats-table th:nth-child(1),.comparison-player-table .stats-table td:nth-child(1){width:15%;text-align:left}
+.comparison-player-table .stats-table th:nth-child(2),.comparison-player-table .stats-table td:nth-child(2){width:6%;text-align:center}
+.comparison-player-table .stats-table th:nth-child(3),.comparison-player-table .stats-table td:nth-child(3){width:15%;text-align:left}
+.comparison-player-table .stats-table th:nth-child(4),.comparison-player-table .stats-table td:nth-child(4){width:6%;text-align:center}
+.comparison-player-table .stats-table th:nth-child(5),.comparison-player-table .stats-table td:nth-child(5){width:12%;text-align:center}
+.comparison-player-table .stats-table th:nth-child(n+6),.comparison-player-table .stats-table td:nth-child(n+6){width:6.57%;text-align:center}
