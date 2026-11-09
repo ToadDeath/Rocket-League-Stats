@@ -1091,3 +1091,6 @@ footer{align-items:center}
 
 .notification-button,.notification-button.clear{border:0;background:transparent;padding:6px;color:#8995a5}
 .notification-button:hover,.notification-button.active,.notification-button.clear:hover,.notification-button.clear.active{border:0;background:#182431;color:#eef5fc}
+
+/* Teams directory rating values use the primary rating text size. */
+.team-directory-table .stats-table td .rating-meter>span{font-size:12px}
