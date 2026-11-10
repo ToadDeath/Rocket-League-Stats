@@ -1407,3 +1407,9 @@ footer{align-items:center}
 .expanded-roster-column:nth-child(2) .expanded-roster-team{flex-direction:row;justify-content:flex-start;text-align:left}
 .expanded-roster-column:nth-child(2) .expanded-roster-team strong{text-align:left}
 @media(max-width:760px){.expanded-roster-grid{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Apply each selected team's inline logo color, regardless of team position */
+.expanded-metric-bar-fill[class*="team-side-"]{background:var(--team-color)}
+.expanded-metric-bar-track .expanded-metric-value{color:var(--team-color)}
+.expanded-team-legend-item .team-color-key{background:var(--team-color)}
