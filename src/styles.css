@@ -1379,3 +1379,8 @@ footer{align-items:center}
 .expanded-metric-bar-track::before{content:"";position:absolute;left:0;top:7px;width:88%;height:7px;border-radius:5px;background:#293541}
 .expanded-metric-bar-fill::after{content:none}
 @media(max-width:520px){.expanded-metric-bar-track::before{top:7px;height:6px}}
+
+
+/* Match the Team Matchup legend swatches to each club's logo color */
+.expanded-team-legend-item .team-color-key.team-side-0,
+.expanded-team-legend-item .team-color-key.team-side-1{--team-color:inherit;background:var(--team-color)}
