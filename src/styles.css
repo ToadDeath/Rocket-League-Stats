@@ -1384,3 +1384,12 @@ footer{align-items:center}
 /* Match the Team Matchup legend swatches to each club's logo color */
 .expanded-team-legend-item .team-color-key.team-side-0,
 .expanded-team-legend-item .team-color-key.team-side-1{--team-color:inherit;background:var(--team-color)}
+
+
+/* Compact the two-row metric bars and keep the neutral track constant */
+.expanded-metric-values{gap:2px;padding:6px 14px}
+.expanded-metric-bar-row{height:16px}
+.expanded-metric-bar-track::before{top:5px;height:6px;background:#293541}
+.expanded-metric-bar-fill{top:5px;height:6px}
+.expanded-metric-bar-track .expanded-metric-value{top:-1px;font-size:12px}
+@media(max-width:520px){.expanded-metric-values{gap:1px;padding:5px 8px}.expanded-metric-bar-row{height:15px}.expanded-metric-bar-track::before{top:5px;height:5px}.expanded-metric-bar-fill{top:5px;height:5px}.expanded-metric-bar-track .expanded-metric-value{font-size:11px}}
