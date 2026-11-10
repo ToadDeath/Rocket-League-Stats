@@ -1373,3 +1373,9 @@ footer{align-items:center}
 .expanded-team-legend-item{--team-color:#4a9be8}
 .expanded-team-legend-item.team-side-1{--team-color:#d99a52}
 .expanded-team-legend-item .team-color-key{background:var(--team-color)}
+
+
+/* Show the full available bar track so fill length has context */
+.expanded-metric-bar-track::before{content:"";position:absolute;left:0;top:7px;width:88%;height:7px;border-radius:5px;background:#293541}
+.expanded-metric-bar-fill::after{content:none}
+@media(max-width:520px){.expanded-metric-bar-track::before{top:7px;height:6px}}
