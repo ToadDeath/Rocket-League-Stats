@@ -1393,3 +1393,17 @@ footer{align-items:center}
 .expanded-metric-bar-fill{top:5px;height:6px}
 .expanded-metric-bar-track .expanded-metric-value{top:-1px;font-size:12px}
 @media(max-width:520px){.expanded-metric-values{gap:1px;padding:5px 8px}.expanded-metric-bar-row{height:15px}.expanded-metric-bar-track::before{top:5px;height:5px}.expanded-metric-bar-fill{top:5px;height:5px}.expanded-metric-bar-track .expanded-metric-value{font-size:11px}}
+
+
+/* Multi-team Team Matchup layout */
+.expanded-team-legend{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.expanded-team-legend-item+ .expanded-team-legend-item{border-left:0;border-top:1px solid #293746}
+.expanded-team-legend-item:nth-child(2){justify-content:flex-start;text-align:left}
+.expanded-team-legend-item:nth-child(2)>div{justify-items:start;text-align:left}
+.expanded-team-legend-item:nth-child(2) small{justify-content:flex-start}
+.expanded-team-metric .expanded-metric-values{gap:2px}
+.expanded-roster-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.expanded-roster-column:nth-child(2) .expanded-roster-heading{justify-content:flex-start;text-align:left}
+.expanded-roster-column:nth-child(2) .expanded-roster-team{flex-direction:row;justify-content:flex-start;text-align:left}
+.expanded-roster-column:nth-child(2) .expanded-roster-team strong{text-align:left}
+@media(max-width:760px){.expanded-roster-grid{grid-template-columns:minmax(0,1fr)}}
