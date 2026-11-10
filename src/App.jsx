@@ -100,8 +100,20 @@ function matchRatingForRecords(rows) {
 
 const sglLogo = `${import.meta.env.BASE_URL}assets/league/sgl-logo.png`;
 const teamBrandColors = {
+  'AXE & ARMY': '#d5a62e',
+  'EL MATADOR': '#e31d2b',
+  'EM DALLAS BURN': '#a8322a',
+  'EC DEFIANCE': '#6c963b',
+  'EC ETERNAL': '#123b60',
   'EMERALD CITY RC': '#579b2e',
-  'KC CAULDRON': '#263b68'
+  'FRONTERA SD CHROME': '#102a4a',
+  'KC CAULDRON': '#263b68',
+  'LACINCO12': '#009b50',
+  'LOS VERDES': '#07583d',
+  'SOUNDERS ROCKET CLUB': '#168a91',
+  'STEEL ARMY': '#f2b51b',
+  'THE REBELLION': '#f04432',
+  'WONDERWALL': '#777777'
 };
 const teamLogoFiles = {
   'AXE & ARMY': 'AXE & ARMY.png',
