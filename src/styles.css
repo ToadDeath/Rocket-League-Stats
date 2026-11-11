@@ -1426,3 +1426,15 @@ footer{align-items:center}
 /* EC Eternal's navy needs a lighter muted treatment to separate it from the gray track */
 .expanded-metric-bar-fill.team-is-eternal-muted{opacity:1;filter:brightness(1.7) saturate(.72)}
 .expanded-metric-bar-track .expanded-metric-value.team-is-eternal-muted{opacity:1;filter:brightness(1.7) saturate(.72)}
+
+
+/* Give each stat category a clear visual start after the first group */
+.expanded-team-metric:not(:first-child) .expanded-metric-label,
+.expanded-team-metric:not(:first-child) .expanded-metric-values{
+  border-top:1px solid #405064;
+  padding-top:18px;
+}
+@media(max-width:520px){
+  .expanded-team-metric:not(:first-child) .expanded-metric-label,
+  .expanded-team-metric:not(:first-child) .expanded-metric-values{padding-top:14px}
+}
