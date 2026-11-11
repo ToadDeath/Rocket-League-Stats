@@ -1429,9 +1429,7 @@ footer{align-items:center}
 }
 .expanded-metric-bar-fill.team-is-muted{opacity:.42}
 .expanded-metric-bar-track .expanded-metric-value.team-is-muted{opacity:1}
-/* Keep muted EC Eternal bars distinct from the neutral track. */
-.expanded-metric-bar-fill.team-is-eternal-muted{opacity:1;filter:brightness(1.7) saturate(.72)}
-.expanded-metric-bar-track .expanded-metric-value.team-is-eternal-muted{opacity:1;filter:none}
+/* EC Eternal uses the same muted treatment as every other team. */
 
 
 /* Give each stat category a clear visual start after the first group */
