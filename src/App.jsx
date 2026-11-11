@@ -104,7 +104,7 @@ const teamBrandColors = {
   'EL MATADOR': '#e31d2b',
   'EM DALLAS BURN': '#a8322a',
   'EC DEFIANCE': '#6c963b',
-  'EC ETERNAL': '#123b60',
+  'EC ETERNAL': '#238BCB',
   'EMERALD CITY RC': '#579b2e',
   'FRONTERA SD CHROME': '#8bb9e8',
   'KC CAULDRON': '#4d83ed',
