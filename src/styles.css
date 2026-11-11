@@ -1438,3 +1438,16 @@ footer{align-items:center}
   .expanded-team-metric:not(:first-child) .expanded-metric-label,
   .expanded-team-metric:not(:first-child) .expanded-metric-values{padding-top:14px}
 }
+
+
+/* Vertically center matchup values on the centerline of their bars */
+.expanded-metric-bar-track .expanded-metric-value{
+  top:2px;
+  line-height:12px;
+}
+@media(max-width:520px){
+  .expanded-metric-bar-track .expanded-metric-value{
+    top:2px;
+    line-height:11px;
+  }
+}
