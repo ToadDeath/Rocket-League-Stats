@@ -1415,20 +1415,25 @@ footer{align-items:center}
 .expanded-team-legend-item .team-color-key{background:var(--team-color)}
 
 
-/* Keep matchup values readable without relying on text outlines or shadows.
-   Team identity stays in the bars; values use a consistent high-contrast label. */
+/* Let matchup values sit cleanly above the bars. Winners use their team color;
+   tied winners receive the same emphasis, while muted values stay neutral. */
 .expanded-metric-bar-track .expanded-metric-value{
-  color:#f4f7fb!important;
+  color:#d5deea!important;
+  font-weight:600!important;
   opacity:1!important;
   filter:none!important;
   -webkit-text-stroke:0;
-  text-shadow:none;
-  background:rgba(8,12,18,.94);
-  border-radius:3px;
-  padding:0 3px;
+  text-shadow:0 1px 2px rgba(0,0,0,.8);
+  background:transparent;
+  border-radius:0;
+  padding:0;
+}
+.expanded-metric-bar-track .expanded-metric-value:not(.team-is-muted){
+  color:var(--team-color)!important;
+  font-weight:800!important;
 }
 .expanded-metric-bar-fill.team-is-muted{opacity:.42}
-.expanded-metric-bar-track .expanded-metric-value.team-is-muted{opacity:1}
+.expanded-metric-bar-track .expanded-metric-value.team-is-muted{opacity:.78!important}
 /* EC Eternal uses the same muted treatment as every other team. */
 
 
