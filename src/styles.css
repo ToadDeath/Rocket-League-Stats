@@ -1415,17 +1415,23 @@ footer{align-items:center}
 .expanded-team-legend-item .team-color-key{background:var(--team-color)}
 
 
-/* Keep comparison values readable over every team color */
+/* Keep matchup values readable without relying on text outlines or shadows.
+   Team identity stays in the bars; values use a consistent high-contrast label. */
 .expanded-metric-bar-track .expanded-metric-value{
-  -webkit-text-stroke:.65px #101923;
-  paint-order:stroke fill;
-  text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 5px rgba(0,0,0,.6);
+  color:#f4f7fb!important;
+  opacity:1!important;
+  filter:none!important;
+  -webkit-text-stroke:0;
+  text-shadow:none;
+  background:rgba(8,12,18,.94);
+  border-radius:3px;
+  padding:0 3px;
 }
 .expanded-metric-bar-fill.team-is-muted{opacity:.42}
-.expanded-metric-bar-track .expanded-metric-value.team-is-muted{opacity:.72}
-/* EC Eternal's navy needs a lighter muted treatment to separate it from the gray track */
+.expanded-metric-bar-track .expanded-metric-value.team-is-muted{opacity:1}
+/* Keep muted EC Eternal bars distinct from the neutral track. */
 .expanded-metric-bar-fill.team-is-eternal-muted{opacity:1;filter:brightness(1.7) saturate(.72)}
-.expanded-metric-bar-track .expanded-metric-value.team-is-eternal-muted{opacity:1;filter:brightness(1.7) saturate(.72)}
+.expanded-metric-bar-track .expanded-metric-value.team-is-eternal-muted{opacity:1;filter:none}
 
 
 /* Give each stat category a clear visual start after the first group */
