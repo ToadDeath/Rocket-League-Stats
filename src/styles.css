@@ -1545,3 +1545,7 @@ footer{align-items:center}
 /* Match player comparison ratings to the larger value shown on the Players page. */
 .comparison-player-table .stats-table td .rating-meter.compact>span{font-size:12px}
 .comparison-player-table .stats-table td .rating-with-delta .rating-meter>span{font-size:12px}
+
+
+/* Optical adjustment: lift the selected week slightly to match the small-caps label. */
+.comparison-export-period>strong{position:relative;top:-1px}
