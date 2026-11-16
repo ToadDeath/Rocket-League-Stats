@@ -761,6 +761,8 @@ footer{align-items:center}
 .comparison-result-banner>div strong{font-size:15px;color:#edf2f9;overflow-wrap:anywhere}
 .comparison-result-score{min-width:112px;text-align:center;color:#fff;font-size:34px;font-weight:850;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(98,200,236,.22)}
 .comparison-card-side-label{font-size:10px;color:#9eacbf}
+.comparison-scorecards .comparison-card-side-label{display:flex;align-items:center;gap:8px;min-height:30px}
+.comparison-scorecards .comparison-card-side-label>.division-badge{flex:0 0 auto;margin-left:auto}
 @media(max-width:560px){.comparison-result-banner{gap:8px;padding:12px}.comparison-result-banner>div strong{font-size:12px}.comparison-result-score{min-width:70px;font-size:27px}}
 
 /* Keep the team directory's first two columns close and distribute the rest evenly. */
