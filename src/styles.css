@@ -1489,6 +1489,8 @@ footer{align-items:center}
   grid-row:1;
   text-align:left!important;
 }
+/* Keep the home team's label on the right while preserving the shared meter layout. */
+.comparison-card:not(.comparison-card-away) .comparison-team-rating>span:first-child{text-align:right!important}
 .comparison-team-rating .rating-meter{
   grid-column:1;
   grid-row:2;
