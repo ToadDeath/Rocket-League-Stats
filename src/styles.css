@@ -1486,3 +1486,49 @@ footer{align-items:center}
 
 /* Keep the team match rating value at the standard, readable size. */
 .comparison-team-rating .rating-meter>span{font-size:12px}
+
+/* Use one consistent team-rating layout on both comparison cards. */
+.comparison-team-rating{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:7px;
+  align-items:center;
+}
+.comparison-team-rating>span{
+  grid-column:1;
+  grid-row:1;
+  text-align:left!important;
+}
+.comparison-team-rating .rating-meter{
+  grid-column:1;
+  grid-row:2;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  width:100%;
+  min-width:0;
+  margin:0;
+}
+.comparison-team-rating .rating-meter>span{
+  min-width:0;
+  text-align:left!important;
+  font-size:12px;
+}
+.comparison-team-rating .rating-meter-track{
+  width:100%;
+  min-width:0;
+}
+.comparison-card-away .comparison-team-rating{
+  text-align:left;
+}
+.comparison-card-away .comparison-team-rating>span{
+  text-align:left!important;
+}
+.comparison-card-away .comparison-team-rating .rating-meter{
+  margin:0;
+}
+@media(max-width:560px){
+  .comparison-team-rating{grid-template-columns:minmax(0,1fr);gap:7px}
+}
+
