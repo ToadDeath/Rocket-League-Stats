@@ -1561,3 +1561,22 @@ footer{align-items:center}
   min-height:30px;
 }
 .comparison-scorecards.multi-team .comparison-card-side-label .division-badge{flex:0 0 auto}
+
+
+/* Weekly opponent and series score shown in team comparison cards. */
+.comparison-card-fixtures{display:flex;flex:1;flex-direction:column;gap:5px;min-width:0}
+.comparison-card-fixture{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px;row-gap:1px;min-width:0}
+.comparison-fixture-opponent{min-width:0;color:#aebacc;font-size:10px;font-weight:650;letter-spacing:.15px;line-height:1.25;white-space:normal}
+.comparison-fixture-score{color:#dce5f0;font-size:14px;font-weight:850;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.comparison-fixture-score.is-win{color:#55c995}
+.comparison-fixture-score.is-loss{color:#ef747b}
+.comparison-fixture-score.is-tie,.comparison-fixture-score.is-pending{color:#b9c5d4}
+.comparison-fixture-status{grid-column:1/-1;color:#8291a7;font-size:8px;font-weight:750;letter-spacing:.8px;line-height:1.1}
+.comparison-card-away .comparison-card-fixture{grid-template-columns:minmax(0,1fr) auto}
+.comparison-card-away .comparison-fixture-opponent{text-align:right}
+.comparison-card-away .comparison-fixture-status{text-align:right}
+@media(max-width:560px){
+ .comparison-card-fixtures{gap:4px}
+ .comparison-fixture-opponent{font-size:9px}
+ .comparison-fixture-score{font-size:13px}
+}
