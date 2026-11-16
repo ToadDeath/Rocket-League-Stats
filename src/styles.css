@@ -1553,7 +1553,7 @@ footer{align-items:center}
 
 /* In multi-team comparisons, keep the full club name with its crest and
    place the division logo beside the win-rate line where there is room. */
-.comparison-scorecards.multi-team .comparison-team-identity>.division-badge{display:none}
+.comparison-scorecards .comparison-team-identity>.division-badge{display:none}
 .comparison-scorecards.multi-team .comparison-card-side-label{
   display:flex;
   align-items:center;
@@ -1588,3 +1588,6 @@ footer{align-items:center}
 @media(max-width:560px){
  .comparison-opponent-logo{width:20px;height:20px;flex-basis:20px}
 }
+
+.comparison-fixture-vs{color:#77869b;font-size:8px;font-weight:800;letter-spacing:.8px;flex:0 0 auto}
+.comparison-scorecards .comparison-card-side-label>.division-badge{flex:0 0 auto;margin-left:auto}
