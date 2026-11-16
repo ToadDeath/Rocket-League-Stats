@@ -59,12 +59,12 @@ function readPlayerRoster(file) {
   return { aliases: map, ranks: Object.fromEntries(entries.map(({ player, rank }) => [player, rank])), trackerUrls: Object.fromEntries(entries.filter(({ trackerUrl }) => trackerUrl.startsWith('https://') || trackerUrl.startsWith('http://')).map(({ player, trackerUrl }) => [player, trackerUrl])) };
 }
 function readTeamRoster(file) {
-  if (!fs.existsSync(file)) throw new Error('Missing data/team-aliases.csv.');
+  if (!fs.existsSync(file)) throw new Error('Missing data/teams.csv.');
   const rows = readCsv(file), canonicalTeams = new Set(), entries = [];
   for (const row of rows) {
     const team = (row['team name'] || '').trim();
     if (!team) continue;
-    if (canonicalTeams.has(team)) throw new Error('Team "' + team + '" appears more than once in data/team-aliases.csv.');
+    if (canonicalTeams.has(team)) throw new Error('Team "' + team + '" appears more than once in data/teams.csv.');
     const league = (row.league || '').trim();
     if (!['Premier', 'Championship'].includes(league)) throw new Error('Team "' + team + '" must have League set to Premier or Championship.');
     canonicalTeams.add(team);
@@ -96,7 +96,7 @@ const playerRoster = readPlayerRoster(path.join(root, 'data', 'roster.csv'));
 const playerAliases = playerRoster.aliases;
 const playerRanks = playerRoster.ranks;
 const playerTrackerUrls = playerRoster.trackerUrls;
-const teamRoster = readTeamRoster(path.join(root, 'data', 'team-aliases.csv'));
+const teamRoster = readTeamRoster(path.join(root, 'data', 'teams.csv'));
 const roster = readCsv(path.join(root, 'data', 'roster.csv')).map(row => {
   const teamInfo = teamRoster.get((row.team || '').trim());
   const playerName = (row.player || '').trim();
