@@ -1490,7 +1490,19 @@ footer{align-items:center}
   text-align:left!important;
 }
 
-/* Align the home team's match rating value to the right as well. */
+/* Put the home team's rating number on the right side of its bar. */
+.comparison-card:not(.comparison-card-away) .comparison-team-rating .rating-meter{
+  grid-template-columns:minmax(0,1fr) 42px;
+}
+.comparison-card:not(.comparison-card-away) .comparison-team-rating .rating-meter-track{
+  grid-column:1;
+  grid-row:1;
+}
+.comparison-card:not(.comparison-card-away) .comparison-team-rating .rating-meter>span{
+  grid-column:2;
+  grid-row:1;
+  text-align:right!important;
+}
 .comparison-card:not(.comparison-card-away) .comparison-team-rating .rating-meter>span{text-align:right!important}
 
 /* Keep the home team's label on the right while preserving the shared meter layout. */
