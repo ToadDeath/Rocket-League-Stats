@@ -1595,14 +1595,26 @@ footer{align-items:center}
 .comparison-scorecards .comparison-card-side-label>.division-badge{flex:0 0 auto;margin-left:auto}
 
 
-/* All Weeks keeps the rating delta while giving its meter enough width
-   to match the bar length used when viewing an individual week. */
-.comparison-all-weeks .stats-table th:nth-child(1),
-.comparison-all-weeks .stats-table td:nth-child(1){width:13.5%}
-.comparison-all-weeks .stats-table th:nth-child(3),
-.comparison-all-weeks .stats-table td:nth-child(3){width:13.5%}
-.comparison-all-weeks .stats-table th:nth-child(5),
-.comparison-all-weeks .stats-table td:nth-child(5){width:17%}
-.comparison-all-weeks .stats-table th:nth-child(n+6),
-.comparison-all-weeks .stats-table td:nth-child(n+6){width:6.28%}
-.comparison-all-weeks .rating-with-delta{grid-template-columns:34px minmax(0,1fr) 30px;gap:5px}
+/* Keep player comparison columns and rating meters fixed when switching
+   between All Weeks and an individual week. Reserve the delta column in both
+   views so the rating bar itself stays the same length. */
+.comparison-player-table .stats-table th:nth-child(1),
+.comparison-player-table .stats-table td:nth-child(1){width:13.5%}
+.comparison-player-table .stats-table th:nth-child(3),
+.comparison-player-table .stats-table td:nth-child(3){width:13.5%}
+.comparison-player-table .stats-table th:nth-child(5),
+.comparison-player-table .stats-table td:nth-child(5){width:17%}
+.comparison-player-table .stats-table th:nth-child(n+6),
+.comparison-player-table .stats-table td:nth-child(n+6){width:6.28%}
+.comparison-player-table .stats-table td .rating-meter.compact{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) 30px;
+  align-items:center;
+  gap:5px;
+  width:100%;
+  min-width:0;
+}
+.comparison-player-table .stats-table td .rating-meter.compact>span{grid-column:1}
+.comparison-player-table .stats-table td .rating-meter.compact .rating-meter-track{grid-column:2}
+.comparison-player-table .stats-table td .rating-with-delta .rating-meter{display:contents}
+.comparison-player-table .stats-table td .rating-with-delta>small{grid-column:3}
