@@ -1593,3 +1593,16 @@ footer{align-items:center}
 
 .comparison-fixture-vs{color:#77869b;font-size:8px;font-weight:800;letter-spacing:.8px;flex:0 0 auto}
 .comparison-scorecards .comparison-card-side-label>.division-badge{flex:0 0 auto;margin-left:auto}
+
+
+/* All Weeks keeps the rating delta while giving its meter enough width
+   to match the bar length used when viewing an individual week. */
+.comparison-all-weeks .stats-table th:nth-child(1),
+.comparison-all-weeks .stats-table td:nth-child(1){width:13.5%}
+.comparison-all-weeks .stats-table th:nth-child(3),
+.comparison-all-weeks .stats-table td:nth-child(3){width:13.5%}
+.comparison-all-weeks .stats-table th:nth-child(5),
+.comparison-all-weeks .stats-table td:nth-child(5){width:17%}
+.comparison-all-weeks .stats-table th:nth-child(n+6),
+.comparison-all-weeks .stats-table td:nth-child(n+6){width:6.28%}
+.comparison-all-weeks .rating-with-delta{grid-template-columns:34px minmax(0,1fr) 30px;gap:5px}
