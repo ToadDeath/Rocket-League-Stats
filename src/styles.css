@@ -1542,5 +1542,6 @@ footer{align-items:center}
 
 
 
-/* Match player comparison rating text to the table's Games values. */
-.comparison-player-table .rating-meter.compact>span{font-size:10px}
+/* Match player comparison ratings to the larger value shown on the Players page. */
+.comparison-player-table .stats-table td .rating-meter.compact>span{font-size:12px}
+.comparison-player-table .stats-table td .rating-with-delta .rating-meter>span{font-size:12px}
