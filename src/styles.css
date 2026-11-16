@@ -1482,3 +1482,7 @@ footer{align-items:center}
 /* Division marks in comparison cards are logos only, without badge chrome. */
 .division-badge-icon-only{padding:0;border:0;background:transparent;gap:0}
 .division-badge-icon-only img{width:30px;height:30px}
+
+
+/* Keep the team match rating value at the standard, readable size. */
+.comparison-team-rating .rating-meter>span{font-size:12px}
