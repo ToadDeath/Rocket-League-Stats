@@ -1469,16 +1469,6 @@ footer{align-items:center}
 /* Align the period label and value on a shared vertical centerline. */
 .comparison-export-period{align-items:center}
 
-/* Keep the home-side rating meter on the left, mirroring the away card. */
-.comparison-card:not(.comparison-card-away) .comparison-team-rating{grid-template-columns:minmax(150px,220px) 1fr}
-.comparison-card:not(.comparison-card-away) .comparison-team-rating>span:first-child{grid-column:2;grid-row:1;text-align:right}
-.comparison-card:not(.comparison-card-away) .comparison-team-rating .rating-meter{grid-column:1;grid-row:1}
-@media(max-width:560px){
- .comparison-card:not(.comparison-card-away) .comparison-team-rating{grid-template-columns:1fr}
- .comparison-card:not(.comparison-card-away) .comparison-team-rating>span:first-child{grid-column:1;grid-row:2}
- .comparison-card:not(.comparison-card-away) .comparison-team-rating .rating-meter{grid-column:1;grid-row:1}
-}
-
 /* Division marks in comparison cards are logos only, without badge chrome. */
 .division-badge-icon-only{padding:0;border:0;background:transparent;gap:0}
 .division-badge-icon-only img{width:30px;height:30px}
