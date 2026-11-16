@@ -1551,23 +1551,13 @@ footer{align-items:center}
 .comparison-export-period>strong{position:relative;top:-1px}
 
 
-/* Keep division logos beside long club names in four-team comparisons. */
-.comparison-scorecards.multi-team .comparison-team-identity{
-  flex-wrap:nowrap;
-  gap:10px;
+/* In multi-team comparisons, keep the full club name with its crest and
+   place the division logo beside the win-rate line where there is room. */
+.comparison-scorecards.multi-team .comparison-team-identity>.division-badge{display:none}
+.comparison-scorecards.multi-team .comparison-card-side-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:30px;
 }
-.comparison-scorecards.multi-team .comparison-team-identity>.team-entity-link{
-  flex:1 1 0;
-  min-width:0;
-  overflow:hidden;
-}
-.comparison-scorecards.multi-team .comparison-team-identity>.team-entity-link>span{
-  display:block;
-  min-width:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.comparison-scorecards.multi-team .comparison-team-identity>.division-badge{
-  flex:0 0 auto;
-}
+.comparison-scorecards.multi-team .comparison-card-side-label .division-badge{flex:0 0 auto}
