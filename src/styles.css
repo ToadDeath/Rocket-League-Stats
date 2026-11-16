@@ -1580,3 +1580,11 @@ footer{align-items:center}
  .comparison-fixture-opponent{font-size:9px}
  .comparison-fixture-score{font-size:13px}
 }
+
+.comparison-fixture-opponent{display:flex;align-items:center;gap:7px}
+.comparison-opponent-logo{width:22px;height:22px;flex:0 0 22px;object-fit:contain}
+.comparison-fixture-opponent>span{min-width:0}
+.comparison-card-away .comparison-fixture-opponent{justify-content:flex-end}
+@media(max-width:560px){
+ .comparison-opponent-logo{width:20px;height:20px;flex-basis:20px}
+}
