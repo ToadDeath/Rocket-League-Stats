@@ -1299,7 +1299,7 @@ footer{align-items:center}
 .expanded-metric-track .expanded-metric-advantage.team-side-0{background:#4a9be8}
 .expanded-metric-track .expanded-metric-advantage.team-side-1{background:#d99a52}
 .expanded-roster-column .rating-meter.compact{display:flex;width:100%;min-width:0;gap:7px}
-.expanded-roster-column .rating-meter.compact>span{min-width:30px;font-size:11px}
+.expanded-roster-column .rating-meter.compact>span{min-width:30px;font-size:12px}
 .expanded-roster-column .rating-meter.compact .rating-meter-track{height:5px;min-width:0;flex:1}
 .expanded-roster-team{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
 .expanded-roster-team img{width:30px;height:30px;object-fit:contain;flex:none}
