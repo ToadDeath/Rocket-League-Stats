@@ -1540,3 +1540,7 @@ footer{align-items:center}
   .comparison-team-rating{grid-template-columns:minmax(0,1fr);gap:7px}
 }
 
+
+
+/* Match player comparison rating text to the table's Games values. */
+.comparison-player-table .rating-meter.compact>span{font-size:10px}
