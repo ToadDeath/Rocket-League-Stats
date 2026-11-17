@@ -761,8 +761,9 @@ footer{align-items:center}
 .comparison-result-banner>div strong{font-size:15px;color:#edf2f9;overflow-wrap:anywhere}
 .comparison-result-score{min-width:112px;text-align:center;color:#fff;font-size:34px;font-weight:850;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(98,200,236,.22)}
 .comparison-card-side-label{font-size:10px;color:#9eacbf}
-.comparison-scorecards .comparison-card-side-label{display:flex;align-items:center;gap:8px;min-height:30px}
-.comparison-scorecards .comparison-card-side-label>.division-badge{flex:0 0 auto;margin-left:auto}
+.comparison-scorecards .comparison-card-side-label{display:flex;align-items:center;gap:8px;min-height:30px;justify-content:flex-start}
+.comparison-scorecards .comparison-card-side-label>span{order:0;min-width:0}
+.comparison-scorecards .comparison-card-side-label>.division-badge{order:1;flex:0 0 auto;margin-left:auto}
 @media(max-width:560px){.comparison-result-banner{gap:8px;padding:12px}.comparison-result-banner>div strong{font-size:12px}.comparison-result-score{min-width:70px;font-size:27px}}
 
 /* Keep the team directory's first two columns close and distribute the rest evenly. */
@@ -1712,7 +1713,6 @@ footer{align-items:center}
   .matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{display:block;min-width:0;max-width:100%;white-space:normal;overflow-wrap:normal;line-height:1.15}
   .matchup-panel .stats-table td:nth-child(1) .team-name img,
   .matchup-panel .stats-table td:nth-child(3) .team-name img{width:22px;height:22px;flex:0 0 22px}
-  .comparison-scorecards .comparison-card-side-label>.division-badge{margin-left:0}
   .comparison-scorecards .comparison-card-side-label>span:not(.division-badge){min-width:0}
   /* Four selected teams fit on one row in the Team Matchup legend. */
   .expanded-team-legend{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -1754,25 +1754,3 @@ footer{align-items:center}
 .full-panel:has(>.compare-view-switch)>.panel-heading{margin-bottom:10px}
 .compare-view-switch{margin-top:0;margin-bottom:20px}
 
-/* Two-team comparisons mirror the division mark and win-rate line.
-   Multi-team comparisons keep the shared text-then-logo layout above. */
-.comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label{
-  justify-content:flex-start;
-}
-.comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label>.division-badge{
-  order:0;
-  margin-left:0;
-}
-.comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label>span{
-  order:1;
-}
-.comparison-scorecards:not(.multi-team) .comparison-card-away .comparison-card-side-label{
-  justify-content:flex-end;
-}
-.comparison-scorecards:not(.multi-team) .comparison-card-away .comparison-card-side-label>.division-badge{
-  order:1;
-  margin-left:8px;
-}
-.comparison-scorecards:not(.multi-team) .comparison-card-away .comparison-card-side-label>span{
-  order:0;
-}
