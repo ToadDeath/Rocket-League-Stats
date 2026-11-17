@@ -1672,3 +1672,52 @@ footer{align-items:center}
   .comparison-player-table .stats-table th:nth-child(5),
   .comparison-player-table .stats-table td:nth-child(5){min-width:145px}
 }
+
+
+/* 1080p: keep team identities together without forcing their text onto one line. */
+@media (min-width:761px) and (max-width:1100px){
+  /* Undo the wide-content table workaround. These tables stay inside the panel. */
+  .players-leaderboard-table .table-scroll,
+  .comparison-player-table .table-scroll{overflow-x:hidden;min-width:0}
+  .players-leaderboard-table .stats-table,
+  .comparison-player-table .stats-table{width:100%;min-width:0;max-width:100%;table-layout:fixed}
+  .players-leaderboard-table .stats-table th:nth-child(n),
+  .players-leaderboard-table .stats-table td:nth-child(n),
+  .comparison-player-table .stats-table th:nth-child(n),
+  .comparison-player-table .stats-table td:nth-child(n){min-width:0}
+  .players-leaderboard-table .stats-table th:nth-child(4),
+  .players-leaderboard-table .stats-table td:nth-child(4){width:17%}
+  .players-leaderboard-table .stats-table td:nth-child(4) .top-player-team{display:flex;align-items:center;flex-wrap:nowrap;gap:4px;min-width:0;width:100%}
+  .players-leaderboard-table .stats-table td:nth-child(4) .rankings-team-link{display:flex;align-items:center;flex:1 1 auto;min-width:0;gap:4px}
+  .players-leaderboard-table .stats-table td:nth-child(4) .rankings-team-link .team-name{display:flex;align-items:center;min-width:0;gap:4px}
+  .players-leaderboard-table .stats-table td:nth-child(4) .rankings-team-link .team-name>span:last-child{min-width:0;white-space:normal;overflow-wrap:normal;line-height:1.12}
+  .players-leaderboard-table .stats-table td:nth-child(4) .division-badge{flex:0 0 20px;width:20px;padding:0;margin:0}
+  .players-leaderboard-table .stats-table td:nth-child(4) .division-badge img{width:20px;height:20px}
+  .players-leaderboard-table .stats-table th:nth-child(2),
+  .players-leaderboard-table .stats-table td:nth-child(2){min-width:0}
+  .players-leaderboard-table .stats-table th:nth-child(4){white-space:normal}
+  .team-directory-table .stats-table td:first-child .top-player-team{display:flex;align-items:center;flex-wrap:nowrap;gap:5px}
+  .team-directory-table .stats-table td:first-child .team-entity-link{flex:1 1 auto;min-width:0}
+  .team-directory-table .stats-table td:first-child .team-name{min-width:0;gap:5px}
+  .team-directory-table .stats-table td:first-child .team-name>span:last-child{min-width:0;white-space:normal;overflow-wrap:normal}
+  .team-directory-table .stats-table td:first-child .division-badge{flex:0 0 20px;width:20px;padding:0}
+  .team-directory-table .stats-table td:first-child .division-badge img{width:20px;height:20px}
+  /* The matchup score owns a fixed center column; both club names can wrap inside theirs. */
+  .matchup-panel .stats-table th:nth-child(1),.matchup-panel .stats-table td:nth-child(1){width:40%;padding-right:10px}
+  .matchup-panel .stats-table th:nth-child(2),.matchup-panel .stats-table td:nth-child(2){width:20%}
+  .matchup-panel .stats-table th:nth-child(3),.matchup-panel .stats-table td:nth-child(3){width:40%;padding-left:10px}
+  .matchup-panel .stats-table td:nth-child(1) .team-name,
+  .matchup-panel .stats-table td:nth-child(3) .team-name{display:flex;align-items:center;gap:5px;min-width:0;max-width:100%;white-space:normal;overflow:visible}
+  .matchup-panel .stats-table td:nth-child(1) .team-name>span:last-child,
+  .matchup-panel .stats-table td:nth-child(3) .team-name>span:last-child{display:block;min-width:0;max-width:100%;white-space:normal;overflow-wrap:normal;line-height:1.15}
+  .matchup-panel .stats-table td:nth-child(1) .team-name img,
+  .matchup-panel .stats-table td:nth-child(3) .team-name img{width:22px;height:22px;flex:0 0 22px}
+  .comparison-scorecards .comparison-card-side-label>.division-badge{margin-left:0}
+  .comparison-scorecards .comparison-card-side-label>span:not(.division-badge){min-width:0}
+  /* Four selected teams fit on one row in the Team Matchup legend. */
+  .expanded-team-legend{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .expanded-team-legend-item{gap:7px;padding:11px 9px}
+  .expanded-team-legend-item img{width:28px;height:28px}
+  .expanded-team-legend-item strong{font-size:10px;white-space:normal;overflow-wrap:normal;line-height:1.15}
+  .expanded-team-legend-item small{font-size:8px}
+}
