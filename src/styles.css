@@ -1748,3 +1748,26 @@ footer{align-items:center}
   .performance-panel .stats-table td:nth-child(4) .division-badge{flex:0 0 20px;width:20px;padding:0}
   .performance-panel .stats-table td:nth-child(4) .division-badge img{width:20px;height:20px}
 }
+
+
+/* Compare tab hierarchy: bring the view switch closer to its section title. */
+.full-panel:has(>.compare-view-switch)>.panel-heading{margin-bottom:10px}
+.compare-view-switch{margin-top:0;margin-bottom:20px}
+
+/* The selected matchday label sits slightly lower to balance the selected-team view. */
+.expanded-comparison>.comparison-export-period{padding-top:4px;margin-bottom:14px}
+
+/* In a two-team matchup, put the home division crest before its win-rate label. */
+.comparison-scorecards:not(.multi-team) .comparison-card:not(.comparison-card-away) .comparison-card-side-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.comparison-scorecards:not(.multi-team) .comparison-card:not(.comparison-card-away) .comparison-card-side-label>.division-badge{
+  order:0;
+  flex:0 0 auto;
+  margin-left:0;
+}
+.comparison-scorecards:not(.multi-team) .comparison-card:not(.comparison-card-away) .comparison-card-side-label>span{
+  order:1;
+}
