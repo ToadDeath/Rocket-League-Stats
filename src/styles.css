@@ -1754,10 +1754,11 @@ footer{align-items:center}
 .full-panel:has(>.compare-view-switch)>.panel-heading{margin-bottom:10px}
 .compare-view-switch{margin-top:0;margin-bottom:20px}
 
-/* In a two-team comparison, mirror the home details row against the away row.
-   Multi-team comparisons retain the same text-left, division-logo-right layout. */
-.comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label{
-  justify-content:flex-start;
+/* In two-team comparisons, mirror both the badge position and text alignment.
+   Multi-team comparisons retain the shared text-left, division-logo-right layout. */
+.comparison-scorecards:not(.multi-team) .comparison-card-side-label>span{
+  flex:1 1 0;
+  min-width:0;
 }
 .comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label>.division-badge{
   order:0;
@@ -1765,4 +1766,8 @@ footer{align-items:center}
 }
 .comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label>span{
   order:1;
+  text-align:right;
+}
+.comparison-scorecards:not(.multi-team) .comparison-card-slot:last-child .comparison-card-side-label>span{
+  text-align:left;
 }
