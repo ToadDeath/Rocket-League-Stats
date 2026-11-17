@@ -1754,20 +1754,39 @@ footer{align-items:center}
 .full-panel:has(>.compare-view-switch)>.panel-heading{margin-bottom:10px}
 .compare-view-switch{margin-top:0;margin-bottom:20px}
 
-/* In two-team comparisons, mirror both the badge position and text alignment.
-   Multi-team comparisons retain the shared text-left, division-logo-right layout. */
-.comparison-scorecards:not(.multi-team) .comparison-card-side-label>span{
-  flex:1 1 0;
-  min-width:0;
+/* Two-team comparison details use mirrored grid columns so each logo is
+   anchored to the outside edge, with the win-rate text filling the inner space. */
+.comparison-scorecards:not(.multi-team) .comparison-card-side-label{
+  display:grid;
+  width:100%;
+  align-items:center;
+  gap:8px;
+}
+.comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label{
+  grid-template-columns:auto minmax(0,1fr);
 }
 .comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label>.division-badge{
-  order:0;
-  margin-left:0;
+  grid-column:1;
+  grid-row:1;
+  margin:0;
 }
 .comparison-scorecards:not(.multi-team) .comparison-card-slot:first-child .comparison-card-side-label>span{
-  order:1;
+  grid-column:2;
+  grid-row:1;
+  min-width:0;
   text-align:right;
 }
+.comparison-scorecards:not(.multi-team) .comparison-card-slot:last-child .comparison-card-side-label{
+  grid-template-columns:minmax(0,1fr) auto;
+}
 .comparison-scorecards:not(.multi-team) .comparison-card-slot:last-child .comparison-card-side-label>span{
+  grid-column:1;
+  grid-row:1;
+  min-width:0;
   text-align:left;
+}
+.comparison-scorecards:not(.multi-team) .comparison-card-slot:last-child .comparison-card-side-label>.division-badge{
+  grid-column:2;
+  grid-row:1;
+  margin:0;
 }
