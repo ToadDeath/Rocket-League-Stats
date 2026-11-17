@@ -1721,3 +1721,19 @@ footer{align-items:center}
   .expanded-team-legend-item strong{font-size:10px;white-space:normal;overflow-wrap:normal;line-height:1.15}
   .expanded-team-legend-item small{font-size:8px}
 }
+
+
+/* Four-team scorecards stay on one row on standard desktop displays. */
+@media (min-width:761px) and (max-width:1100px){
+  .comparison-scorecards.multi-team{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  .comparison-scorecards.multi-team .comparison-card{min-width:0;padding:10px;gap:8px}
+  .comparison-scorecards.multi-team .comparison-team-identity{gap:6px;min-height:42px;align-items:center}
+  .comparison-scorecards.multi-team .comparison-club-logo{width:34px;height:34px;flex:0 0 34px}
+  .comparison-scorecards.multi-team .comparison-team-identity>.team-entity-link{min-width:0;font-size:11px;line-height:1.1;white-space:normal;overflow-wrap:normal}
+  .comparison-scorecards.multi-team .comparison-card-side-label{font-size:9px;gap:5px}
+  .comparison-scorecards.multi-team .comparison-card-side-label .division-badge img{width:22px;height:22px}
+  .comparison-scorecards.multi-team .comparison-team-rating{gap:5px}
+  .comparison-scorecards.multi-team .comparison-team-rating>span{font-size:7px}
+  .comparison-scorecards.multi-team .comparison-team-rating .rating-meter{grid-template-columns:30px minmax(0,1fr);gap:5px}
+  .comparison-scorecards.multi-team .comparison-team-rating .rating-meter>span{font-size:11px}
+}
