@@ -1551,7 +1551,7 @@ footer{align-items:center}
 
 
 /* Optical adjustment: lower the selected matchday text slightly on screen and in exports. */
-.comparison-export-period>strong{position:relative;top:2px}
+.comparison-export-period>strong{position:relative;top:4px}
 
 
 /* In multi-team comparisons, keep the full club name with its crest and
