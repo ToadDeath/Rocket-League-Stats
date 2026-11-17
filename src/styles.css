@@ -1737,3 +1737,14 @@ footer{align-items:center}
   .comparison-scorecards.multi-team .comparison-team-rating .rating-meter{grid-template-columns:30px minmax(0,1fr);gap:5px}
   .comparison-scorecards.multi-team .comparison-team-rating .rating-meter>span{font-size:11px}
 }
+
+
+/* Overview ranking table: keep the division crest beside the club identity. */
+@media (min-width:761px) and (max-width:1100px){
+  .performance-panel .stats-table td:nth-child(4) .top-player-team{display:flex;align-items:center;flex-wrap:nowrap;gap:4px;min-width:0;width:100%}
+  .performance-panel .stats-table td:nth-child(4) .team-entity-link{flex:1 1 auto;min-width:0}
+  .performance-panel .stats-table td:nth-child(4) .team-name{display:flex;align-items:center;gap:4px;min-width:0}
+  .performance-panel .stats-table td:nth-child(4) .team-name>span:last-child{min-width:0;white-space:normal;line-height:1.12}
+  .performance-panel .stats-table td:nth-child(4) .division-badge{flex:0 0 20px;width:20px;padding:0}
+  .performance-panel .stats-table td:nth-child(4) .division-badge img{width:20px;height:20px}
+}
