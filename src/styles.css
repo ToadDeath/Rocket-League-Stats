@@ -1618,3 +1618,57 @@ footer{align-items:center}
 .comparison-player-table .stats-table td .rating-meter.compact .rating-meter-track{grid-column:2}
 .comparison-player-table .stats-table td .rating-with-delta .rating-meter{display:contents}
 .comparison-player-table .stats-table td .rating-with-delta>small{grid-column:3}
+
+/* Keep the desktop layout comfortable on standard 1080p displays.
+   The content area is narrower here because the fixed navigation remains visible. */
+@media (min-width:761px) and (max-width:1100px){
+  .main-content{padding-left:20px;padding-right:20px}
+  .page-heading{padding-top:28px;padding-bottom:21px;gap:14px}
+  .metrics-grid{gap:10px}
+  .metric-card{padding:14px 13px;min-height:104px}
+  .metric-top{font-size:8px;letter-spacing:.7px}
+  .content-grid,.bottom-grid{gap:12px;margin-top:13px}
+  .panel{padding:16px}
+  .panel-heading{gap:10px}
+  .panel-heading h2{font-size:19px}
+  .profile-section{padding:15px}
+  .profile-stats{gap:8px}
+  .profile-stats>div{padding:11px}
+  .compare-controls{gap:11px}
+  .comparison-scorecards{gap:12px}
+  .comparison-card{padding:15px;gap:10px}
+  .team-directory-table .stats-table th,
+  .team-directory-table .stats-table td{padding:8px 6px}
+  .team-directory-table .stats-table th{font-size:7px;letter-spacing:.55px;line-height:1.25;white-space:normal}
+  .team-directory-table .stats-table td{font-size:9px}
+  .team-directory-table .stats-table td:first-child .team-name{gap:5px}
+  .team-directory-table .stats-table td:first-child .team-name img{width:23px;height:23px;flex:0 0 23px}
+  .team-directory-table .stats-table td:first-child .team-name>span:last-child{white-space:normal;line-height:1.2}
+  .matchup-panel .stats-table th,
+  .matchup-panel .stats-table td{padding-left:7px;padding-right:7px}
+}
+
+/* Dense stat tables should scroll horizontally rather than crush labels
+   into narrow columns on laptop-sized desktop viewports. */
+@media (min-width:761px) and (max-width:1100px){
+  .players-leaderboard-table .stats-table{width:max-content;min-width:100%;table-layout:auto}
+  .players-leaderboard-table .stats-table th:nth-child(n),
+  .players-leaderboard-table .stats-table td:nth-child(n){width:auto}
+  .players-leaderboard-table .stats-table th:nth-child(2),
+  .players-leaderboard-table .stats-table td:nth-child(2){min-width:145px}
+  .players-leaderboard-table .stats-table th:nth-child(4),
+  .players-leaderboard-table .stats-table td:nth-child(4){min-width:135px}
+  .comparison-player-table .stats-table{width:max-content;min-width:100%;table-layout:auto}
+  .comparison-player-table .stats-table th:nth-child(n),
+  .comparison-player-table .stats-table td:nth-child(n){width:auto}
+  .comparison-player-table .stats-table th:nth-child(1),
+  .comparison-player-table .stats-table td:nth-child(1){min-width:130px}
+  .comparison-player-table .stats-table th:nth-child(2),
+  .comparison-player-table .stats-table td:nth-child(2){min-width:58px}
+  .comparison-player-table .stats-table th:nth-child(3),
+  .comparison-player-table .stats-table td:nth-child(3){min-width:120px}
+  .comparison-player-table .stats-table th:nth-child(4),
+  .comparison-player-table .stats-table td:nth-child(4){min-width:58px}
+  .comparison-player-table .stats-table th:nth-child(5),
+  .comparison-player-table .stats-table td:nth-child(5){min-width:145px}
+}
