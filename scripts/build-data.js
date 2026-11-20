@@ -92,7 +92,7 @@ function toNumber(value) {
   return Number.isFinite(x) ? x : null;
 }
 
-const playerRoster = readPlayerRoster(path.join(root, 'data', 'roster.csv'));
+const playerRoster = readPlayerRoster(path.join(root, 'data', 'players.csv'));
 const playerAliases = playerRoster.aliases;
 const playerRanks = playerRoster.ranks;
 const playerTrackerUrls = playerRoster.trackerUrls;
