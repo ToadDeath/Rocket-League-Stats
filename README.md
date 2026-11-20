@@ -42,8 +42,11 @@ Because this repository is public, any CSV, JSON, or other data committed here w
 
 ### Master roster, teams, and aliases
 
-- `data/roster.csv` is the master player list. Its columns are `Team,Player,Rank,Aliases`.
-- Keep one row per player. Leave `Rank` blank when the player has no listed rank.
+- `data/players.csv` is the permanent player directory. It stores each player's canonical name, rank, aliases, and Tracker URL once.
+- `data/roster.csv` stores season-specific team membership and status. Its columns are `Season,Team,Player,Status`. Keep historical seasons in this file. Use `Active` or `Inactive`; inactive players remain in the permanent directory and retain their history, but are not counted as current team members.
+- `data/current-season.txt` identifies the season whose roster is currently displayed. Update it when starting a new season.
+- `data/voided-matches.csv` records administrative voids. The original weekly exports remain preserved, but player rows belonging to either side of a voided fixture are excluded from calculations.
+- Keep one row per player in `data/players.csv`. Leave `Rank` blank when the player has no listed rank.
 - Put multiple alternate player names in the `Aliases` column, separated by `|` (vertical bar). Example: `Canti57|OldName`.
 - Alias matching is case-sensitive. Every alias must belong to only one player, and aliases cannot conflict with another player's canonical name.
 - `data/teams.csv` is the master team list. Its columns are `League,Team Name,Aliases`.
