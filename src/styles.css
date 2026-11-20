@@ -1790,3 +1790,5 @@ footer{align-items:center}
   grid-row:1;
   margin:0;
 }
+
+.player-status{display:inline-flex;align-items:center;padding:3px 7px;border:1px solid #3a4654;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#aab6c5;background:#202a35;white-space:nowrap}.player-status.is-inactive{color:#e0b77c;border-color:#715a3c;background:#30271e}.player-status.is-active{color:#8dc6a0;border-color:#385b46;background:#1d2b24}.matchup-bye-line{padding:9px 12px;margin-top:8px;border-radius:7px;background:#171f29;color:#9ba9b9;font-size:12px}.matchup-bye-line strong{color:#d8e0e9;margin-right:5px}
