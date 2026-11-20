@@ -40,12 +40,12 @@ function readCsv(file) {
   return rows.slice(1).map(values => Object.fromEntries(headers.map((h, i) => [h, (values[i] ?? '').trim()])));
 }
 function readPlayerRoster(file) {
-  if (!fs.existsSync(file)) throw new Error('Missing data/roster.csv.');
+  if (!fs.existsSync(file)) throw new Error('Missing data/players.csv.');
   const rows = readCsv(file), canonicalNames = new Set(), entries = [];
   for (const row of rows) {
     const player = (row.player || '').trim();
     if (!player) continue;
-    if (canonicalNames.has(player)) throw new Error('Player "' + player + '" appears more than once in data/roster.csv.');
+    if (canonicalNames.has(player)) throw new Error('Player "' + player + '" appears more than once in data/players.csv.');
     canonicalNames.add(player);
     entries.push({ player, rank: (row.rank || '').trim(), trackerUrl: (row['tracker url'] || row['tracker.gg url'] || '').trim(), aliases: (row.aliases || '').split('|').map(v => v.trim()).filter(Boolean) });
   }
@@ -56,7 +56,7 @@ function readPlayerRoster(file) {
     if (map.has(alias) && map.get(alias) !== player) throw new Error('Alias "' + alias + '" is assigned to more than one player.');
     map.set(alias, player);
   }
-  return { aliases: map, ranks: Object.fromEntries(entries.map(({ player, rank }) => [player, rank])), trackerUrls: Object.fromEntries(entries.filter(({ trackerUrl }) => trackerUrl.startsWith('https://') || trackerUrl.startsWith('http://')).map(({ player, trackerUrl }) => [player, trackerUrl])) };
+  return { aliases: map, directory: entries.map(({player,rank,trackerUrl})=>({playerName:player,rank,trackerUrl})), ranks: Object.fromEntries(entries.map(({ player, rank }) => [player, rank])), trackerUrls: Object.fromEntries(entries.filter(({ trackerUrl }) => trackerUrl.startsWith('https://') || trackerUrl.startsWith('http://')).map(({ player, trackerUrl }) => [player, trackerUrl])) };
 }
 function readTeamRoster(file) {
   if (!fs.existsSync(file)) throw new Error('Missing data/teams.csv.');
@@ -97,19 +97,35 @@ const playerAliases = playerRoster.aliases;
 const playerRanks = playerRoster.ranks;
 const playerTrackerUrls = playerRoster.trackerUrls;
 const teamRoster = readTeamRoster(path.join(root, 'data', 'teams.csv'));
-const roster = readCsv(path.join(root, 'data', 'roster.csv')).map(row => {
-  const teamInfo = teamRoster.get((row.team || '').trim());
-  const playerName = (row.player || '').trim();
-  if (!teamInfo || !playerName) return null;
-  return { playerName, teamName: teamInfo.team, division: teamInfo.division };
+const currentSeasonFile = path.join(root, 'data', 'current-season.txt');
+const currentSeason = fs.existsSync(currentSeasonFile) ? fs.readFileSync(currentSeasonFile, 'utf8').trim() : 'Season 11';
+const playerDirectory = playerRoster.directory;
+const seasonRosterRows = readCsv(path.join(root, 'data', 'roster.csv'));
+const playerStatuses = {};
+const roster = seasonRosterRows.filter(row => (row.season || '').trim() === currentSeason).map(row => {
+  const playerName = playerAliases.get((row.player || '').trim());
+  const status = ((row.status || 'Active').trim() || 'Active');
+  const teamName = (row.team || '').trim();
+  if (!playerName || !['Active','Inactive'].includes(status)) throw new Error('Invalid player membership row for "' + (row.player || '') + '" in data/roster.csv.');
+  playerStatuses[playerName] = status;
+  if (status === 'Inactive') return { playerName, teamName: '', division: '', season: currentSeason, status };
+  const teamInfo = teamRoster.get(teamName);
+  if (!teamInfo) throw new Error('Active player "' + playerName + '" has an unknown team in data/roster.csv.');
+  return { playerName, teamName: teamInfo.team, division: teamInfo.division, season: currentSeason, status };
 }).filter(Boolean);
+for (const player of playerDirectory) if (!playerStatuses[player.playerName]) playerStatuses[player.playerName] = 'Inactive';
 function readSchedule(file, teamRoster) {
   if (!fs.existsSync(file)) return [];
   const entries = readCsv(file).map((row, index) => {
     const division = (row.division || '').trim();
     const matchday = Number(row.matchday);
-    const team1Info = teamRoster.get((row['team 1'] || '').trim());
-    const team2Info = teamRoster.get((row['team 2'] || '').trim());
+    const team1Name = (row['team 1'] || '').trim();
+    const team2Name = (row['team 2'] || '').trim();
+    const byeTeamName = (row['bye team'] || '').trim();
+    const team1Info = team1Name ? teamRoster.get(team1Name) : null;
+    const team2Info = team2Name ? teamRoster.get(team2Name) : null;
+    const byeTeamInfo = byeTeamName ? teamRoster.get(byeTeamName) : null;
+    const isBye = Boolean(byeTeamName && !team1Name && !team2Name);
     const statsWeekText = (row['stats week'] || '').trim();
     const statsWeek = statsWeekText === '' ? null : Number(statsWeekText);
     const resultTeam1WinsText = (row['result team 1 wins'] || '').trim();
@@ -117,23 +133,22 @@ function readSchedule(file, teamRoster) {
     const resultTeam1Wins = resultTeam1WinsText === '' ? null : Number(resultTeam1WinsText);
     const resultTeam2Wins = resultTeam2WinsText === '' ? null : Number(resultTeam2WinsText);
     const hasManualResult = resultTeam1Wins !== null || resultTeam2Wins !== null;
+    const invalidFixture = !isBye && (!team1Info || !team2Info || team1Info.division !== division || team2Info.division !== division || team1Info.team === team2Info.team || byeTeamName);
+    const invalidBye = isBye && (!byeTeamInfo || byeTeamInfo.division !== division || statsWeek !== null || hasManualResult);
     if (!['Premier', 'Championship'].includes(division) || !Number.isInteger(matchday) || matchday < 1 ||
-        !team1Info || !team2Info || team1Info.division !== division || team2Info.division !== division ||
-        team1Info.team === team2Info.team ||
-        (statsWeek !== null && (!Number.isInteger(statsWeek) || statsWeek < 1)) ||
+        invalidFixture || invalidBye || (!isBye && statsWeek !== null && (!Number.isInteger(statsWeek) || statsWeek < 1)) ||
         (hasManualResult && (!Number.isInteger(resultTeam1Wins) || !Number.isInteger(resultTeam2Wins) ||
           resultTeam1Wins < 0 || resultTeam2Wins < 0 || resultTeam1Wins > 3 || resultTeam2Wins > 3 ||
           (resultTeam1Wins !== 3 && resultTeam2Wins !== 3)))) {
-      throw new Error('Invalid schedule row ' + (index + 2) + ' in data/schedule.csv. Check division, teams, and stats week.');
+      throw new Error('Invalid schedule row ' + (index + 2) + ' in data/schedule.csv. Check division, teams, bye team, and stats week.');
     }
     return { id: division.toLowerCase() + '-' + matchday + '-' + (index + 1), division, matchday,
-      deadline: (row.deadline || '').trim(), team1: team1Info.team, team2: team2Info.team, statsWeek,
-      resultTeam1Wins, resultTeam2Wins };
+      deadline: (row.deadline || '').trim(), team1: team1Info?.team || '', team2: team2Info?.team || '', statsWeek,
+      resultTeam1Wins, resultTeam2Wins, byeTeam: byeTeamInfo?.team || '' };
   });
-  // A stats-week value entered on any fixture maps the entire matchday.
   const matchdayWeeks = new Map();
   for (const entry of entries) {
-    if (entry.statsWeek === null) continue;
+    if (entry.byeTeam || entry.statsWeek === null) continue;
     const key = entry.division + ':' + entry.matchday;
     if (matchdayWeeks.has(key) && matchdayWeeks.get(key) !== entry.statsWeek) {
       throw new Error('Conflicting stats-week mappings for ' + entry.division + ' Matchday ' + entry.matchday + ' in data/schedule.csv.');
@@ -142,12 +157,13 @@ function readSchedule(file, teamRoster) {
   }
   return entries.map(entry => ({
     ...entry,
-    statsWeek: entry.statsWeek ?? matchdayWeeks.get(entry.division + ':' + entry.matchday) ?? null
+    statsWeek: entry.byeTeam ? null : entry.statsWeek ?? matchdayWeeks.get(entry.division + ':' + entry.matchday) ?? null
   }));
 }
 
 const records = [], imports = [], duplicates = [], importWarnings = [], seenHashes = new Map();
 const schedule = readSchedule(path.join(root, 'data', 'schedule.csv'), teamRoster);
+const voidedMatches = readCsv(path.join(root, 'data', 'voided-matches.csv'));
 
 for (const file of findCsvFiles(importsRoot)) {
   const relative = path.relative(root, file).split(path.sep).join('/');
@@ -186,6 +202,10 @@ for (const file of findCsvFiles(importsRoot)) {
     if (!teamInfo) unknownTeams.add(originalTeamName);
     if (!playerName) unknownPlayers.add(originalPlayerName);
     if (!teamInfo || !playerName) { skippedRows++; continue; }
+    const isVoided = voidedMatches.some(match => (match.division || '').trim() === fallbackDivision &&
+      Number(match.matchday) === week &&
+      [match['team 1'], match['team 2']].map(name => teamRoster.get((name || '').trim())?.team).includes(teamInfo.team));
+    if (isVoided) { skippedRows++; continue; }
 
     const stats = {};
     let rowHasInvalidStat = false;
@@ -233,7 +253,7 @@ for (const file of findCsvFiles(importsRoot)) {
 const availableStats = [...new Set(records.flatMap(r => Object.keys(r.stats)))];
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, JSON.stringify({
-  generatedAt: new Date().toISOString(), imports, duplicates, records, schedule, roster,
+  generatedAt: new Date().toISOString(), currentSeason, imports, duplicates, records, schedule, roster, playerDirectory, playerStatuses,
   availableStats, playerRanks, playerTrackerUrls, importWarnings
 }));
 console.log('Processed ' + imports.length + ' CSV file(s), ' + records.length + ' usable player rows, ' + availableStats.length + ' stat fields.');
