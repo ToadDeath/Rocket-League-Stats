@@ -404,7 +404,7 @@ function App() {
   const matchupByes = scheduleRows.filter(m=>m.matchday===effectiveMatchday&&m.byeTeam);
   const matchupRows = scheduleRows.filter(m=>m.matchday===effectiveMatchday&&!m.byeTeam).map(m=>{
     const dayFixtures=scheduleRows.filter(x=>!x.byeTeam&&x.division===m.division&&x.matchday===m.matchday);
-    const repeatedTeamFixture=dayFixtures.some(x=>dayFixtures.filter(y=>y.team1===x.team1||y.team2===x.team1||y.team1===x.team2||y.team2===x.team2).length>2);
+    const repeatedTeamFixture=dayFixtures.some(x=>dayFixtures.filter(y=>y!==x&&(y.team1===x.team1||y.team2===x.team1||y.team1===x.team2||y.team2===x.team2)).length>0);
     const weekRows = m.statsWeek===null ? [] : records.filter(r=>r.division===m.division&&r.week===m.statsWeek);
     const team1Stats = teamSeriesStats(weekRows,m.team1), team2Stats = teamSeriesStats(weekRows,m.team2);
     const hasBoth = team1Stats.hasData && team2Stats.hasData;
@@ -423,7 +423,7 @@ function App() {
     scheduleRows.filter(m=>m.division===league).forEach(m=>{if(m.byeTeam)ensureTeam(m.byeTeam);else{ensureTeam(m.team1);ensureTeam(m.team2);}});
     scheduleRows.filter(m=>m.division===league&&!m.byeTeam&&m.statsWeek!==null).forEach(m=>{
       const dayFixtures=scheduleRows.filter(x=>!x.byeTeam&&x.division===m.division&&x.matchday===m.matchday);
-      const repeatedTeamFixture=dayFixtures.some(x=>dayFixtures.filter(y=>y.team1===x.team1||y.team2===x.team1||y.team1===x.team2||y.team2===x.team2).length>2);
+      const repeatedTeamFixture=dayFixtures.some(x=>dayFixtures.filter(y=>y!==x&&(y.team1===x.team1||y.team2===x.team1||y.team1===x.team2||y.team2===x.team2)).length>0);
       const weekRows=records.filter(r=>r.division===league&&r.week===m.statsWeek);
       const home=teamSeriesStats(weekRows,m.team1),away=teamSeriesStats(weekRows,m.team2);
       const exact=home.hasData&&away.hasData&&home.exact&&away.exact;
