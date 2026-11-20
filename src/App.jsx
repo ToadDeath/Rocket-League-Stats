@@ -403,15 +403,17 @@ function App() {
   const effectiveMatchday = scheduleMatchdays.includes(Number(selectedMatchday)) ? Number(selectedMatchday) : defaultMatchday;
   const matchupByes = scheduleRows.filter(m=>m.matchday===effectiveMatchday&&m.byeTeam);
   const matchupRows = scheduleRows.filter(m=>m.matchday===effectiveMatchday&&!m.byeTeam).map(m=>{
+    const dayFixtures=scheduleRows.filter(x=>!x.byeTeam&&x.division===m.division&&x.matchday===m.matchday);
+    const repeatedTeamFixture=dayFixtures.some(x=>dayFixtures.filter(y=>y.team1===x.team1||y.team2===x.team1||y.team1===x.team2||y.team2===x.team2).length>2);
     const weekRows = m.statsWeek===null ? [] : records.filter(r=>r.division===m.division&&r.week===m.statsWeek);
     const team1Stats = teamSeriesStats(weekRows,m.team1), team2Stats = teamSeriesStats(weekRows,m.team2);
     const hasBoth = team1Stats.hasData && team2Stats.hasData;
     const exact = hasBoth && team1Stats.exact && team2Stats.exact;
     const reconciles = exact && team1Stats.wins===team2Stats.losses && team2Stats.wins===team1Stats.losses && team1Stats.teamGames===team2Stats.teamGames;
     const hasManualResult = Number.isInteger(m.resultTeam1Wins) && Number.isInteger(m.resultTeam2Wins);
-    const importedFinal = reconciles && team1Stats.complete && team2Stats.complete;
+    const importedFinal = !repeatedTeamFixture && reconciles && team1Stats.complete && team2Stats.complete;
     const final = importedFinal || hasManualResult;
-    const status = final ? 'Final' : !m.statsWeek ? 'Matchday stats not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : 'Partial series data';
+    const status = final ? 'Final' : repeatedTeamFixture ? 'Manual result required - team plays twice' : !m.statsWeek ? 'Matchday stats not mapped' : !hasBoth ? 'Waiting for imported stats' : !exact ? 'Player stats are incomplete' : !reconciles ? 'Team totals do not reconcile' : 'Partial series data';
     const scoreText = importedFinal ? team1Stats.wins+' - '+team2Stats.wins : hasManualResult ? m.resultTeam1Wins+' - '+m.resultTeam2Wins : exact ? team1Stats.wins+' - '+team2Stats.wins : '-';
     return {...m, scoreText, resultStatus:status, resultFinal:final, scoreIsPartial:!importedFinal&&hasManualResult};
   });
@@ -420,12 +422,14 @@ function App() {
     const ensureTeam=name=>{if(!table.has(name))table.set(name,{name,played:0,matchWins:0,matchLosses:0,gameWins:0,gameLosses:0,points:0});return table.get(name);};
     scheduleRows.filter(m=>m.division===league).forEach(m=>{if(m.byeTeam)ensureTeam(m.byeTeam);else{ensureTeam(m.team1);ensureTeam(m.team2);}});
     scheduleRows.filter(m=>m.division===league&&!m.byeTeam&&m.statsWeek!==null).forEach(m=>{
+      const dayFixtures=scheduleRows.filter(x=>!x.byeTeam&&x.division===m.division&&x.matchday===m.matchday);
+      const repeatedTeamFixture=dayFixtures.some(x=>dayFixtures.filter(y=>y.team1===x.team1||y.team2===x.team1||y.team1===x.team2||y.team2===x.team2).length>2);
       const weekRows=records.filter(r=>r.division===league&&r.week===m.statsWeek);
       const home=teamSeriesStats(weekRows,m.team1),away=teamSeriesStats(weekRows,m.team2);
       const exact=home.hasData&&away.hasData&&home.exact&&away.exact;
       const reconciles=exact&&home.wins===away.losses&&away.wins===home.losses&&home.teamGames===away.teamGames;
       const hasManualResult=Number.isInteger(m.resultTeam1Wins)&&Number.isInteger(m.resultTeam2Wins);
-      const importedFinal=reconciles&&home.complete&&away.complete;
+      const importedFinal=!repeatedTeamFixture&&reconciles&&home.complete&&away.complete;
       const final=importedFinal||hasManualResult;
       if(!final)return;
       const h=ensureTeam(m.team1),a=ensureTeam(m.team2);
