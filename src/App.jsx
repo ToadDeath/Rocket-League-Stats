@@ -329,8 +329,8 @@ function App() {
       if (!map.has(member.playerName)) map.set(member.playerName, { key:member.playerName, name:member.playerName, teams:new Set(), rows:[], games:0,wins:0,score:0,goals:0,assists:0,saves:0,shots:0,demos:0,status:member.status||'Active' });
       if(member.teamName) map.get(member.playerName).teams.add(member.teamName);
     }
-    for (const member of dataset?.roster || []) if(member.status==='Inactive' && (division==='All Divisions'||records.some(r=>r.playerName===member.playerName))) {
-      if(!map.has(member.playerName)) map.set(member.playerName,{key:member.playerName,name:member.playerName,teams:new Set(),rows:[],games:0,wins:0,score:0,goals:0,assists:0,saves:0,shots:0,demos:0,status:'Inactive'});
+    for (const person of dataset?.playerDirectory || []) if(division==='All Divisions'||records.some(r=>r.playerName===person.playerName)) {
+      if(!map.has(person.playerName)) map.set(person.playerName,{key:person.playerName,name:person.playerName,teams:new Set(),rows:[],games:0,wins:0,score:0,goals:0,assists:0,saves:0,shots:0,demos:0,status:'Inactive'});
     }
     for (const r of records) {
       if (!map.has(r.playerName)) map.set(r.playerName, { key:r.playerName, name:r.playerName, teams:new Set(), rows:[], games:0,wins:0,score:0,goals:0,assists:0,saves:0,shots:0,demos:0 });
@@ -349,7 +349,7 @@ function App() {
         assistsPerGame:avg(p.assists,p.games),savesPerGame:avg(p.saves,p.games),
         rating:current.rating,ratingCategories:current.categories,ratingValues:current.values,
         ratingChange:previous?current.rating-previous.rating:null};
-    }).sort((a,b)=>b.rating-a.rating);
+    }).sort((a,b)=>(a.status==='Inactive'?1:0)-(b.status==='Inactive'?1:0)||b.rating-a.rating);
   }, [records,dataset,division]);
 
   const teams = useMemo(() => {
